@@ -3,7 +3,7 @@
 - Frameworks : 
     - SpringBoot 3.x
     - Spring Data JPA (Hibernate)
-    - JSP (JavaServer Pages)
+- View avec ThymeLeaf
 - Maven
 - Serveur : Tomcat (version 10.1)
 - Extensions vscode:

@@ -42,11 +42,8 @@ Classe
 
 View 
     - nom de page : kebab-case 
-    - si utilise JSTL : integrer en header : 
-        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    - rel debute par : ${pageContext.request.contextPath} 
-        suivi par  resources ou uploads etc
-    - si utiliser templates: toujours integrer html.html(pour check les elements voir index.html)
+    - tout lien commence par @{} (effet thymeleaf)
+    - pour integrer les fichiers dans static : passer direct au nom du sous dossier
+    - si utiliser /templates: toujours integrer html.html(pour check les elements voir index.html)
+    - tous les images dans les bases sont dans /uploads
     - gerer les erreurs avec if et les afficher
-
-!! tous les images dans les bases sont dans /uploads

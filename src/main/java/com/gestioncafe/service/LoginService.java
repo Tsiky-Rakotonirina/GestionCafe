@@ -8,8 +8,10 @@ import com.gestioncafe.repository.*;
 
 @Service
 public class LoginService {
+    
     @Autowired
     private AdministratifRepository administratif;
+    @Autowired
     private QuotidienRepository quotidien;
 
     public boolean loginAdministratif(String nom, String motDePasse) {

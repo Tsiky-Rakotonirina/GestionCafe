@@ -20,7 +20,6 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-
     @GetMapping
     public String login() {
         return "login";
@@ -28,8 +27,8 @@ public class LoginController {
 
     // utiliser ModelAttribute pour lier foramulaire : nom des champs = nom des attributs de classe
     @PostMapping("/login-administratif")
-    public String loginAdministratif(@ModelAttribute Administratif administratif, Model model) {
-        boolean isAuthenticated = loginService.loginAdministratif(administratif.getNom(), administratif.getMotDePasse());
+    public String loginAdministratif(@RequestParam("nom") String nom, @RequestParam("motDePasse") String motDePasse, Model model) {
+        boolean isAuthenticated = loginService.loginAdministratif(nom, motDePasse);
         if (isAuthenticated) {
             // retour vers URL
             return "redirect:/administratif";
@@ -56,6 +55,7 @@ public class LoginController {
 
     @GetMapping("/deconnexion-administratif")
     public String deconnexionAdministratif() {
+        // session.invalidate();  // Supprime la session actuelle
         return "login";
     }
 
