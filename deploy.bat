@@ -1,55 +1,34 @@
 @echo off
-REM Script de déploiement pour Tomcat 10.1.28
+setlocal
 
-set PROJECT_NAME=cafe
-set TOMCAT_HOME="C:\Program Files\Apache Software Foundation\Tomcat 10.1"
-set WAR_FILE=target\%PROJECT_NAME%-0.0.1-SNAPSHOT.war
+REM === Configuration ===
+set WAR_NAME=GestionCafe.war
+set APP_NAME=GestionCafe
+set PROJECT_DIR=%~dp0
+set TARGET_DIR=%PROJECT_DIR%target
+set TOMCAT_WEBAPPS_DIR="C:\Program Files\Apache Software Foundation\Tomcat 11.0\webapps"
 
-REM Construction du projet
-echo Construction du projet avec Maven...
-call mvn clean package
-
-if %errorlevel% neq 0 (
-    echo Erreur lors de la construction du projet
-    pause
-    exit /b %errorlevel%
-)
-
-REM Vérification que le fichier WAR existe
-if not exist "%WAR_FILE%" (
-    echo Fichier WAR non trouvé: %WAR_FILE%
-    dir /s target\*.war
+REM === Vérification de l'existence du fichier WAR ===
+IF NOT EXIST "%TARGET_DIR%\%WAR_NAME%" (
+    echo Le fichier WAR "%WAR_NAME%" est introuvable dans le dossier target.
     pause
     exit /b 1
 )
 
-REM Arrêt de Tomcat si en cours d'exécution
-echo Arrêt de Tomcat...
-call %TOMCAT_HOME%\bin\shutdown.bat
+REM === Suppression du WAR existant ===
+echo Suppression de %WAR_NAME% existant dans Tomcat...
+del /F /Q %TOMCAT_WEBAPPS_DIR%\%WAR_NAME%
 
-REM Suppression de l'ancienne version
-echo Nettoyage de l'ancien déploiement...
-if exist %TOMCAT_HOME%\webapps\%PROJECT_NAME%.war (
-    del %TOMCAT_HOME%\webapps\%PROJECT_NAME%.war
+REM === Suppression du dossier de l'application déployée ===
+echo Suppression du dossier %APP_NAME% dans Tomcat...
+rd /S /Q %TOMCAT_WEBAPPS_DIR%\%APP_NAME%
+
+REM === Copie du WAR dans le dossier webapps de Tomcat ===
+echo Copie de %WAR_NAME% vers le dossier webapps de Tomcat...
+copy /Y "%TARGET_DIR%\%WAR_NAME%" %TOMCAT_WEBAPPS_DIR%
+
+IF %ERRORLEVEL% EQU 0 (
+    echo Deploiement termine avec succes.
+) ELSE (
+    echo Erreur lors de la copie.
 )
-if exist %TOMCAT_HOME%\webapps\%PROJECT_NAME% (
-    rmdir /s /q %TOMCAT_HOME%\webapps\%PROJECT_NAME%
-)
-
-REM Copie du nouveau WAR
-echo Copie du nouveau fichier WAR...
-copy "%WAR_FILE%" %TOMCAT_HOME%\webapps\%PROJECT_NAME%.war
-
-if %errorlevel% neq 0 (
-    echo Erreur lors de la copie du fichier WAR
-    pause
-    exit /b %errorlevel%
-)
-
-REM Démarrage de Tomcat
-echo Démarrage de Tomcat...
-start "" %TOMCAT_HOME%\bin\startup.bat
-
-echo Déploiement terminé avec succès!
-echo L'application sera disponible à: http://localhost:8080/%PROJECT_NAME%/
-pause
