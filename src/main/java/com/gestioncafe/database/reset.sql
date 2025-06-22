@@ -1,6 +1,7 @@
 \c postgres;
 drop database gestioncafe;
 create database gestioncafe;
+
 \c gestioncafe;
 
 CREATE TABLE administratif (
