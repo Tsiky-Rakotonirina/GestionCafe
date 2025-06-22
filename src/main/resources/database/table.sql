@@ -40,12 +40,12 @@ CREATE TABLE type_budget
     imposable                BOOLEAN      NOT NULL DEFAULT FALSE,
 
     CONSTRAINT fk_type_budget_categorie_budget
-        FOREIGN KEY (id_categorie_budget) 
-        REFERENCES categorie_budget(id),
+        FOREIGN KEY (id_categorie_budget)
+            REFERENCES categorie_budget (id),
 
     CONSTRAINT fk_type_budget_compte_charge_produit
-        FOREIGN KEY (id_compte_charge_produit) 
-        REFERENCES compte_charge_produit(id)
+        FOREIGN KEY (id_compte_charge_produit)
+            REFERENCES compte_charge_produit (id)
 );
 
 -- Table tva
@@ -135,14 +135,6 @@ CREATE TABLE approvisionnement
             REFERENCES matiere_premiere (id)
 );
 
--- Table type_produit (prix fois combien)
-CREATE TABLE type_produit
-(
-    id     SERIAL PRIMARY KEY,
-    valeur DECIMAL(10, 2) NOT NULL,
-    nom    VARCHAR(255)   NOT NULL
-);
-
 -- Table package
 CREATE TABLE package
 (
@@ -171,6 +163,14 @@ CREATE TABLE produit
     CONSTRAINT fk_recette_package
         FOREIGN KEY (id_package)
             REFERENCES package (id)
+);
+
+CREATE TABLE pv_produit
+(
+    id               SERIAL PRIMARY KEY,
+    id_produit       INTEGER NOT NULL,
+    prix_vente       DECIMAL(10, 2),
+    date_application DATE
 );
 
 -- Table recette
