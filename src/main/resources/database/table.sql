@@ -87,7 +87,6 @@ CREATE TABLE matiere_premiere
             REFERENCES unite (id)
 );
 
-
 -- Table fournisseur
 CREATE TABLE fournisseur
 (
@@ -143,7 +142,6 @@ CREATE TABLE type_produit
     valeur DECIMAL(10, 2) NOT NULL,
     nom    VARCHAR(255)   NOT NULL
 );
-
 
 -- Table package
 CREATE TABLE package
