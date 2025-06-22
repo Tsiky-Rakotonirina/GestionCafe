@@ -131,6 +131,13 @@ CREATE TABLE type_produit (
     nom     VARCHAR(255)   NOT NULL
 );
 
+-- Table package
+CREATE TABLE package (
+    id          SERIAL         PRIMARY KEY,
+    nom         VARCHAR(255)   NOT NULL,
+    valeur      VARCHAR(255)   NOT NULL,
+    estimation  DECIMAL(10,2)  NOT NULL
+);
 
 -- Table produit
 CREATE TABLE produit (
@@ -150,14 +157,6 @@ CREATE TABLE produit (
     CONSTRAINT fk_recette_package
         FOREIGN KEY (id_package)
         REFERENCES package(id)
-);
-
--- Table package
-CREATE TABLE package (
-    id          SERIAL         PRIMARY KEY,
-    nom         VARCHAR(255)   NOT NULL,
-    valeur      VARCHAR(255)   NOT NULL,
-    estimation  DECIMAL(10,2)  NOT NULL
 );
 
 -- Table recette
