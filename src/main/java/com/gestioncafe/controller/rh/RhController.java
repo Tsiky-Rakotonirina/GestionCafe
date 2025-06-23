@@ -18,6 +18,6 @@ public class RhController {
 
     @GetMapping
     public String index() {
-        return "administratif/rh/index";
+        return "administratif/rh/parametre";
     }
 }
