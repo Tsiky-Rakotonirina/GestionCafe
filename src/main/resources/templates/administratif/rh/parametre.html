@@ -12,13 +12,18 @@
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                <i class="fas fa-chart-line"></i>
-                <img th:src="@{/images/logo/logo.jpg}" alt="Café">
-            </a>
+            <div class="product-info">
+                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
+                </a>
+            </div>
         </div>
         <div class="header-right">
-            <h1 class="page-title" id="pageTitle">Gestion de ressources humaines</h1>
+            <div class="product-info">
+                <h1 class="page-title" id="pageTitle">Gestion de ressources humaines</h1>
+        
+            </div>
         </div>
     </header>
     <main class="content">
@@ -76,6 +81,7 @@
                         <input type="number" class="form-input" placeholder="Ex : 250000" name="salaire" required>
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -98,7 +104,7 @@
                 </div>
             </div>
         </div>
-
+        <br><hr><br>
         <!-- Serie bac  -->
         <div class="main-content" id="serieBac">
             <h2>Gestion des series de baccalaureat</h2>
@@ -115,6 +121,7 @@
                         <input type="text" class="form-input" placeholder="Ex : Serie scientifique" name="description" required>
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -137,6 +144,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- Formation  -->
         <div class="main-content" id="formation">
@@ -154,6 +162,7 @@
                         <input type="text" class="form-input" placeholder="Ex : 3 annees d' etudes" name="description" required>
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -176,6 +185,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- Experience  -->
         <div class="main-content" id="experience">
@@ -193,6 +203,7 @@
                         <input type="text" class="form-input" placeholder="Ex : Peu experimente" name="description" required>
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -215,6 +226,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- Langue  -->
         <div class="main-content" id="langue">
@@ -232,6 +244,7 @@
                         <input type="text" class="form-input" placeholder="Ex : Langue britannique et americain" name="description" required>
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -254,6 +267,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- Jour ferie  -->
         <div class="main-content" id="jourFerie">
@@ -275,6 +289,7 @@
                         <input type="checkbox" class="form-input" name="paye">
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -299,6 +314,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- Jour ferie  -->
         <div class="main-content" id="typeConge">
@@ -320,6 +336,7 @@
                         <input type="checkbox" class="form-input" name="paye">
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -344,6 +361,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- commission  -->
         <div class="main-content" id="commission">
@@ -361,6 +379,7 @@
                         <input type="text" class="form-input" name="description" placeholder="Ex : Beaucoup de vent effectuer" required>
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -383,6 +402,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- avance  -->
         <div class="main-content" id="avance">
@@ -400,6 +420,7 @@
                         <input type="text" class="form-input" name="description" placeholder="Ex : Operation, Medicaments, etc" required>
                     </div>
                     <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
                 </form>
             </div>
             <div class="element-section">
@@ -422,6 +443,7 @@
                 </div>
             </div>
         </div>
+        <br><hr><br>
 
         <!-- avance  -->
         <div class="main-content" id="irsa">
