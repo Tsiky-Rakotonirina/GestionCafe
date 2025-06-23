@@ -65,9 +65,9 @@ CREATE TABLE detail_candidat (
     id_langue        INTEGER NULL,
     id_experience    INTEGER NULL,
 
-    CONSTRAINT fk_detail_candidat_employe
-        FOREIGN KEY (id_employe)
-        REFERENCES employe(id),
+    CONSTRAINT fk_detail_candidat_candidat
+        FOREIGN KEY (id_candidat)
+        REFERENCES candidat(id),
 
     CONSTRAINT fk_detail_candidat_serie_bac
         FOREIGN KEY (id_serie_bac)
@@ -241,3 +241,14 @@ CREATE TABLE commission (
         REFERENCES raison_commission(id)
 );
 
+-- Table payement employe
+CREATE TABLE payement_employe (
+    id            SERIAL       PRIMARY KEY,
+    id_employe    INTEGER      NOT NULL,
+    date_payement DATE         NOT NULL,
+    montant       DECIMAL(10,2) NOT NULL,
+
+    CONSTRAINT fk_payement_employe_employe
+        FOREIGN KEY (id_employe)
+        REFERENCES employe(id)
+);

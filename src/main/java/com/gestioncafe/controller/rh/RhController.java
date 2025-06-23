@@ -17,7 +17,12 @@ import com.gestioncafe.model.*;
 public class RhController {
 
     @GetMapping
-    public String index() {
+    public String gestionSalaire() {
+        return "administratif/rh/gestion-salaires";
+    }
+
+    @GetMapping
+    public String parametre() {
         return "administratif/rh/parametre";
     }
 }
