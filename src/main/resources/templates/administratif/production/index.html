@@ -3,33 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafeManager Pro - Gestion de Café</title>
+    <title>Caf-E</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Utilisation de Thymeleaf pour la gestion des ressources CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="product-info">
-                <!-- Lien vers la page administratif -->
-                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    <!-- Image de logo -->
-                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
-                </a>
-            </div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <i class="fas fa-coffee"></i>
+            <span>CafeManager Pro</span>
         </div>
-    </header>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item active">
+                <a href="#" data-page="dashboard" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tableau de Bord</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="stock" class="nav-link">
+                    <i class="fas fa-boxes"></i>
+                    <span>Gestion Stock</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="production" class="nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span>Production</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="finances" class="nav-link">
+                    <i class="fas fa-euro-sign"></i>
+                    <span>Finances</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="elements" class="nav-link">
+                    <i class="fas fa-palette"></i>
+                    <span>Éléments UI</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="orders" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Commandes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="customers" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="reports" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Rapports</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<div class="main-content" id="mainContent">
     <main class="content">
-        <h1>HELLO WORLD !</h1>
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="product-info">
+                    <!-- Lien vers la page administratif -->
+                    <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <!-- Image de logo -->
+                        <img th:src="@{/images/logo/logo.jpg}" alt="Café">
+                    </a>
+                </div>
+            </div>
+        </header>
     </main>
-    <!-- Utilisation de Thymeleaf pour le script JS -->
-    <!-- <script th:src="@{/templates/script.js}"></script> -->
+</div>
 </body>
 </html>
