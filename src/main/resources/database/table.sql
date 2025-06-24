@@ -1,3 +1,10 @@
+CREATE TABLE administratif
+(
+    id  SERIAL PRIMARY KEY,
+    nom VARCHAR(255),
+    mot_de_passe VARCHAR(255)
+);
+
 -- Table compte_bilan
 CREATE TABLE compte_bilan
 (
@@ -62,12 +69,19 @@ CREATE TABLE impot_societe
     valeur DECIMAL(5, 2) NOT NULL
 );
 
+-- norme d'unité utilisé par l'application
+CREATE TABLE norme_unite
+(
+    id  SERIAL PRIMARY KEY,
+    nom VARCHAR(50) -- kg, g, litre, ...
+);
+
 -- Table unite
 CREATE TABLE unite
 (
-    id          SERIAL PRIMARY KEY,
-    valeur      VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NULL
+    id              SERIAL PRIMARY KEY,
+    nom             VARCHAR(50),   --kg, g, l, cl, ...
+    valeur_pr_norme DECIMAL(10, 2) -- valeur par rapport au norme (choisi par l'utilisateur)
 );
 
 -- Table matiere_premiere
@@ -76,15 +90,22 @@ CREATE TABLE matiere_premiere
     id               SERIAL PRIMARY KEY,
     nom              VARCHAR(255)   NOT NULL,
     id_unite         INTEGER        NOT NULL,
-    seuil_min        DECIMAL(10, 2) NOT NULL,
-    seuil_max        DECIMAL(10, 2) NOT NULL,
     stock            DECIMAL(10, 2) NOT NULL,
     image            VARCHAR(255)   NULL,
-    delai_peremption INTEGER        NULL,
+    delai_peremption DECIMAL(10, 2) NULL,
 
     CONSTRAINT fk_matiere_premiere_unite
         FOREIGN KEY (id_unite)
             REFERENCES unite (id)
+);
+
+CREATE TABLE seuil_matiere_premiere
+(
+    id                  SERIAL PRIMARY KEY,
+    id_matiere_premiere INTEGER,
+    seuil_min           DECIMAL(10, 2) NOT NULL,
+    seuil_max           DECIMAL(10, 2) NOT NULL,
+    date_application    DATE
 );
 
 -- Table fournisseur
@@ -148,17 +169,12 @@ CREATE TABLE package
 CREATE TABLE produit
 (
     id               SERIAL PRIMARY KEY,
-    id_type_produit  INTEGER        NOT NULL,
     nom              VARCHAR(255)   NOT NULL,
     description      VARCHAR(500)   NULL,
     stock            DECIMAL(10, 2) NOT NULL,
     image            VARCHAR(255)   NULL,
-    delai_peremption INTEGER        NULL,
+    delai_peremption DECIMAL(10, 2) NULL,
     id_package       INTEGER        NOT NULL,
-
-    CONSTRAINT fk_produit_type_produit
-        FOREIGN KEY (id_type_produit)
-            REFERENCES type_produit (id),
 
     CONSTRAINT fk_recette_package
         FOREIGN KEY (id_package)
@@ -211,15 +227,25 @@ CREATE TABLE detail_recette
 -- Table machine
 CREATE TABLE machine
 (
-    id            SERIAL PRIMARY KEY,
-    nom           VARCHAR(255)   NOT NULL,
-    marque        VARCHAR(255)   NULL,
-    puissance     DECIMAL(10, 2) NOT NULL,
-    taux_activite DECIMAL(5, 2)  NOT NULL
+    id        SERIAL PRIMARY KEY,
+    nom       VARCHAR(255)   NOT NULL,
+    marque    VARCHAR(255)   NULL,
+    puissance DECIMAL(10, 2) NOT NULL
+);
+
+-- Table utilisation machine en fonction de la période
+CREATE TABLE utilisation_machine
+(
+    id               SERIAL PRIMARY KEY,
+    id_machine       INTEGER NOT NULL,
+    mois_debut       INTEGER,
+    mois_fin         INTEGER,
+    date_application DATE,
+    utilisation      DECIMAL(10, 2)
 );
 
 -- Table utilisation_machine
-CREATE TABLE utilisation_machine
+/*CREATE TABLE utilisation_machine
 (
     id         SERIAL PRIMARY KEY,
     id_machine INTEGER        NOT NULL,
@@ -233,7 +259,7 @@ CREATE TABLE utilisation_machine
     CONSTRAINT fk_utilisation_machine_recette
         FOREIGN KEY (id_recette)
             REFERENCES recette (id)
-);
+);*/
 
 -- Table etat
 CREATE TABLE etat
@@ -292,25 +318,34 @@ CREATE TABLE tiquet_machine
 -- Table genre
 CREATE TABLE genre
 (
-    id          SERIAL PRIMARY KEY,
-    valeur      VARCHAR(255) NOT NULL,
-    description VARCHAR(500) NULL
+    id  SERIAL PRIMARY KEY,
+    nom VARCHAR(255)
+);
+
+CREATE TABLE tiers
+(
+    id       SERIAL PRIMARY KEY,
+    nom      VARCHAR(255) NOT NULL,
+    prenom   VARCHAR(255) NOT NULL,
+    id_genre INTEGER      NOT NULL,
+    contact  VARCHAR(255),
+    email    VARCHAR(255),
+    image    VARCHAR(255),
+
+    CONSTRAINT fk_client_genre
+        FOREIGN KEY (id_genre)
+            REFERENCES genre (id)
 );
 
 -- Table client
 CREATE TABLE client
 (
-    id            SERIAL PRIMARY KEY,
-    nom           VARCHAR(255) NOT NULL,
-    prenom        VARCHAR(255) NOT NULL,
-    id_genre      INTEGER      NOT NULL,
-    contact       VARCHAR(255) NULL,
-    email         VARCHAR(255) NULL,
-    date_adhesion DATE         NOT NULL,
+    id             SERIAL PRIMARY KEY,
+    id_tiers       INTEGER NOT NULL,
+    date_adhesion  DATE    NOT NULL,
+    date_naissance DATE    NULL,
 
-    CONSTRAINT fk_client_genre
-        FOREIGN KEY (id_genre)
-            REFERENCES genre (id)
+    FOREIGN KEY (id_tiers) REFERENCES tiers (id)
 );
 
 -- Table grade
@@ -357,16 +392,13 @@ CREATE TABLE langue
 CREATE TABLE employe
 (
     id               SERIAL PRIMARY KEY,
-    nom              VARCHAR(255) NOT NULL,
-    id_genre         INTEGER      NOT NULL,
-    date_naissance   DATE         NOT NULL,
-    date_recrutement DATE         NOT NULL,
-    image            VARCHAR(255) NULL,
-    reference_cv     TEXT         NULL,
+    id_tiers         INTEGER NOT NULL,
+    date_naissance   DATE    NOT NULL,
+    date_recrutement DATE    NOT NULL,
+    date_demission   DATE,
+    reference_cv     TEXT    NULL,
 
-    CONSTRAINT fk_employe_genre
-        FOREIGN KEY (id_genre)
-            REFERENCES genre (id)
+    FOREIGN KEY (id_tiers) REFERENCES tiers (id)
 );
 
 -- Table detail_employe
@@ -434,7 +466,7 @@ CREATE TABLE vente
 (
     id         SERIAL PRIMARY KEY,
     date_vente TIMESTAMP NOT NULL,
-    id_client  INTEGER   NOT NULL,
+    id_client  INTEGER,
     id_employe INTEGER   NOT NULL,
 
     CONSTRAINT fk_vente_client

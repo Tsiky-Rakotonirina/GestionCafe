@@ -3,16 +3,18 @@ package com.gestioncafe.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "administratif") 
+@Table(name = "administratif")
 public class Administratif {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nom;
+
     @Column(name = "mot_de_passe", nullable = false)
-    private String motDePasse; 
-    
-    
+    private String motDePasse;
+
+
     public Administratif() {
     }
 
