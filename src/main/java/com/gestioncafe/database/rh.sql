@@ -53,7 +53,11 @@ CREATE TABLE candidat (
 
     CONSTRAINT fk_candidat_genre
         FOREIGN KEY (id_genre)
-        REFERENCES genre(id)
+        REFERENCES genre(id),
+
+    CONSTRAINT fk_candidat_grade
+        FOREIGN KEY (id_grade)
+        REFERENCES grade(id)
 );
 
 -- Table detail_candidat
@@ -215,6 +219,7 @@ CREATE TABLE avance (
     date_avance      DATE         NOT NULL,
     montant          DECIMAL(10,2) NOT NULL,
 
+
     CONSTRAINT fk_avance_raison_avance
         FOREIGN KEY (id_raison_avance)
         REFERENCES raison_avance(id)
@@ -246,7 +251,6 @@ CREATE TABLE payement_employe (
     id_employe         INTEGER       NOT NULL,
     date_payement      DATE          NOT NULL,
     montant            DECIMAL(10,2) NOT NULL,
-    appoint            DECIMAL(10,2) NOT NULL,
     reference_payement VARCHAR(255) NULL,
     mois_annee         DATE(20)   NOT NULL,
 
@@ -254,3 +258,4 @@ CREATE TABLE payement_employe (
         FOREIGN KEY (id_employe)
         REFERENCES employe(id)
 );
+

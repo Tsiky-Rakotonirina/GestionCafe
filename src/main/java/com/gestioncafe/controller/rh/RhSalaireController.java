@@ -31,9 +31,8 @@ public class RhSalaireController {
             try{
                 Employe employe = rhSalaireService.getEmployeById(id);
                 if(employe != null){
-                    // logique pour recuperer les informations de la fiche de paie
-                    // list des fiches de paie
-                    // list des pdf de fiche de paie possible a importer
+                    // prochain fiche de paie
+                    // list des payements
                     model.addAttribute("employe", employe);
                     return "administratif/rh/fiche-de-paie";
                 }
@@ -99,5 +98,9 @@ public class RhSalaireController {
         model.addAttribute("erreurCommission", erreur);
         return "redirect:/administratif/rh/gestion-salaires";
     }
-    
+
+    @PostMapping("/payer")
+    public String payer(@RequestParam("idEmploye") String idEmploye, Model model) {
+        return "/administratif/rh/salaire/fiche-de-paie(idEmploye="+idEmploye+"})";
+    }
 }
