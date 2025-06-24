@@ -11,8 +11,11 @@ import com.gestioncafe.repository.production.VenteRepository;
 
 @Service
 public class VenteService {
-    @Autowired
-    private VenteRepository venteRepository;
+    private final VenteRepository venteRepository;
+
+    public VenteService(VenteRepository venteRepository) {
+        this.venteRepository = venteRepository;
+    }
 
     public List<Vente> findAll() {
         return venteRepository.findAll();

@@ -11,8 +11,11 @@ import com.gestioncafe.repository.production.ProduitRepository;
 
 @Service
 public class ProduitService {
-    @Autowired
-    private ProduitRepository produitRepository;
+    private final ProduitRepository produitRepository;
+
+    public ProduitService(ProduitRepository produitRepository) {
+        this.produitRepository = produitRepository;
+    }
 
     public List<Produit> findAll() {
         return produitRepository.findAll();
