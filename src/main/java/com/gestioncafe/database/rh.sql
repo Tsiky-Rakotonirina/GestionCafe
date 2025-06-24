@@ -204,8 +204,7 @@ CREATE TABLE cotisation_sociale (
 CREATE TABLE raison_avance (
     id          SERIAL         PRIMARY KEY,
     valeur      VARCHAR(255)   NOT NULL,
-    description VARCHAR(500)   NULL,
-    montant_max  DECIMAL(10,2) NOT NULL
+    description VARCHAR(500)   NULL
 );
 
 -- Table avance
@@ -243,10 +242,13 @@ CREATE TABLE commission (
 
 -- Table payement employe
 CREATE TABLE payement_employe (
-    id            SERIAL       PRIMARY KEY,
-    id_employe    INTEGER      NOT NULL,
-    date_payement DATE         NOT NULL,
-    montant       DECIMAL(10,2) NOT NULL,
+    id                 SERIAL        PRIMARY KEY,
+    id_employe         INTEGER       NOT NULL,
+    date_payement      DATE          NOT NULL,
+    montant            DECIMAL(10,2) NOT NULL,
+    appoint            DECIMAL(10,2) NOT NULL,
+    reference_payement VARCHAR(255) NULL,
+    mois_annee         DATE(20)   NOT NULL,
 
     CONSTRAINT fk_payement_employe_employe
         FOREIGN KEY (id_employe)

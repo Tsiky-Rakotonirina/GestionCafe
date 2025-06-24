@@ -12,10 +12,12 @@
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                <i class="fas fa-chart-line"></i>
-                <img th:src="@{/images/logo/logo.jpg}" alt="Café">
-            </a>
+             <div class="product-info">
+                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
+                </a>
+            </div>
         </div>
         <div class="header-right">
             <h1 class="page-title" id="pageTitle">Gestion de ressources humaines</h1>
@@ -60,6 +62,72 @@
             </nav>
         </div>
         <div class="main-content" id="mainContent">
+
+            <div class="financial-details">
+                <div class="finance-chart-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-area"></i>Gestion des commissions</h3>
+                    </div>
+                    <div class="chart-placeholder">
+                        
+                        <div class="production-items-grid">
+                            <div class="production-item-card">
+                                <div class="item-details">
+                                <h4>Employe : nom</h4>
+                                <div class="customer-avatar">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="item-stats">
+                                    <span class="quantity">Date Recrutement : </span>
+                                    <br>
+                                    <span class="quantity">Genre : </span>
+                                    <br>
+                                    <span class="quantity">Contact : </span>
+                                </div>
+                                <br>
+                                <a href="@{/administratif/rh/salaire/commission(idEmploye=${employe.id})}" class="btn secondary">Voir la fiche de l'employe</a><br>
+                            </div>
+                        </div>
+                        <br><hr><br>
+                        <div class="form-showcase">
+                            <h5>Formulaire pour accorder une commission</h5>
+                            <form th:action="@{/administratif/rh/salaire/ajout-commission}" method="post" class="form-example">
+                                <div class="form-group">
+                                    <label class="form-label">Montant (Ariary) :</label>
+                                    <input type="text" class="form-input" placeholder="Ex : 50000" name="montant" required>
+                                </div>
+                                 <div class="form-group">
+                                    <label class="form-label">Raison :</label>
+                                    <select class="form-select">
+                                        <option>Sur-Vente</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="idEmploye" th:value="${employe.id}">
+                                <button type="submit" class="btn primary">Donner la commission</button>
+                                <br><br>
+                            </form>
+                        </div>
+                        <br><br>
+                    </div>
+                </div>
+                
+                <div class="expense-breakdown-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-pie-chart"></i> Historique des commissions</h3>
+                    </div>
+                    <div class="expense-items">
+
+                        <div class="expense-item">
+                            <div class="expense-details">
+                                <span class="expense-name">Date commission : 12/02/2025</span>
+                                <span class="expense-amount">Montant : </span>
+                            </div>
+                            <div class="expense-percentage">Raison : </div>
+                        </div>
+                  
+                    </div>
+                </div>
+            </div>
 
         </div>
     </main>
