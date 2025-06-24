@@ -1,13 +1,11 @@
 package com.gestioncafe.service.production;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.gestioncafe.model.production.Vente;
 import com.gestioncafe.repository.production.VenteRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VenteService {
