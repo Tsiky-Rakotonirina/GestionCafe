@@ -28,6 +28,7 @@ public class CongeService {
     }
 
     public Conge save(Conge conge) throws Exception {
+        List<Conge> all = findAll();
         LocalDate debut = conge.getDateDebut();
         LocalDate fin = conge.getDateFin();
 
@@ -37,6 +38,31 @@ public class CongeService {
 
         if (!fin.isAfter(debut)) {
             throw new Exception("La date de fin doit être postérieure à la date de début.");
+        }
+
+        // 1. Règle 1 : Même employé ne doit pas se chevaucher avec lui-même
+        for (Conge existant : all) {
+            if (existant.getEmploye().getId().equals(conge.getEmploye().getId())) {
+                boolean chevauchement = !(fin.isBefore(existant.getDateDebut())
+                        || debut.isAfter(existant.getDateFin()));
+
+                if (chevauchement) {
+                    throw new Exception("L'employé " + existant.getEmploye().getNom() +
+                            " a déjà un congé entre le " + existant.getDateDebut() + " et le " + existant.getDateFin());
+                }
+            }
+        }
+
+        // 2. Règle 2 : Aucun autre employé ne doit avoir un congé avec les mêmes dates
+        // exactes
+        for (Conge existant : all) {
+            if (!existant.getEmploye().getId().equals(conge.getEmploye().getId())) {
+                if (existant.getDateDebut().isEqual(debut) && existant.getDateFin().isEqual(fin)) {
+                    throw new Exception("L'employé " + existant.getEmploye().getNom() +
+                            " a déjà réservé du " + debut + " au " + fin
+                            + ". Un autre employé ne peut pas réserver exactement les mêmes dates.");
+                }
+            }
         }
 
         // Calcul automatique de la durée

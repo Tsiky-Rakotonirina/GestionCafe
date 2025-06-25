@@ -31,4 +31,5 @@ public class Conge {
     @JoinColumn(name = "id_employe", nullable = false)
     private Employe employe; // À remplacer par @ManyToOne si tu as une entité Employe
 
+    
 }
