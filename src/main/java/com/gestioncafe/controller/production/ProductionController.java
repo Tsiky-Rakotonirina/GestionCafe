@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -156,5 +158,52 @@ public class ProductionController {
         model.addAttribute("dateFin", dateFin);
 
         return "administratif/production/stats";
+    }
+
+    @GetMapping(value = "/stats-json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, Object> statistiquesJson(
+        @RequestParam(value = "periodeCourbe", defaultValue = "jour") String periodeCourbe
+    ) {
+        List<VentePeriodeStatDTO> courbeTotal = detailsVenteService.getTotalProduitVenduParPeriode(periodeCourbe);
+        courbeTotal.sort(Comparator.comparing(VentePeriodeStatDTO::getPeriode));
+        List<String> periodes = new ArrayList<>();
+        DateTimeFormatter formatter;
+        LocalDate today = LocalDate.now();
+        if ("jour".equals(periodeCourbe)) {
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            for (int i = 59; i >= 0; i--) {
+                periodes.add(today.minusDays(i).format(formatter));
+            }
+        } else if ("mois".equals(periodeCourbe)) {
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            YearMonth thisMonth = YearMonth.now();
+            for (int i = 11; i >= 0; i--) {
+                periodes.add(thisMonth.minusMonths(i).format(formatter));
+            }
+        } else if ("annee".equals(periodeCourbe)) {
+            formatter = DateTimeFormatter.ofPattern("yyyy");
+            int thisYear = today.getYear();
+            for (int i = 2; i >= 0; i--) {
+                periodes.add(String.valueOf(thisYear - i));
+            }
+        } else {
+            courbeTotal.sort((a, b) -> a.getPeriode().compareTo(b.getPeriode()));
+            periodes = courbeTotal.stream().map(VentePeriodeStatDTO::getPeriode).toList();
+        }
+        Map<String, BigDecimal> map = new HashMap<>();
+        for (VentePeriodeStatDTO v : courbeTotal) {
+            map.put(v.getPeriode(), v.getQuantiteTotale());
+        }
+        List<String> labels = new ArrayList<>();
+        List<BigDecimal> data = new ArrayList<>();
+        for (String p : periodes) {
+            labels.add(p);
+            data.add(map.getOrDefault(p, BigDecimal.ZERO));
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("labels", labels);
+        result.put("data", data);
+        return result;
     }
 }
