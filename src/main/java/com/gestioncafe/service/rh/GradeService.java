@@ -11,25 +11,25 @@ import com.gestioncafe.repository.rh.GradeRepository;
 @Service
 public class GradeService {
     @Autowired
-    private GradeRepository GradeRepository;
+    private GradeRepository gradeRepository;
 
     public List<Grade> findAll() {
-        return GradeRepository.findAll();
+        return gradeRepository.findAll();
     }
 
     public Grade findById(Long id) {
-        return GradeRepository.findById(id).orElseThrow();
+        return gradeRepository.findById(id).orElseThrow();
     }
 
-    public Grade save(Grade Grade) {
-        return GradeRepository.save(Grade);
+    public Grade save(Grade grade) {
+        return gradeRepository.save(grade);
     }
 
-    public void delete(Grade Grade) {
-        GradeRepository.delete(Grade);
+    public void delete(Grade grade) {
+        gradeRepository.delete(grade);
     }
 
     public void deleteById(Long id) {
-        GradeRepository.deleteById(id);
+        gradeRepository.deleteById(id);
     }
 }

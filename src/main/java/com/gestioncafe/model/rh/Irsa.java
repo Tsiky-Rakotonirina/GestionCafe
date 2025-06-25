@@ -17,10 +17,10 @@ public class Irsa {
 
     private BigDecimal taux;
 
-    @Column(name = "salaire_min", nullable = false)
+    @Column(name = "salaire_min")
     private BigDecimal salaireMin;
 
-    @Column(name = "salaire_max", nullable = false)
+    @Column(name = "salaire_max")
     private BigDecimal salaireMax;
 
 
