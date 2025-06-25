@@ -1,6 +1,9 @@
 package com.gestioncafe.service.production;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,16 +60,25 @@ public class DetailsVenteService {
     }
 
     public List<VenteProduitStatDTO> getVenteStatParProduitFiltre(
-            java.time.LocalDate dateExacte,
-            Integer annee,
-            Integer mois,
-            Integer jourMois,
-            Integer jourSemaine,
-            java.time.LocalDateTime dateDebut,
-            java.time.LocalDateTime dateFin
+        LocalDate dateExacte,
+        Integer annee,
+        Integer mois,
+        Integer jourMois,
+        Integer jourSemaine,
+        LocalDateTime dateDebut,
+        LocalDateTime dateFin
     ) {
-        return detailsVenteRepository.getVenteStatParProduitFiltre(
-            dateExacte, annee, mois, jourMois, jourSemaine, dateDebut, dateFin
-        );
+            List<Object[]> rows = detailsVenteRepository.getVenteStatParProduitFiltreNative(
+                dateExacte, annee, mois, jourMois, jourSemaine, dateDebut, dateFin
+            );
+            List<VenteProduitStatDTO> result = new ArrayList<>();
+            for (Object[] row : rows) {
+                Integer produitId = ((Number) row[0]).intValue();
+                String nom = (String) row[1];
+                BigDecimal quantite = new BigDecimal(row[2].toString());
+                BigDecimal montant = new BigDecimal(row[3].toString());
+                result.add(new VenteProduitStatDTO(produitId, nom, quantite, montant));
+            }
+            return result;
     }
 }

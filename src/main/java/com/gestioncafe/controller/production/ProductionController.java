@@ -86,7 +86,13 @@ public class ProductionController {
             dateExacte, annee, mois, jourMois, jourSemaine, dateDebut, dateFin
         );
         model.addAttribute("stats", stats);
+        model.addAttribute("annee", annee);
+        model.addAttribute("mois", mois);
+        model.addAttribute("jourMois", jourMois);
+        model.addAttribute("jourSemaine", jourSemaine);
+        model.addAttribute("dateDebut", dateDebut);
+        model.addAttribute("dateFin", dateFin);
 
-        return "administratif/production/statistiques-filtre";
+        return "administratif/production/stats";
     }
 }
