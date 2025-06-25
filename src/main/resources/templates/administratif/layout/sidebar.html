@@ -1,0 +1,40 @@
+<div th:fragment="sidebar" class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <i class="fas fa-coffee"></i>
+            <span>Caf-E</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item active">
+                <a href="#" data-page="dashboard" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Produits</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="stock" class="nav-link">
+                    <i class="fas fa-boxes"></i>
+                    <span>Matière première</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="production" class="nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span>Machine</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-page="finances" class="nav-link">
+                    <i class="fas fa-euro-sign"></i>
+                    <span>Statistiques</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
