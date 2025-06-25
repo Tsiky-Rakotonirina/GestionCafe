@@ -47,7 +47,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" data-page="production" class="nav-link">
+                        <a th:href="@{/administratif/rh/conge}" data-page="production" class="nav-link">
                             <i class="fas fa-cogs"></i>
                             <span>Gestion des conges et des jours feries</span>
                         </a>
@@ -67,7 +67,7 @@
                 </ul>
             </nav>
         </div>
-
+        <hr><br>
         <!-- Grade -->
         <div class="main-content" id="grade">
             <h2>Gestion de grade</h2>
@@ -113,14 +113,14 @@
             </div>
         </div>
 
-
+        <hr><br>
         <!-- Jour ferie  -->
         <div class="main-content" id="jourFerie">
             <h2>Gestion des jours feries</h2>
             <p>Des dates de jours sans travailler pouvant etre paye ou pas</p>
             <h4>Formulaire d'ajout de jour ferie</h4>
             <div class="form-showcase">
-                <form th:action="@{/administratif/rh/ajout-jour-ferie}" th:object="${jourFerie}" method="post"
+                <form th:action="@{/administratif/rh/parametre/ajout-jour-ferie}" th:object="${jourFerie}" method="post"
                     class="form-example">
                     <div class="form-group">
                         <label class="form-label">Nom :</label>
@@ -165,9 +165,121 @@
         </div>
         <br>
         <hr><br>
+        <!-- irsa -->
+        <div class="main-content" id="irsa">
+            <h2>Gestion de l'IRSA</h2>
+            <p>Valeurs des taux d'impôt appliqués en fonction du salaire.</p>
+
+            <h4>Formulaire d'ajout d'une tranche IRSA</h4>
+            <div class="form-showcase">
+                <form th:action="@{/administratif/rh/parametre/ajout-irsa}" th:object="${irsa}" method="post"
+                    class="form-example">
+                    <div class="form-group">
+                        <label class="form-label">Taux (%) :</label>
+                        <input type="number" step="0.01" th:field="*{taux}" class="form-input" placeholder="Ex : 20.00"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salaire minimum :</label>
+                        <input type="number" step="0.01" th:field="*{salaireMin}" class="form-input"
+                            placeholder="Ex : 400000" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salaire maximum :</label>
+                        <input type="number" step="0.01" th:field="*{salaireMax}" class="form-input"
+                            placeholder="Ex : 800000" required>
+                    </div>
+                    <button type="submit" class="btn primary">Ajouter</button>
+                    <br><br>
+                </form>
+            </div>
+
+            <div class="element-section">
+                <h4>Liste des tranches IRSA</h4>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Taux (%)</th>
+                                <th>Salaire minimum</th>
+                                <th>Salaire maximum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ligne : ${listeIrsas}">
+                                <td th:text="${ligne.taux}">20.00</td>
+                                <td th:text="${ligne.salaireMin}">400000</td>
+                                <td th:text="${ligne.salaireMax}">800000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
 
     </main>
 </body>
+
+<!-- Modal d'erreur IRSA -->
+<div id="popupErreur" class="modal" th:if="${erreur}">
+    <div class="modal-content">
+        <span class="close" onclick="fermerPopup()">&times;</span>
+        <h3>Erreur</h3>
+        <p th:text="${erreur}">Une erreur s'est produite</p>
+    </div>
+</div>
+
+<style>
+    .modal {
+        display: block;
+        /* affiché si th:if est vrai */
+        position: fixed;
+        z-index: 1000;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        margin: auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        width: 40%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.4s ease;
+    }
+
+    .close {
+        color: red;
+        float: right;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    function fermerPopup() {
+        document.getElementById("popupErreur").style.display = "none";
+    }
+</script>
 
 </html>
