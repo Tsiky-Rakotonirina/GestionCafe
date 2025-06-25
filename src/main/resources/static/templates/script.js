@@ -373,8 +373,9 @@ class CafeManager {
         // Gestionnaires de formulaires
         const forms = document.querySelectorAll('form');
         forms.forEach(form => {
-            // Ne pas intercepter le formulaire de stats-filtre
-            if (form.getAttribute('action') && form.getAttribute('action').includes('/administratif/production/stats-filtre')) {
+            // Ne pas intercepter les formulaires de stats et stats-filtre
+            const action = form.getAttribute('action') || '';
+            if (action.includes('/administratif/production/stats')) {
                 return;
             }
             form.addEventListener('submit', (e) => {

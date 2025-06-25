@@ -1,9 +1,8 @@
 package com.gestioncafe.controller.production;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.gestioncafe.dto.VentePeriodeStatDTO;
+import com.gestioncafe.dto.VenteProduitStatDTO;
+import com.gestioncafe.service.production.DetailsVenteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.gestioncafe.dto.VentePeriodeStatDTO;
-import com.gestioncafe.dto.VenteProduitStatDTO;
-import com.gestioncafe.service.production.DetailsVenteService;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Controller
 @RequestMapping("/administratif/production")
@@ -45,9 +47,61 @@ public class ProductionController {
     }
 
     @GetMapping("/stats")
-    public String statistiques(Model model) {
+    public String statistiques(
+        @RequestParam(value = "periodeCourbe", defaultValue = "jour") String periodeCourbe,
+        Model model) {
         List<VenteProduitStatDTO> stats = detailsVenteService.getVenteStatParProduit();
+        List<VentePeriodeStatDTO> courbeTotal = detailsVenteService.getTotalProduitVenduParPeriode(periodeCourbe);
         model.addAttribute("stats", stats);
+        model.addAttribute("courbeTotal", courbeTotal);
+        model.addAttribute("periodeCourbe", periodeCourbe);
+        // Pré-calculer labels et data pour le graphique
+        // Trier courbeTotal du plus ancien au plus récent
+        courbeTotal.sort(Comparator.comparing(VentePeriodeStatDTO::getPeriode));
+
+        // Générer la liste complète des périodes attendues
+        List<String> periodes = new ArrayList<>();
+        DateTimeFormatter formatter;
+        LocalDate today = LocalDate.now();
+
+        if ("jour".equals(periodeCourbe)) {
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            for (int i = 59; i >= 0; i--) {
+                periodes.add(today.minusDays(i).format(formatter));
+            }
+        } else if ("mois".equals(periodeCourbe)) {
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            YearMonth thisMonth = YearMonth.now();
+            for (int i = 11; i >= 0; i--) {
+                periodes.add(thisMonth.minusMonths(i).format(formatter));
+            }
+        } else if ("annee".equals(periodeCourbe)) {
+            formatter = DateTimeFormatter.ofPattern("yyyy");
+            int thisYear = today.getYear();
+            for (int i = 2; i >= 0; i--) {
+                periodes.add(String.valueOf(thisYear - i));
+            }
+        } else {
+            // fallback : utiliser les périodes présentes
+            courbeTotal.sort((a, b) -> a.getPeriode().compareTo(b.getPeriode()));
+            periodes = courbeTotal.stream().map(VentePeriodeStatDTO::getPeriode).toList();
+        }
+
+        // Associer chaque période à sa quantité ou 0
+        Map<String, BigDecimal> map = new HashMap<>();
+        for (VentePeriodeStatDTO v : courbeTotal) {
+            map.put(v.getPeriode(), v.getQuantiteTotale());
+        }
+
+        List<String> labels = new ArrayList<>();
+        List<BigDecimal> data = new ArrayList<>();
+        for (String p : periodes) {
+            labels.add(p);
+            data.add(map.getOrDefault(p, BigDecimal.ZERO));
+        }
+
+        model.addAttribute("labels", labels);
+        model.addAttribute("data", data);
 
         return "administratif/production/stats";
     }
@@ -69,6 +123,14 @@ public class ProductionController {
         model.addAttribute("produitId", produitId);
 
         return "administratif/production/courbe-produit";
+    }
+
+    @GetMapping("/courbe-total")
+    public String courbeTotalProduit(@RequestParam(defaultValue = "jour") String periode, Model model) {
+        List<VentePeriodeStatDTO> courbe = detailsVenteService.getTotalProduitVenduParPeriode(periode);
+        model.addAttribute("courbe", courbe);
+        model.addAttribute("periode", periode);
+        return "administratif/production/courbe-total";
     }
 
     @GetMapping("/stats-filtre")

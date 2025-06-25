@@ -81,4 +81,15 @@ public class DetailsVenteService {
             }
             return result;
     }
+
+    public List<VentePeriodeStatDTO> getTotalProduitVenduParPeriode(String periode) {
+        List<Object[]> rows = detailsVenteRepository.getTotalProduitVenduParPeriode(periode);
+        List<VentePeriodeStatDTO> result = new ArrayList<>();
+        for (Object[] row : rows) {
+            String label = (String) row[0];
+            BigDecimal quantite = new BigDecimal(row[1].toString());
+            result.add(new VentePeriodeStatDTO(label, quantite));
+        }
+        return result;
+    }
 }

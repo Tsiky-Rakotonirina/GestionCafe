@@ -104,4 +104,24 @@ public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Inte
         @Param("jourSemaine") Integer jourSemaine,
         @Param("dateDebut") LocalDateTime dateDebut,
         @Param("dateFin") LocalDateTime dateFin);
+
+    @Query(value = """
+            SELECT 
+                CASE WHEN :periode = 'jour' THEN TO_CHAR(v.date_vente, 'YYYY-MM-DD')
+                     WHEN :periode = 'mois' THEN TO_CHAR(v.date_vente, 'YYYY-MM')
+                     ELSE TO_CHAR(v.date_vente, 'YYYY') END as periode_label,
+                SUM(dv.quantite) as total_quantite
+            FROM details_vente dv
+            JOIN vente v ON v.id = dv.id_vente
+            WHERE (
+                (:periode = 'jour' AND v.date_vente >= NOW() - INTERVAL '60 days') OR
+                (:periode = 'mois' AND v.date_vente >= date_trunc('month', NOW()) - INTERVAL '11 months') OR
+                (:periode = 'annee' AND v.date_vente >= date_trunc('year', NOW()) - INTERVAL '2 years')
+            )
+            GROUP BY periode_label
+            ORDER BY periode_label
+        """, nativeQuery = true)
+    List<Object[]> getTotalProduitVenduParPeriode(
+        @Param("periode") String periode
+    );
 }

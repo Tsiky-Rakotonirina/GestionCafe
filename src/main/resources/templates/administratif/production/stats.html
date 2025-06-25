@@ -1,85 +1,138 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiques - Caf-E</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
 </head>
+
 <body>
-<div th:replace="~{administratif/layout/sidebar :: sidebar}"></div>
-<div class="main-content" id="mainContent">
-    <div th:replace="~{administratif/layout/header :: header('Statistiques')}"></div>
-    <main class="content">
-        <h2>Statistiques des ventes par produit</h2>
-        <form method="get" th:action="@{/administratif/production/stats-filtre}" style="margin-bottom:2rem;">
-            <fieldset style="border:1px solid #ccc; padding:1rem; margin-bottom:1rem;">
-                <legend>Filtrer par date unique</legend>
-                <label>Année :
-                    <select name="annee">
-                        <option value="" th:selected="${annee == null}">--</option>
-                        <option th:each="a : ${#numbers.sequence(2020, 2030)}" th:value="${a}" th:text="${a}"
+    <div th:replace="~{administratif/layout/sidebar :: sidebar}"></div>
+    <div class="main-content" id="mainContent">
+        <div th:replace="~{administratif/layout/header :: header('Statistiques')}"></div>
+        <main class="content">
+            <h2>Statistiques des ventes par produit</h2>
+            <form method="get" th:action="@{/administratif/production/stats-filtre}" style="margin-bottom:2rem;">
+                <fieldset style="border:1px solid #ccc; padding:1rem; margin-bottom:1rem;">
+                    <legend>Filtrer par date unique</legend>
+                    <label>Année :
+                        <select name="annee">
+                            <option value="" th:selected="${annee == null}">--</option>
+                            <option th:each="a : ${#numbers.sequence(2020, 2030)}" th:value="${a}" th:text="${a}"
                                 th:selected="${a == annee}"></option>
-                    </select>
-                </label>
-                <label>Mois :
-                    <select name="mois">
-                        <option value="" th:selected="${mois == null}">--</option>
-                        <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m}" th:text="${m}"
+                        </select>
+                    </label>
+                    <label>Mois :
+                        <select name="mois">
+                            <option value="" th:selected="${mois == null}">--</option>
+                            <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m}" th:text="${m}"
                                 th:selected="${m == mois}"></option>
-                    </select>
-                </label>
-                <label>Jour du mois :
-                    <select name="jourMois">
-                        <option value="" th:selected="${jourMois == null}">--</option>
-                        <option th:each="j : ${#numbers.sequence(1, 31)}" th:value="${j}" th:text="${j}"
+                        </select>
+                    </label>
+                    <label>Jour du mois :
+                        <select name="jourMois">
+                            <option value="" th:selected="${jourMois == null}">--</option>
+                            <option th:each="j : ${#numbers.sequence(1, 31)}" th:value="${j}" th:text="${j}"
                                 th:selected="${j == jourMois}"></option>
+                        </select>
+                    </label>
+                    <label>Jour de la semaine :
+                        <select name="jourSemaine">
+                            <option value="" th:selected="${jourSemaine == null}">--</option>
+                            <option th:value="1" th:selected="${jourSemaine == 1}">Lundi</option>
+                            <option th:value="2" th:selected="${jourSemaine == 2}">Mardi</option>
+                            <option th:value="3" th:selected="${jourSemaine == 3}">Mercredi</option>
+                            <option th:value="4" th:selected="${jourSemaine == 4}">Jeudi</option>
+                            <option th:value="5" th:selected="${jourSemaine == 5}">Vendredi</option>
+                            <option th:value="6" th:selected="${jourSemaine == 6}">Samedi</option>
+                            <option th:value="7" th:selected="${jourSemaine == 7}">Dimanche</option>
+                        </select>
+                    </label>
+                </fieldset>
+                <fieldset style="border:1px solid #ccc; padding:1rem;">
+                    <legend>Filtrer par intervalle</legend>
+                    <label>Date début : <input type="datetime-local" name="dateDebut" th:value="${dateDebut}" /></label>
+                    <label>Date fin : <input type="datetime-local" name="dateFin" th:value="${dateFin}" /></label>
+                </fieldset>
+                <button type="submit">Filtrer</button>
+            </form>
+            <table border="1" cellpadding="8" cellspacing="0" style="width:100%; background:#fff;">
+                <thead>
+                    <tr>
+                        <th>Nom produit</th>
+                        <th>Quantité vendue</th>
+                        <th>Bénéfice total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="stat : ${stats}">
+                        <td th:text="${stat.produitNom}"></td>
+                        <td th:text="${stat.quantiteTotale}"></td>
+                        <td th:text="${#numbers.formatDecimal(stat.beneficeTotal, 1, 'COMMA', 2, 'POINT')}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(stats)}">
+                        <td colspan="3" style="text-align:center;">Aucune donnée</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr style="margin:2rem 0;">
+            <h3>Courbe du nombre total de produits vendus</h3>
+            <form method="get" th:action="@{/administratif/production/stats}" style="margin-bottom:1rem;">
+                <label>Période :
+                    <select name="periodeCourbe">
+                        <option value="jour" th:selected="${periodeCourbe == 'jour'}">Jour (60 derniers jours)</option>
+                        <option value="mois" th:selected="${periodeCourbe == 'mois'}">Mois (12 derniers mois)</option>
+                        <option value="annee" th:selected="${periodeCourbe == 'annee'}">Année (3 dernières années)</option>
                     </select>
                 </label>
-                <label>Jour de la semaine :
-                    <select name="jourSemaine">
-                        <option value="" th:selected="${jourSemaine == null}">--</option>
-                        <option th:value="1" th:selected="${jourSemaine == 1}">Lundi</option>
-                        <option th:value="2" th:selected="${jourSemaine == 2}">Mardi</option>
-                        <option th:value="3" th:selected="${jourSemaine == 3}">Mercredi</option>
-                        <option th:value="4" th:selected="${jourSemaine == 4}">Jeudi</option>
-                        <option th:value="5" th:selected="${jourSemaine == 5}">Vendredi</option>
-                        <option th:value="6" th:selected="${jourSemaine == 6}">Samedi</option>
-                        <option th:value="7" th:selected="${jourSemaine == 7}">Dimanche</option>
-                    </select>
-                </label>
-            </fieldset>
-            <fieldset style="border:1px solid #ccc; padding:1rem;">
-                <legend>Filtrer par intervalle</legend>
-                <label>Date début : <input type="datetime-local" name="dateDebut" th:value="${dateDebut}"/></label>
-                <label>Date fin : <input type="datetime-local" name="dateFin" th:value="${dateFin}"/></label>
-            </fieldset>
-            <button type="submit">Filtrer</button>
-        </form>
-        <table border="1" cellpadding="8" cellspacing="0" style="width:100%; background:#fff;">
-            <thead>
-            <tr>
-                <th>Nom produit</th>
-                <th>Quantité vendue</th>
-                <th>Bénéfice total</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="stat : ${stats}">
-                <td th:text="${stat.produitNom}"></td>
-                <td th:text="${stat.quantiteTotale}"></td>
-                <td th:text="${#numbers.formatDecimal(stat.beneficeTotal, 1, 'COMMA', 2, 'POINT')}"></td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(stats)}">
-                <td colspan="3" style="text-align:center;">Aucune donnée</td>
-            </tr>
-            </tbody>
-        </table>
-    </main>
-</div>
-<script th:src="@{/templates/script.js}"></script>
+                <button type="submit">Afficher la courbe</button>
+            </form>
+            <canvas id="courbeTotalChart" width="900" height="400"></canvas>
+            <script th:src="@{/js/chart.js}"></script>
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                var labels = /*[[${labels}]]*/ [];
+                var data = /*[[${data}]]*/ [];
+                var ctx = document.getElementById('courbeTotalChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total produits vendus',
+                            data: data,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: true,
+                            tension: 0.2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true },
+                            title: { display: false }
+                        },
+                        scales: {
+                            x: { 
+                                type: 'category',
+                                title: { display: true, text: 'Période' },
+                                ticks: { autoSkip: false, maxRotation: 90, minRotation: 45 }
+                            },
+                            y: { title: { display: true, text: 'Quantité totale' }, beginAtZero: true }
+                        }
+                    }
+                });
+                /*]]>*/
+            </script>
+        </main>
+    </div>
+    <script th:src="@{/templates/script.js}"></script>
 </body>
+
 </html>
