@@ -11,26 +11,26 @@
 
     <nav class="sidebar-nav">
         <ul>
-            <li class="nav-item active">
-                <a href="#" data-page="dashboard" class="nav-link">
+            <li class="nav-item">
+                <a th:href="@{/administratif/production/produit}" class="nav-link">
                     <i class="fas fa-chart-line"></i>
                     <span>Produits</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" data-page="stock" class="nav-link">
+                <a th:href="@{/administratif/production/mat-premiere}" class="nav-link">
                     <i class="fas fa-boxes"></i>
                     <span>Matière première</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" data-page="production" class="nav-link">
+                <a th:href="@{/administratif/production/machine}" class="nav-link">
                     <i class="fas fa-cogs"></i>
                     <span>Machine</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" data-page="finances" class="nav-link">
+                <a th:href="@{/administratif/production/stats}" class="nav-link">
                     <i class="fas fa-euro-sign"></i>
                     <span>Statistiques</span>
                 </a>

@@ -1,4 +1,3 @@
-
 // Application JavaScript pour CafeManager Pro
 
 class CafeManager {
@@ -17,6 +16,7 @@ class CafeManager {
 
     setupEventListeners() {
         // Navigation
+        /*
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -25,6 +25,7 @@ class CafeManager {
                 this.navigateTo(page);
             });
         });
+        */
 
         // Sidebar toggle
         const sidebarToggle = document.getElementById('sidebarToggle');
@@ -858,3 +859,32 @@ const utils = {
 
 // Exposer les utilitaires globalement
 window.utils = utils;
+
+// Gestion de l'activation du menu sidebar
+const sidebarNav = document.querySelector('.sidebar-nav');
+if (sidebarNav) {
+    sidebarNav.addEventListener('click', function(e) {
+        const link = e.target.closest('a.nav-link');
+        if (link) {
+            // Retirer l'active de tous les li
+            sidebarNav.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            // Ajouter active au parent li du lien cliqué
+            const li = link.closest('.nav-item');
+            if (li) {
+                li.classList.add('active');
+                // Persister l'URL active
+                localStorage.setItem('sidebarActive', link.getAttribute('th:href') || link.getAttribute('href'));
+            }
+        }
+    });
+    // Au chargement, restaurer l'élément actif
+    const activeHref = localStorage.getItem('sidebarActive');
+    if (activeHref) {
+        sidebarNav.querySelectorAll('.nav-link').forEach(link => {
+            if ((link.getAttribute('th:href') || link.getAttribute('href')) === activeHref) {
+                const li = link.closest('.nav-item');
+                if (li) li.classList.add('active');
+            }
+        });
+    }
+}
