@@ -8,6 +8,8 @@ import com.gestioncafe.model.rh.IrsaWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -85,6 +87,12 @@ public class RhParametreController {
         }
     }
 
+    @GetMapping("/api/liste-irsa")
+    @ResponseBody
+    public List<Irsa> getListeIrsas() {
+        return rhParametreService.getIrsaService().findAll();
+    }
+
     @PostMapping("/supprimer-irsa")
     @ResponseBody
     public ResponseEntity<?> supprimerIrsa(@RequestParam Long id) {
@@ -97,17 +105,19 @@ public class RhParametreController {
     }
 
     @PostMapping("/enregistrer-irsa")
-    public String enregistrerIrsas(@ModelAttribute("irsaWrapper") IrsaWrapper irsaWrapper,
-            RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<?> enregistrerJson(@RequestBody IrsaWrapper wrapper) {
         try {
-            List<Irsa> irsas = irsaWrapper.getIrsas();
-            for (Irsa irsa : irsas) {
+            List<Irsa> lignesValides = wrapper.getIrsas();
+
+            for (Irsa irsa : lignesValides) {
                 rhParametreService.getIrsaService().save(irsa);
             }
-            return "redirect:/administratif/rh/parametre";
+
+            return ResponseEntity.ok(Map.of("success", true));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erreur", e.getMessage());
-            return "redirect:/administratif/rh/parametre";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("success", false, "message", e.getMessage()));
         }
     }
 
