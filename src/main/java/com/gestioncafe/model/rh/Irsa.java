@@ -15,9 +15,10 @@ public class Irsa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable =  false)
     private BigDecimal taux;
 
-    @Column(name = "salaire_min")
+    @Column(name = "salaire_min" , nullable =  false)
     private BigDecimal salaireMin;
 
     @Column(name = "salaire_max")
