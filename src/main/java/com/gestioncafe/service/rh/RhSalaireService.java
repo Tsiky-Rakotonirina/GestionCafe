@@ -24,11 +24,11 @@ public class RhSalaireService {
     }
 
     public List<Commission> getCommissionsByEmployeId(Long idEmploye) {
-        return commissionRepository.findByEmployeIdOrderByDateCommssionDesc(idEmploye);
+        return commissionRepository.findByIdEmployeOrderByDateCommissionDesc(idEmploye);
     }
 
     public List<Avance> getAvancesByEmployeId(Long idEmploye) {
-        return avanceRepository.findByEmployeIdOrderByDateAvanceDesc(idEmploye);
+        return avanceRepository.findByIdEmployeOrderByDateAvanceDesc(idEmploye);
     }
     
 }

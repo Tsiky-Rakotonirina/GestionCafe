@@ -42,10 +42,10 @@ CREATE TABLE langue (
 
 CREATE TABLE candidat (
     id                  SERIAL       PRIMARY KEY,
+    date_candidature    DATE         NOT NULL,
     nom                 VARCHAR(255) NOT NULL,
     id_genre            INTEGER      NOT NULL,
     date_naissance      DATE         NOT NULL,
-    date_candidature    DATE         NOT NULL,
     contact             VARCHAR(20)  NOT NULL,
     image               VARCHAR(255) NULL,
     reference_cv        TEXT         NULL,
@@ -92,15 +92,15 @@ CREATE TABLE detail_candidat (
 
 -- Table employe
 CREATE TABLE employe (
-    id               SERIAL       PRIMARY KEY,
-    nom                 VARCHAR(255) NOT NULL,
-    id_genre            INTEGER      NOT NULL,
-    date_naissance      DATE         NOT NULL,
-    contact             VARCHAR(20)  NOT NULL,
-    date_recrutement DATE         NOT NULL,
-    id_candidat      INTEGER      NOT NULL,
-    image            VARCHAR(255) NULL,
-    reference_cv     TEXT         NULL,
+    id               SERIAL          PRIMARY KEY,
+    id_candidat      INTEGER         NOT NULL,
+    date_recrutement DATE            NOT NULL,
+    nom              VARCHAR(255)    NULL,
+    id_genre         INTEGER         NULL,
+    date_naissance   DATE            NULL,
+    contact          VARCHAR(20)     NULL,
+    image            VARCHAR(255)    NULL,
+    reference_cv     VARCHAR(255)    NULL,
 
     CONSTRAINT fk_employe_candidat
         FOREIGN KEY (id_candidat)
@@ -251,8 +251,8 @@ CREATE TABLE payement_employe (
     id_employe         INTEGER       NOT NULL,
     date_payement      DATE          NOT NULL,
     montant            DECIMAL(10,2) NOT NULL,
-    reference_payement VARCHAR(255) NULL,
-    mois_annee         DATE(20)   NOT NULL,
+    reference_payement VARCHAR(255)  NULL,
+    mois_annee         VARCHAR(20)   NOT NULL,
 
     CONSTRAINT fk_payement_employe_employe
         FOREIGN KEY (id_employe)

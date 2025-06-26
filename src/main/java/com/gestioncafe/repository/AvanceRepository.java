@@ -8,5 +8,5 @@ import com.gestioncafe.model.*;
 
 @Repository
 public interface AvanceRepository extends JpaRepository<Avance, Long> {
-    public List<Avance> findByEmployeIdOrderByDateAvanceDesc(Long employeId);
+    public List<Avance> findByIdEmployeOrderByDateAvanceDesc(Long employeId);
 }
