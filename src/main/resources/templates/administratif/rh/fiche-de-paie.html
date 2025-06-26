@@ -7,6 +7,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/rh/historique.css}">
+    <script th:src="@{/js/rh/ficheDePaie.js}"></script>
 </head>
 <body>
     <!-- Header -->
@@ -73,16 +75,16 @@
                         <div class="production-items-grid">
                             <div class="production-item-card">
                                 <div class="item-details">
-                                <h4>Employe : nom</h4>
+                                <h4>Employe : <span th:text="${employe.nom != null ? employe.nom : '-'}">-</span></h4>
                                 <div class="customer-avatar">
                                     <img src="" alt="">
                                 </div>
                                 <div class="item-stats">
-                                    <span class="quantity">Date Recrutement : </span>
+                                    <span class="quantity">Date Recrutement : <span th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">-</span></span>
                                     <br>
-                                    <span class="quantity">Genre : </span>
+                                    <span class="quantity">Genre : <span th:text="${employe.genre != null ? employe.genre.valeur : '-'}">-</span></span>
                                     <br>
-                                    <span class="quantity">Contact : </span>
+                                    <span class="quantity">Contact : <span th:text="${employe.contact != null ? employe.contact : '-'}">-</span></span>
                                 </div>
                                 <br>
                                 <a href="@{/administratif/rh/salaire/fiche-de-paie(idEmploye=${employe.id})}" class="btn secondary">Voir la fiche de l'employe</a><br>
@@ -90,74 +92,78 @@
                         </div>
                         <br><br>
                         <div class="orders-container">
+                            <div th:if="${avances != null and !#lists.isEmpty(avances)}">
+                                <h3>Liste des fiches de paies impayes</h3>
+                                <div th:each="ficheDePaie : ${ficheDePaies}">
+                                    <form action="@{/administratif/rh/salaire/payer-fiche-de-paie}" method="post">
+                                        <input type="hidden" name="idEmploye" th:value="${employe.id}">
+                                        <div class="order-card priority">
+                                            <div class="order-header">
+                                                <div class="order-id">
+                                                    <i class="fas fa-hashtag"></i>
+                                                    <label>Mois reference :</label>
+                                                    <input type="text" name="moisReference" th:value="${ficheDePaie.moisReference}" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="order-items">
+                                                <div class="order-item">
+                                                    <label>Salaire de base :</label>
+                                                    <input type="text" name="salaireDeBase" th:value="${ficheDePaie.salaireDeBase}" readonly>
+                                                </div>
+                                                <div class="order-item">
+                                                    <label>Absences :</label>
+                                                    <input type="text" name="abscences" th:value="${ficheDePaie.abscences}" readonly>
+                                                </div>
+                                                <div class="order-item">
+                                                    <label>Commissions :</label>
+                                                    <input type="text" name="commissions" th:value="${ficheDePaie.commissions}" readonly>
+                                                </div>
+                                                <div class="order-item">
+                                                    <label>Retenues sociales :</label>
+                                                    <input type="text" name="retenuesSociales" th:value="${ficheDePaie.retenuesSociales}" readonly>
+                                                </div>
+                                                <div class="order-item">
+                                                    <label>Impots :</label>
+                                                    <input type="text" name="impots" th:value="${ficheDePaie.impots}" readonly>
+                                                </div>
+                                                <hr>
+                                                <div class="order-item">
+                                                    <label>Salaire brut (Salaire de base + Commission - Conges non Payes) :</label>
+                                                    <input type="text" name="salaireBrut" th:value="${ficheDePaie.salaireBrut}" readonly>
+                                                </div>
+                                                <div class="order-item">
+                                                    <label>Salaire net imposable (Salaire brut - Retenues sociales) :</label>
+                                                    <input type="text" name="salaireNetImposable" th:value="${ficheDePaie.salaireNetImposable}" readonly>
+                                                </div>
+                                                <div class="order-item">
+                                                    <label>Salaire net (Salaire net imposable - IRSA) :</label>
+                                                    <input type="text" name="salaireNet" th:value="${ficheDePaie.salaireNet}" readonly>
+                                                </div>
+                                                <div class="order-item">
+                                                    <label>Retenue pour avance :</label>
+                                                    <input type="text" name="retenueAvance" th:value="${ficheDePaie.retenueAvance}" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="order-footer">
+                                                <div class="order-total">
+                                                    <label class="total-label">Net a payer:</label>
+                                                    <input type="text" name="netAPayer" class="total-amount" th:value="${ficheDePaie.netAPayer}" readonly>
+                                                </div>
+                                                <div class="order-actions">
+                                                    <button class="btn success small" type="submit">
+                                                        <i class="fas fa-check"></i>
+                                                        Payer
+                                                    </button>
+                                                </div>
+                                            </div>
 
-                            <form action="@{/administratif/rh/salaire/payer-fiche-de-paie}" method="post">
-                                <input type="hidden" name="idEmploye" th:value="${employe.id}">
-                                <div class="order-card priority">
-                                    <div class="order-header">
-                                        <div class="order-id">
-                                            <i class="fas fa-hashtag"></i>
-                                            <span>Mois reference : </span>
                                         </div>
-                                    </div>
-                                    <div class="order-items">
-                                        <div class="order-item">
-                                            <span class="item-name">Salaire de base :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">Conge non payes et/ou absences :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">Commission :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">Retenues sociales :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">IRSA :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <hr>
-                                        <div class="order-item">
-                                            <span class="item-name">Salaire brut(Salaire de base + Commission - Conges non Payes) :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">Salaire net imposable(Salaire brut - Retenues sociales) :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">Retenue pour avance :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">Salaire net (Salaire net imposable - IRSA) :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                        <div class="order-item">
-                                            <span class="item-name">Salaire net (Salaire net imposable - retenue pour avance) :</span>
-                                            <span class="item-price"></span>
-                                        </div>
-                                    </div>
-                                    <div class="order-footer">
-                                        <div class="order-total">
-                                            <span class="total-label">Total:</span>
-                                            <span class="total-amount"></span>
-                                        </div>
-                                        <div class="order-actions">
-                                            <button class="btn success small" type="submit">
-                                                <i class="fas fa-check"></i>
-                                                Payer
-                                            </button>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
-                            </form>
-
+                            </div>
+                            <div th:if="${avances == null or #lists.isEmpty(avances)}">
+                                <h4>Aucune fiche de paie de l'employe impaye</h4>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,17 +176,17 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th><i class="fas fa-tag"></i> Mois reference</th>
-                                    <th><i class="fas fa-weight"></i> Date Payement</th>
-                                    <th><i class="fas fa-ruler"></i> Montant (Ariary) </th>
-                                    <th><i class="fas fa-info-circle"></i> Importer Pdf</th>
+                                    <th>Mois reference</th>
+                                    <th>Date Payement</th>
+                                    <th>Montant (Ariary) </th>
+                                    <th>Importer Pdf</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><strong>12-2024</strong></td>
-                                    <td>12-02-2025</td>
-                                    <td>250000</td>
+                                <tr th:each="payement : ${payements}">
+                                    <td><strong><span th:text="${payement.moisReference != null ? payement.moisReference : '-'}">-</span></strong></td>
+                                    <td><span th:text="${payement.datePayement != null ? payement.datePayement : '-'}">-</span></td>
+                                    <td><strong><span th:text="${payement.montant != null ? payement.montant : '-'}">-</span></strong></td>
                                     <td>
                                         <a href="@{/administratif/rh/salaire/fiche-de-paie(idEmploye=${employe.id})}" class="btn secondary">Id 2</a>
                                     </td>

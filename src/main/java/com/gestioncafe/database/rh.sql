@@ -149,7 +149,7 @@ CREATE TABLE grade_employe (
 );
 
 -- Table presence_employe
-CREATE TABLE presence_employe (
+CREATE TABLE presence (
     id            SERIAL      PRIMARY KEY,
     id_employe    INTEGER     NOT NULL,
     date_presence DATE        NOT NULL,
@@ -247,13 +247,13 @@ CREATE TABLE commission (
 );
 
 -- Table payement employe
-CREATE TABLE payement_employe (
+CREATE TABLE payement (
     id                 SERIAL        PRIMARY KEY,
     id_employe         INTEGER       NOT NULL,
     date_payement      DATE          NOT NULL,
     montant            DECIMAL(10,2) NOT NULL,
     reference_payement VARCHAR(255)  NULL,
-    mois_annee         VARCHAR(20)   NOT NULL,
+    mois_reference     DATE          NOT NULL,
 
     CONSTRAINT fk_payement_employe_employe
         FOREIGN KEY (id_employe)

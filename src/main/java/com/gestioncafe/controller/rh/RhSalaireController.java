@@ -25,21 +25,17 @@ public class RhSalaireController {
         String erreur="";
         try{
             Long id = Long.parseLong(idEmploye);
-            if (id <= 0) {
-                erreur = "L'ID de l'employé doit être positif.";
-            }
             try{
                 Employe employe = rhSalaireService.getEmployeById(id);
                 if(employe != null){
-                    // prochain fiche de paie
-                    // list des payements
                     model.addAttribute("employe", employe);
-                    // return "administratif/rh/fiche-de-paie";
+                    model.addAttribute("ficheDePaies", rhSalaireService.getFicheDePaiesByEmployeId(id));
+                    model.addAttribute("payements", rhSalaireService.getPayementsByEmployeId(id));
+                    return "administratif/rh/fiche-de-paie";
                 }
             } catch (RuntimeException e) {
                 erreur = "Employé non trouvé avec l'ID: " + idEmploye;
             }
-            
         } catch (NumberFormatException e) {
             erreur = "L'ID de l'employé doit être un nombre valide.";
         }
@@ -55,9 +51,10 @@ public class RhSalaireController {
             try{
                 Employe employe = rhSalaireService.getEmployeById(id);
                 if(employe != null){
+                    model.addAttribute("employe", employe);
                     model.addAttribute("prochainSalaire", rhSalaireService.prochainSalaire(id));
                     model.addAttribute("retenuPourAvance", rhSalaireService.retenuPourAvance(id));
-                    model.addAttribute("employAvances", rhSalaireService.getAllRaisonAvances());
+                    model.addAttribute("raisonAvances", rhSalaireService.getAllRaisonAvances());
                     model.addAttribute("avances", rhSalaireService.getAvancesByEmployeId(id));
                     return "administratif/rh/avance";
                 }
@@ -104,7 +101,8 @@ public class RhSalaireController {
                 Long id = Long.parseLong(idEmploye); 
                 try{
                     rhSalaireService.ajoutCommission(id, raison, montantDouble);
-                    model.addAttribute("succesAjoutCommission", "Commission de "+montant+"descerne a l'employe");
+                    model.addAttribute("succesAjoutCommission", "Commission de "+montant+" descerne a l'employe");
+                    return "redirect:/administratif/rh/salaire/commission?idEmploye="+idEmploye;
                 } catch(Exception e) {
                     erreur = "Erreur dans l'ajout : "+ e.getMessage();
                 }
@@ -129,7 +127,8 @@ public class RhSalaireController {
                 Long id = Long.parseLong(idEmploye); 
                 try{
                     rhSalaireService.ajoutAvance(id, raison, montantDouble);
-                    model.addAttribute("succesAjoutAvance", "Avance de "+montant+"descerne a l'employe");
+                    model.addAttribute("succesAjoutAvance", "Avance de "+montant+" accorde a l'employe");
+                    return "redirect:/administratif/rh/salaire/avance?idEmploye="+idEmploye;
                 } catch(Exception e) {
                     erreur = "Erreur dans l'ajout : "+ e.getMessage();
                 }
@@ -144,8 +143,33 @@ public class RhSalaireController {
         return "redirect:/administratif/rh/salaire/avance?idEmploye="+idEmploye;
     }
 
-    @PostMapping("/payer")
-    public String payer(@RequestParam("idEmploye") String idEmploye, Model model) {
-        return "/administratif/rh/salaire/fiche-de-paie(idEmploye="+idEmploye+"})";
+    @PostMapping("/payer-fiche-de-paie")
+    public String payer(@RequestParam("idEmploye") String idEmploye, @RequestParam("netAPayer") String montant, @RequestParam("moisReference") String moisReference, Model model) {
+        String erreur = "";
+        try {
+            double montantDouble = Double.parseDouble(montant);    
+            try{
+                Long id = Long.parseLong(idEmploye); 
+                try {
+                    java.sql.Date dateReference = java.sql.Date.valueOf(moisReference);
+                    try{
+                        rhSalaireService.ajoutPayement(id, montantDouble, dateReference);
+                        model.addAttribute("succesPayemet", "Payement de "+montant+" pour l'employe");
+                        return "redirect:/administratif/rh/salaire/fiche-de-paie?idEmploye="+idEmploye;
+                    } catch(Exception e) {
+                        erreur = "Erreur dans le payement : "+ e.getMessage();
+                    }
+                } catch(IllegalArgumentException e) {
+                    erreur = "Erreur dans le payement : La date est en format invalide.";
+                }
+            } catch(NumberFormatException e) {
+                erreur = "Erreur dans le payement : L'employe doit être valide.";
+            }
+        } catch(NumberFormatException e) {
+            erreur = "Erreur dans le payement :  Le net a payer doit être un nombre valide.";
+        }
+        System.out.println(erreur);
+        model.addAttribute("erreurPayement", erreur);
+        return "/administratif/rh/salaire/fiche-de-paie(idEmploye="+idEmploye+")";
     }
 }

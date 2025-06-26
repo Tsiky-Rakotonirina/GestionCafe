@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.gestioncafe.model.*;
 
 @Repository
-public interface AvanceRepository extends JpaRepository<Avance, Long> {
-    public List<Avance> findByIdEmployeOrderByDateAvanceDesc(Long idEmploye);
-    List<Avance> findByIdEmployeAndDateAvanceAfter(Long idEmploye, Date dateRepere);
+public interface PresenceRepository  extends JpaRepository<Presence, Long> {
+    List<Presence> findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(Long idEmploye, Date dateDebut, Date dateFin);
 }
