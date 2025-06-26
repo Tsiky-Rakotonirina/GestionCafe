@@ -190,7 +190,7 @@ CREATE TABLE irsa (
     id               SERIAL       PRIMARY KEY,
     taux             DECIMAL(5,2) NOT NULL,
     salaire_min      DECIMAL(10,2) NOT NULL,
-    salaire_max      DECIMAL(10,2) NOT NULL
+    salaire_max      DECIMAL(10,2)
 );
 
 -- Table cotisation_sociale
