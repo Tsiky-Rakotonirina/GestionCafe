@@ -172,7 +172,8 @@
             <p>Valeurs des taux d'impôt appliqués en fonction du salaire.</p>
 
             <h4>Tranches IRSA</h4>
-            <form th:action="@{/administratif/rh/parametre/enregistrer-irsa}" th:object="${irsaWrapper}" method="post">
+            <form id="formIrsa" onsubmit="enregistrerIrsas(event)" th:object="${irsaWrapper}">
+
                 <table id="irsaTable" class="data-table">
                     <thead>
                         <tr>
@@ -189,12 +190,12 @@
                             </td>
                             <td><input type="number" step="0.01" th:field="*{irsas[__${iter.index}__].salaireMin}"
                                     required></td>
-                            <td><input type="number" step="0.01" th:field="*{irsas[__${iter.index}__].salaireMax}"></td>
+                            <td><input type="number" step="0.01" th:field="*{irsas[__${iter.index}__].salaireMax}"
+                                    required></td>
                             <td>
                                 <button type="button" class="btn-supprimer" th:data-id="${ligne.id}"
                                     onclick="supprimerLigne(this)">Supprimer</button>
                             </td>
-
                         </tr>
                     </tbody>
                 </table>
@@ -212,11 +213,10 @@
                 const tbody = document.getElementById("tableIrsaBody");
                 const row = document.createElement("tr");
 
-                row.innerHTML = `
-            <input type="hidden" step="0.01" name="irsas[${indexIrsa}].id">   
+                row.innerHTML = ` 
             <td><input type="number" step="0.01" name="irsas[${indexIrsa}].taux" required></td>
             <td><input type="number" step="0.01" name="irsas[${indexIrsa}].salaireMin" required></td>
-            <td><input type="number" step="0.01" name="irsas[${indexIrsa}].salaireMax"></td>
+            <td><input type="number" step="0.01" name="irsas[${indexIrsa}].salaireMax" required></td>
             <td><button type="button" onclick="supprimerLigne(this)">Supprimer</button></td>
         `;
                 tbody.appendChild(row);
@@ -229,6 +229,7 @@
 
                 if (!id) {
                     // Ligne pas encore enregistrée en base : on peut juste l'enlever du DOM
+
                     row.remove();
                     return;
                 }
@@ -245,6 +246,7 @@
                     .then(response => {
                         if (response.ok) {
                             row.remove();
+                            rechargerTableauIrsa();
                         } else {
                             alert("Échec de la suppression !");
                         }
@@ -254,24 +256,118 @@
                         alert("Erreur lors de la suppression !");
                     });
             }
+
+            function enregistrerIrsas(event) {
+                event.preventDefault(); // empêche le rechargement
+
+                const rows = document.querySelectorAll('#tableIrsaBody tr');
+                const irsas = [];
+
+                rows.forEach((row, index) => {
+                    const taux = row.querySelector(`input[name="irsas[${index}].taux"]`)?.value;
+                    const salaireMin = row.querySelector(`input[name="irsas[${index}].salaireMin"]`)?.value;
+                    const salaireMax = row.querySelector(`input[name="irsas[${index}].salaireMax"]`)?.value;
+                    const id = row.querySelector(`input[name="irsas[${index}].id"]`)?.value;
+                    // Ignorer les lignes vides
+                    if (taux && salaireMin && salaireMax) {
+                        irsas.push({
+                            id: id || null,
+                            taux: parseFloat(taux),
+                            salaireMin: parseFloat(salaireMin),
+                            salaireMax: parseFloat(salaireMax)
+                        });
+                    }
+                });
+
+                fetch('/administratif/rh/parametre/enregistrer-irsa', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ irsas: irsas })
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            alert("Tranches IRSA enregistrées avec succès !");
+                            rechargerTableauIrsa();
+                        } else {
+                            afficherErreur(result.message || "Erreur inconnue");
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        afficherErreur("Erreur réseau ou serveur.");
+                    });
+            }
+            function afficherErreur(message) {
+                const modal = document.getElementById("popupErreur");
+                const messageElement = document.getElementById("messageErreur");
+
+                if (!modal || !messageElement) {
+                    alert("Erreur : " + message); // fallback
+                    return;
+                }
+
+                messageElement.textContent = message;
+                modal.style.display = "block";
+            }
+
+            function fermerPopup() {
+                const modal = document.getElementById("popupErreur");
+                if (modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            function rechargerTableauIrsa() {
+                fetch("/administratif/rh/parametre/api/liste-irsa")
+                    .then(response => response.json())
+                    .then(data => {
+                        const tbody = document.getElementById("tableIrsaBody");
+                        tbody.innerHTML = "";
+                        indexIrsa = 0;
+
+                        data.forEach(irsa => {
+                            const row = document.createElement("tr");
+
+                            row.innerHTML = `
+                    <input type="hidden" name="irsas[${indexIrsa}].id" value="${irsa.id}">
+                    <td><input type="number" step="0.01" name="irsas[${indexIrsa}].taux" value="${irsa.taux}" required></td>
+                    <td><input type="number" step="0.01" name="irsas[${indexIrsa}].salaireMin" value="${irsa.salaireMin}" required></td>
+                    <td><input type="number" step="0.01" name="irsas[${indexIrsa}].salaireMax" value="${irsa.salaireMax}" required></td>
+                    <td><button type="button" class="btn-supprimer" data-id="${irsa.id}" onclick="supprimerLigne(this)">Supprimer</button></td>
+                `;
+                            tbody.appendChild(row);
+                            indexIrsa++;
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Erreur lors du rechargement des IRSA :", error);
+                        afficherErreur("Erreur lors du rechargement du tableau.");
+                    });
+            }
+
+
+
         </script>
 
     </main>
 </body>
 
 <!-- Modal d'erreur IRSA -->
-<div id="popupErreur" class="modal" th:if="${erreur}">
+<div id="popupErreur" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close" onclick="fermerPopup()">&times;</span>
         <h3>Erreur</h3>
-        <p th:text="${erreur}">Une erreur s'est produite</p>
+        <p id="messageErreur">Une erreur est survenue.</p>
     </div>
 </div>
 
+
 <style>
     .modal {
-        display: block;
-        /* affiché si th:if est vrai */
+        display: none;
         position: fixed;
         z-index: 1000;
         padding-top: 100px;
@@ -314,10 +410,5 @@
     }
 </style>
 
-<script>
-    function fermerPopup() {
-        document.getElementById("popupErreur").style.display = "none";
-    }
-</script>
 
 </html>
