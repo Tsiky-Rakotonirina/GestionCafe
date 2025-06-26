@@ -19,12 +19,12 @@ Classe
             - nom de table version PascalCase
             - suit la regle de Entity
             - getters et setters
-        - le reste terminer par : Repository, Controller, Service, ServiceImpl
+        - le reste terminer par : Repository, Controller, Service
     - nom de variable/attribut : camelCase 
         - array / list : nom de classe / table avec s
         - object : nom de classe / table
     - nom de fonction : camelCase
-        - dans {Repository, Service, ServiceImpl} :  
+        - dans {Repository, Service} :  
             - return result 
             - throws Exception 
         - dans {Controller} :

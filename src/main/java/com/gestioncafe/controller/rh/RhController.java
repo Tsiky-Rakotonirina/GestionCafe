@@ -32,6 +32,7 @@ public class RhController {
 
     @GetMapping("/gestion-salaires")
     public String gestionSalaires(Model model) {
+        // a changer en getALLEmployeActifs
         model.addAttribute("employes", rhService.getAllEmployes());
         return "administratif/rh/gestion-salaires";
     }

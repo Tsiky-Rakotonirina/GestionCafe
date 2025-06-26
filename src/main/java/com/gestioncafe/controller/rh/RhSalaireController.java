@@ -34,7 +34,7 @@ public class RhSalaireController {
                     // prochain fiche de paie
                     // list des payements
                     model.addAttribute("employe", employe);
-                    return "administratif/rh/fiche-de-paie";
+                    // return "administratif/rh/fiche-de-paie";
                 }
             } catch (RuntimeException e) {
                 erreur = "Employé non trouvé avec l'ID: " + idEmploye;
@@ -52,21 +52,19 @@ public class RhSalaireController {
         String erreur="";
         try{
             Long id = Long.parseLong(idEmploye);
-            if (id <= 0) {
-                erreur = "L'ID de l'employé doit être positif.";
-            }
             try{
                 Employe employe = rhSalaireService.getEmployeById(id);
                 if(employe != null){
-                    model.addAttribute("employe", employe);
+                    model.addAttribute("prochainSalaire", rhSalaireService.prochainSalaire(id));
+                    model.addAttribute("retenuPourAvance", rhSalaireService.retenuPourAvance(id));
+                    model.addAttribute("employAvances", rhSalaireService.getAllRaisonAvances());
                     model.addAttribute("avances", rhSalaireService.getAvancesByEmployeId(id));
-                    return "administratif/rh/fiche-de-paie";
+                    return "administratif/rh/avance";
                 }
             } catch (RuntimeException e) {
                 erreur = "Employé non trouvé avec l'ID: " + idEmploye;
-            }
-            
-        } catch (NumberFormatException e) {
+            } 
+        }catch (NumberFormatException e) {
             erreur = "L'ID de l'employé doit être un nombre valide.";
         }
         model.addAttribute("erreurAvance", erreur);
@@ -78,25 +76,72 @@ public class RhSalaireController {
         String erreur="";
         try{
             Long id = Long.parseLong(idEmploye);
-            if (id <= 0) {
-                erreur = "L'ID de l'employé doit être positif.";
-            }
             try{
                 Employe employe = rhSalaireService.getEmployeById(id);
                 if(employe != null){
                     model.addAttribute("employe", employe);
+                    model.addAttribute("raisonCommissions", rhSalaireService.getAllRaisonCommissions());
                     model.addAttribute("commissions", rhSalaireService.getCommissionsByEmployeId(id));
-                    return "administratif/rh/fiche-de-paie";
+                    return "administratif/rh/commission";
                 }
             } catch (RuntimeException e) {
                 erreur = "Employé non trouvé avec l'ID: " + idEmploye;
             }
-            
         } catch (NumberFormatException e) {
             erreur = "L'ID de l'employé doit être un nombre valide.";
         }
         model.addAttribute("erreurCommission", erreur);
         return "redirect:/administratif/rh/gestion-salaires";
+    }
+
+    @PostMapping("/ajout-commission")
+    public String ajoutCommission(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant, @RequestParam("idRaison") String idRaison, Model model) {
+        String erreur = "";
+        try {
+            double montantDouble = Double.parseDouble(montant);    
+            try{
+                Long raison = Long.parseLong(idRaison);
+                Long id = Long.parseLong(idEmploye); 
+                try{
+                    rhSalaireService.ajoutCommission(id, raison, montantDouble);
+                    model.addAttribute("succesAjoutCommission", "Commission de "+montant+"descerne a l'employe");
+                } catch(Exception e) {
+                    erreur = "Erreur dans l'ajout : "+ e.getMessage();
+                }
+            } catch(NumberFormatException e) {
+                erreur = "Erreur dans l'ajout : L'employe et la raison doivent être valide.";
+            }
+        } catch(NumberFormatException e) {
+            erreur = "Erreur dans l'ajout :  Le montant doit être un nombre valide.";
+        }
+        System.out.println(erreur);
+        model.addAttribute("erreurAjoutCommission", erreur);
+        return "redirect:/administratif/rh/salaire/commission?idEmploye="+idEmploye;
+    }
+
+    @PostMapping("/ajout-avance")
+    public String ajoutAvance(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant, @RequestParam("idRaison") String idRaison, Model model) {
+        String erreur = "";
+        try {
+            double montantDouble = Double.parseDouble(montant);    
+            try{
+                Long raison = Long.parseLong(idRaison);
+                Long id = Long.parseLong(idEmploye); 
+                try{
+                    rhSalaireService.ajoutAvance(id, raison, montantDouble);
+                    model.addAttribute("succesAjoutAvance", "Avance de "+montant+"descerne a l'employe");
+                } catch(Exception e) {
+                    erreur = "Erreur dans l'ajout : "+ e.getMessage();
+                }
+            } catch(NumberFormatException e) {
+                erreur = "Erreur dans l'ajout : L'employe et la raison doivent être valide.";
+            }
+        } catch(NumberFormatException e) {
+            erreur = "Erreur dans l'ajout :  Le montant doit être un nombre valide.";
+        }
+        System.out.println(erreur);
+        model.addAttribute("erreurAjoutAvance", erreur);
+        return "redirect:/administratif/rh/salaire/avance?idEmploye="+idEmploye;
     }
 
     @PostMapping("/payer")

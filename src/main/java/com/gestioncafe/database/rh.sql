@@ -152,7 +152,9 @@ CREATE TABLE grade_employe (
 CREATE TABLE presence_employe (
     id            SERIAL      PRIMARY KEY,
     id_employe    INTEGER     NOT NULL,
-    date_presence TIMESTAMP   NOT NULL,
+    date_presence DATE        NOT NULL,
+    date_arrivee  TIMESTAMP   NULL,
+    est_present   BOOLEAN     NULL
 
     CONSTRAINT fk_presence_employe_employe
         FOREIGN KEY (id_employe)
@@ -163,16 +165,15 @@ CREATE TABLE presence_employe (
 CREATE TABLE jour_ferie (
     id          SERIAL       PRIMARY KEY,
     nom         VARCHAR(255) NOT NULL,
-    date_ferie  DATE         NOT NULL,
-    paye        BOOLEAN      NOT NULL DEFAULT FALSE
+    date_ferie  DATE         NOT NULL
 );
 
 -- Table type_conge
 CREATE TABLE type_conge (
     id          SERIAL         PRIMARY KEY,
-    nom      VARCHAR(255)   NOT NULL,
-    description VARCHAR(500)   NULL,
-    paye        BOOLEAN        NOT NULL DEFAULT FALSE
+    nom         VARCHAR(255)   NOT NULL,
+    nb_jour     INTEGER        NOT NULL,
+    description VARCHAR(500)   NULL
 );
 
 -- Table conge
@@ -237,7 +238,7 @@ CREATE TABLE commission (
     id                     SERIAL       PRIMARY KEY,
     id_raison_commission   INTEGER      NOT NULL,
     id_employe             INTEGER      NOT NULL,
-    date_commssion         DATE         NOT NULL,
+    date_commission        DATE         NOT NULL,
     montant                DECIMAL(10,2) NOT NULL,
 
     CONSTRAINT fk_commission_raison_commission

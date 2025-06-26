@@ -35,12 +35,11 @@
 
     <main class="content">
         <!-- Section STOCK -->
-        <div class="element-section">
-            <h1>STOCK</h1>
-            <a th:href="@{/administratif/stock}" data-page="dashboard" class="nav-link">
-                <i class="fas fa-chart-line"></i>
-            </a>
-        </div>
+        <a th:href="@{/administratif/stock}" data-page="dashboard" class="nav-link">
+            <div class="element-section">
+                <h1>STOCK</h1>
+            </div>
+        </a>
 
         <!-- Section FINANCE -->
         <div class="element-section">
@@ -52,8 +51,8 @@
 
         <!-- Section RESSOURCES HUMAINES -->
         <div class="element-section">
+            <h1>RESSOURCES HUMAINES</h1>
             <a th:href="@{/administratif/rh}" data-page="dashboard" class="nav-link">
-                <h1>RESSOURCES HUMAINES</h1>
             </a>
         </div>
 

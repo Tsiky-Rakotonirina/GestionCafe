@@ -25,3 +25,9 @@ VALUES (
     1, '2025-06-15', 'Rakoto Jean', 1, '1990-05-12', '0321234567',
     'rakoto.jpg', 'CV de Rakoto Jean en texte'
 );
+
+
+INSERT INTO raison_commission(valeur) VALUES ('sur-vente');
+
+insert into commission(id_raison_commission, id_employe, date_commission, montant) 
+values (1,1,'2025-05-20',50000);
