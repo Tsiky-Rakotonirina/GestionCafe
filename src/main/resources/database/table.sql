@@ -69,21 +69,12 @@ CREATE TABLE impot_societe
     valeur DECIMAL(5, 2) NOT NULL
 );
 
--- catégorie des unités : volume, masse, temps, ...
+-- catégorie des unités
 CREATE TABLE categorie_unite
 (
-    id  SERIAL PRIMARY KEY,
-    nom VARCHAR(50)
-);
-
--- norme d'unité utilisée par l'application
-CREATE TABLE norme_unite
-(
-    id                 SERIAL PRIMARY KEY,
-    categorie_unite_id INTEGER,
-    nom                VARCHAR(50), -- kg, g, litre, ...
-
-    FOREIGN KEY (categorie_unite_id) REFERENCES categorie_unite (id)
+    id    SERIAL PRIMARY KEY,
+    nom   VARCHAR(100), -- volume, masse, temps, ...
+    norme VARCHAR(100)  -- kg, litre, ... : norme d'unité utilisée par l'application (ex : masse -> kg, ...)
 );
 
 -- Table unite pour l'utilisateur
