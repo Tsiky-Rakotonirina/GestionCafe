@@ -45,6 +45,8 @@ public class RhSalaireService {
     private PayementRepository payementRepository;
     @Autowired
     private PresenceRepository presenceRepository;
+    @Autowired
+    private StatutEmployeRepository statutEmployeRepository;
 
     public Employe getEmployeById(Long id) {
         return employeRepository.findById(id)
@@ -118,6 +120,11 @@ public class RhSalaireService {
         if(montant<=0) {
             throw new Exception("Erreur dans l'ajout : Le montant doit etre strictement positif");
         }
+        StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(idEmploye)
+            .orElseThrow(() -> new RuntimeException("Employé non trouvé avec l'ID: " + idEmploye));
+        if(statutEmploye.getIdStatut() != 1) {
+            throw new Exception("Erreur dans l'ajout : employe inactif");
+        }
         double prochainSalaire = this.prochainSalaire(idEmploye);
         if(montant > prochainSalaire) {
             throw new Exception("Erreur dans l'ajout : le montant doit etre inferieur au disponible");
@@ -149,13 +156,18 @@ public class RhSalaireService {
         }
         List<Irsa>irsas = irsaRepository.findAll();
         for(Date date :  dates) {
+            StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(idEmploye, date)
+                .orElse(null);
+            if(statutEmploye == null || statutEmploye.getIdStatut() != 1) {
+                break;
+            }
             LocalDate localDateDebut = date.toLocalDate().withDayOfMonth(1);
             Date dateDebut = Date.valueOf(localDateDebut); 
             double salaire = 0;
             double salaireDeBase = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, date);
             salaire = salaireDeBase;
             List<Presence> abscence = presenceRepository.findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(idEmploye, dateDebut, date);
-            double abscences = abscence.size() * salaire / 12;
+            double abscences = abscence.size() * salaire / 22;
             salaire -= abscences;
             double totalCommission = 0;
             List<Commission> commissions = commissionRepository.findByIdEmployeAndDateCommissionBetween(idEmploye, dateDebut, date);

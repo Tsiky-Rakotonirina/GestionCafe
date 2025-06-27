@@ -103,14 +103,95 @@
             </div>  
             <br><br>
             <div>
-                <h1>Variation de salaire net des employes par mois</h1>
+                <h1>Variation de salaire net des employés par mois</h1>
+
+                <div th:if="${variationSalaireNet != null}">
+                    <div th:each="moisEntry : ${variationSalaireNet}">
+                        <h2 th:text="'Mois : ' + ${moisEntry.mois}"></h2>
+
+                        <table border="1" cellpadding="5" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID Employé</th>
+                                    <th>Montant (Ar)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="salaire : ${moisEntry.salaires}">
+                                    <td th:text="${salaire.idEmploye}"></td>
+                                    <td th:text="${#numbers.formatDecimal(salaire.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                    </div>
+                </div>
+
+                <div th:if="${variationSalaireNet == null or #lists.isEmpty(variationSalaireNet)}">
+                    <p>Aucune donnée disponible.</p>
+                </div>
             </div>
+
             <div>
-                <h1>Variation de commission des employes par mois</h1>
+                <h1>Variation de commission des employés par mois</h1>
+
+                <div th:if="${variationCommission != null}">
+                    <div th:each="moisEntry : ${variationCommission}">
+                        <h2 th:text="'Mois : ' + ${moisEntry.mois}"></h2>
+
+                        <table border="1" cellpadding="5" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID Employé</th>
+                                    <th>Montant (Ar)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="commission : ${moisEntry.commissions}">
+                                    <td th:text="${commission.idEmploye}"></td>
+                                    <td th:text="${#numbers.formatDecimal(commission.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                    </div>
+                </div>
+
+                <div th:if="${variationCommission == null or #lists.isEmpty(variationCommission)}">
+                    <p>Aucune donnée de commission disponible.</p>
+                </div>
             </div>
+
             <div>
-                <h1>Variation des avances des employes par mois</h1>
+                <h1>Variation des avances des employés par mois</h1>
+
+                <div th:if="${variationAvance != null}">
+                    <div th:each="moisEntry : ${variationAvance}">
+                        <h2 th:text="'Mois : ' + ${moisEntry.mois}"></h2>
+
+                        <table border="1" cellpadding="5" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID Employé</th>
+                                    <th>Montant (Ar)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="avance : ${moisEntry.avances}">
+                                    <td th:text="${avance.idEmploye}"></td>
+                                    <td th:text="${#numbers.formatDecimal(avance.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                    </div>
+                </div>
+
+                <div th:if="${variationAvance == null or #lists.isEmpty(variationAvance)}">
+                    <p>Aucune donnée d'avance disponible.</p>
+                </div>
             </div>
+
         </div>
     </main>
 </body>

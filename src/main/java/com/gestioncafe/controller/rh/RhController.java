@@ -39,7 +39,9 @@ public class RhController {
         List<Employe> employes = statutEmployes.stream()
             .map(StatutEmploye::getEmploye)
             .collect(Collectors.toList());
-        
+        model.addAttribute("variationSalaireNet", rhService.variationSalaireNet());
+        model.addAttribute("variationCommission", rhService.variationCommission());
+        model.addAttribute("variationAvance", rhService.variationAvance());
         model.addAttribute("employes", employes);
         return "administratif/rh/gestion-salaires";
     }
