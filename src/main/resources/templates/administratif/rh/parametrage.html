@@ -131,10 +131,6 @@
                         <label class="form-label">Date :</label>
                         <input type="date" th:field="*{dateFerie}" class="form-input" required>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Payé :</label>
-                        <input type="checkbox" th:field="*{paye}" class="form-input">
-                    </div>
                     <button type="submit" class="btn primary">Ajouter</button>
                     <br><br>
                 </form>
@@ -148,14 +144,12 @@
                             <tr>
                                 <th>Nom</th>
                                 <th>Date</th>
-                                <th>Payé</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="jour : ${listeJoursFeries}">
                                 <td><strong th:text="${jour.nom}">Nom</strong></td>
                                 <td th:text="${#temporals.format(jour.dateFerie, 'dd-MM-yyyy')}">01-05-2026</td>
-                                <td th:text="${jour.paye ? 'Affirmatif' : 'Non'}">Affirmatif</td>
                             </tr>
                         </tbody>
                     </table>

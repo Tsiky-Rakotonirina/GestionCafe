@@ -1,13 +1,12 @@
 package com.gestioncafe.model.rh;
 
 import jakarta.persistence.*;
-
 import lombok.*;
 
 @Entity
-@Data // génère getters, setters, toString, equals, hashCode
-@NoArgsConstructor // constructeur sans arguments
-@AllArgsConstructor // constructeur avec tous les champs
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "type_conge")
 public class TypeConge {
 
@@ -17,8 +16,9 @@ public class TypeConge {
 
     private String nom;
 
-    private String description;
+    @Column(name = "nb_jour")
+    private Integer nbJour;
 
-    private boolean paye;
+    private String description;
 
 }

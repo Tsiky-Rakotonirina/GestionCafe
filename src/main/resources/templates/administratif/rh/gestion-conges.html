@@ -107,14 +107,14 @@
                             <tr>
                                 <th>Nom</th>
                                 <th>Description</th>
-                                <th>Payé</th>
+                                <th>Nombre de jour</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="tc : ${listeTypeConges}">
                                 <td th:text="${tc.nom}">Maladie</td>
                                 <td th:text="${tc.description}">Raison médicale</td>
-                                <td th:text="${tc.paye ? 'Affirmatif' : 'Non'}">Affirmatif</td>
+                                <td th:text="${tc.nbJour}"></td>
                             </tr>
                         </tbody>
                     </table>

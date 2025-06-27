@@ -23,6 +23,6 @@ public class JourFerie {
     private String nom;
     @Column(name = "date_ferie", nullable = false)
     private LocalDate dateFerie;
-    private Boolean paye;
+ 
 
 }
