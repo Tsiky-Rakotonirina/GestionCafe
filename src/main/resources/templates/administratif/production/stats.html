@@ -93,11 +93,22 @@
             <button type="submit">Afficher la courbe</button>
         </form>
         <canvas id="courbeTotalChart" width="900" height="400"></canvas>
+        <div style="margin: 1.5rem 0 2rem 0; display: flex; gap: 2rem;">
+            <div>
+                <strong>Nombre moyen de produits vendus :</strong>
+                <span id="moyenneProduit" th:text="${#numbers.formatDecimal(moyenneProduits, 1, 'COMMA', 2, 'POINT')}"></span>
+            </div>
+            <div>
+                <strong>Bénéfice moyen par période :</strong>
+                <span id="beneficeMoyen" th:text="${#numbers.formatDecimal(beneficeMoyen, 1, 'COMMA', 2, 'POINT')}"></span>
+            </div>
+        </div>
         <script th:src="@{/js/chart.js}"></script>
         <script th:inline="javascript">
             /*<![CDATA[*/
             const labels = /*[[${labels}]]*/ [];
             const data = /*[[${data}]]*/ [];
+
             const ctx = document.getElementById('courbeTotalChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',

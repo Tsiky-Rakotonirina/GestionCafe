@@ -92,4 +92,39 @@ public class DetailsVenteService {
         }
         return result;
     }
+
+    // Ajout : bénéfice moyen par période
+    public List<VentePeriodeStatDTO> getBeneficeMoyenParPeriode(String periode) {
+        List<Object[]> rows = detailsVenteRepository.getBeneficeMoyenParPeriode(periode);
+        List<VentePeriodeStatDTO> result = new ArrayList<>();
+        for (Object[] row : rows) {
+            String label = (String) row[0];
+            BigDecimal beneficeMoyen = new BigDecimal(row[1].toString());
+            result.add(new VentePeriodeStatDTO(label, null, beneficeMoyen));
+        }
+        return result;
+    }
+
+    // Retourne le bénéfice estimé total pour la période sélectionnée
+    public BigDecimal getBeneficeEstimeParPeriode(String periode) {
+        return detailsVenteRepository.getBeneficeEstimeParPeriode(periode);
+    }
+
+    // Retourne la liste des bénéfices par période (alignée sur la liste des périodes)
+    public List<BigDecimal> getBeneficeMoyenParPeriodeList(String periode, List<String> periodes) {
+        List<Object[]> rows = detailsVenteRepository.getBeneficeTotalParPeriode(periode);
+        java.util.Map<String, BigDecimal> map = new java.util.HashMap<>();
+        for (Object[] row : rows) {
+            String label = (String) row[0];
+            BigDecimal benefice = new BigDecimal(row[1].toString());
+            map.put(label, benefice);
+        }
+        List<BigDecimal> result = new java.util.ArrayList<>();
+        for (String p : periodes) {
+            // Si la période n'existe pas dans la map, on met zéro
+            result.add(map.getOrDefault(p, BigDecimal.ZERO));
+        }
+        
+        return result;
+    }
 }

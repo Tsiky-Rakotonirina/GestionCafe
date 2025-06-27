@@ -22,12 +22,14 @@ if (filtreForm && tableBody) {
     });
 }
 
-// Script AJAX pour mettre à jour la courbe sans recharger la page
+// Script AJAX pour mettre à jour la courbe et les moyennes sans recharger la page
 const courbeForm = document.getElementById('courbeForm');
 const chartCanvas = document.getElementById('courbeTotalChart');
+const spanMoyenneProduit = document.getElementById('moyenneProduit')
+const spanBeneficeMoyen = document.getElementById('beneficeMoyen')
 let chartInstance = Chart.getChart(chartCanvas);
 
-if (courbeForm && chartCanvas) {
+if (courbeForm && chartCanvas && spanMoyenneProduit && spanBeneficeMoyen) {
     courbeForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const params = new URLSearchParams(new FormData(courbeForm)).toString();
@@ -36,6 +38,9 @@ if (courbeForm && chartCanvas) {
         })
             .then(response => response.json())
             .then(json => {
+                spanMoyenneProduit.innerHTML = json.moyenneProduit;
+                spanBeneficeMoyen.innerHTML = json.beneficeMoyen;
+
                 if (!chartInstance) chartInstance = Chart.getChart(chartCanvas);
                 if (chartInstance) {
                     chartInstance.data.labels = json.labels;

@@ -1,7 +1,7 @@
 CREATE TABLE administratif
 (
-    id  SERIAL PRIMARY KEY,
-    nom VARCHAR(255),
+    id           SERIAL PRIMARY KEY,
+    nom          VARCHAR(255),
     mot_de_passe VARCHAR(255)
 );
 
@@ -69,19 +69,32 @@ CREATE TABLE impot_societe
     valeur DECIMAL(5, 2) NOT NULL
 );
 
--- norme d'unité utilisé par l'application
-CREATE TABLE norme_unite
+-- catégorie des unités : volume, masse, temps, ...
+CREATE TABLE categorie_unite
 (
     id  SERIAL PRIMARY KEY,
-    nom VARCHAR(50) -- kg, g, litre, ...
+    nom VARCHAR(50)
 );
 
--- Table unite
+-- norme d'unité utilisée par l'application
+CREATE TABLE norme_unite
+(
+    id                 SERIAL PRIMARY KEY,
+    categorie_unite_id INTEGER,
+    nom                VARCHAR(50), -- kg, g, litre, ...
+
+    FOREIGN KEY (categorie_unite_id) REFERENCES categorie_unite (id)
+);
+
+-- Table unite pour l'utilisateur
 CREATE TABLE unite
 (
-    id              SERIAL PRIMARY KEY,
-    nom             VARCHAR(50),   --kg, g, l, cl, ...
-    valeur_pr_norme DECIMAL(10, 2) -- valeur par rapport au norme (choisi par l'utilisateur)
+    id                 SERIAL PRIMARY KEY,
+    nom                VARCHAR(50),    --kg, g, l, cl, ...
+    categorie_unite_id INTEGER,
+    valeur_pr_norme    DECIMAL(10, 2), -- valeur par rapport au norme
+
+    FOREIGN KEY (categorie_unite_id) REFERENCES categorie_unite (id)
 );
 
 -- Table matiere_premiere
@@ -119,7 +132,7 @@ CREATE TABLE fournisseur
 );
 
 -- Table detail_fournisseur
-CREATE TABLE detail_fournisseur
+CREATE TABLE prix_matiere_premiere
 (
     id                  SERIAL PRIMARY KEY,
     id_fournisseur      INTEGER        NOT NULL,

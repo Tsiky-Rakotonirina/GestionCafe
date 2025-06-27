@@ -1,16 +1,18 @@
 package com.gestioncafe.repository.production;
 
-import com.gestioncafe.dto.BeneficePeriodeStatDTO;
-import com.gestioncafe.dto.VentePeriodeStatDTO;
-import com.gestioncafe.dto.VenteProduitStatDTO;
-import com.gestioncafe.model.production.DetailsVente;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.gestioncafe.dto.BeneficePeriodeStatDTO;
+import com.gestioncafe.dto.VentePeriodeStatDTO;
+import com.gestioncafe.dto.VenteProduitStatDTO;
+import com.gestioncafe.model.production.DetailsVente;
 
 public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Integer> {
     @Query("SELECT new com.gestioncafe.dto.VenteProduitStatDTO(d.produit.id, d.produit.nom, SUM(d.quantite), SUM(d.montant)) "
@@ -124,4 +126,62 @@ public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Inte
     List<Object[]> getTotalProduitVenduParPeriode(
         @Param("periode") String periode
     );
+
+    // Ajout : bénéfice moyen par période
+    @Query(value = """
+        SELECT 
+            CASE 
+                WHEN :periode = 'jour' THEN TO_CHAR(v.date_vente, 'YYYY-MM-DD')
+                WHEN :periode = 'mois' THEN TO_CHAR(v.date_vente, 'YYYY-MM')
+                WHEN :periode = 'annee' THEN TO_CHAR(v.date_vente, 'YYYY')
+                ELSE TO_CHAR(v.date_vente, 'YYYY-MM-DD')
+            END as periode,
+            AVG(dv.montant - dv.quantite * COALESCE(r.estimation, 0)) as benefice_moyen
+        FROM details_vente dv
+        JOIN vente v ON dv.id_vente = v.id
+        JOIN produit p ON dv.id_produit = p.id
+        LEFT JOIN recette r ON r.id_produit = p.id
+        GROUP BY periode
+        ORDER BY periode
+        """, nativeQuery = true)
+    List<Object[]> getBeneficeMoyenParPeriode(@Param("periode") String periode);
+
+    // Bénéfice estimé total pour la période sélectionnée
+    @Query(value = """
+        SELECT COALESCE(SUM(dv.montant - dv.quantite * COALESCE(r.estimation, 0)), 0)
+        FROM details_vente dv
+        JOIN vente v ON dv.id_vente = v.id
+        JOIN produit p ON dv.id_produit = p.id
+        LEFT JOIN recette r ON r.id_produit = p.id
+        WHERE (
+            (:periode = 'jour' AND v.date_vente >= NOW() - INTERVAL '60 days') OR
+            (:periode = 'mois' AND v.date_vente >= date_trunc('month', NOW()) - INTERVAL '11 months') OR
+            (:periode = 'annee' AND v.date_vente >= date_trunc('year', NOW()) - INTERVAL '2 years')
+        )
+        """, nativeQuery = true)
+    BigDecimal getBeneficeEstimeParPeriode(@Param("periode") String periode);
+
+    // Bénéfice total par période (jour/mois/année) AVEC FILTRE sur la période sélectionnée
+    @Query(value = """
+        SELECT 
+            CASE 
+                WHEN :periode = 'jour' THEN TO_CHAR(v.date_vente, 'YYYY-MM-DD')
+                WHEN :periode = 'mois' THEN TO_CHAR(v.date_vente, 'YYYY-MM')
+                WHEN :periode = 'annee' THEN TO_CHAR(v.date_vente, 'YYYY')
+                ELSE TO_CHAR(v.date_vente, 'YYYY-MM-DD')
+            END as periode,
+            COALESCE(SUM(dv.montant - dv.quantite * COALESCE(r.estimation, 0)), 0) as benefice_total
+        FROM details_vente dv
+        JOIN vente v ON dv.id_vente = v.id
+        JOIN produit p ON dv.id_produit = p.id
+        LEFT JOIN recette r ON r.id_produit = p.id
+        WHERE (
+            (:periode = 'jour' AND v.date_vente >= NOW() - INTERVAL '60 days') OR
+            (:periode = 'mois' AND v.date_vente >= date_trunc('month', NOW()) - INTERVAL '11 months') OR
+            (:periode = 'annee' AND v.date_vente >= date_trunc('year', NOW()) - INTERVAL '2 years')
+        )
+        GROUP BY periode
+        ORDER BY periode
+        """, nativeQuery = true)
+    List<Object[]> getBeneficeTotalParPeriode(@Param("periode") String periode);
 }
