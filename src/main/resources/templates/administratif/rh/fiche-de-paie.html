@@ -95,6 +95,7 @@
                             <div th:if="${avances != null and !#lists.isEmpty(avances)}">
                                 <h3>Liste des fiches de paies impayes</h3>
                                 <div th:each="ficheDePaie : ${ficheDePaies}">
+
                                     <form action="@{/administratif/rh/salaire/payer-fiche-de-paie}" method="post">
                                         <input type="hidden" name="idEmploye" th:value="${employe.id}">
                                         <div class="order-card priority">
@@ -156,9 +157,9 @@
                                                     </button>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </form>
+
                                 </div>
                             </div>
                             <div th:if="${avances == null or #lists.isEmpty(avances)}">
@@ -188,7 +189,7 @@
                                     <td><span th:text="${payement.datePayement != null ? payement.datePayement : '-'}">-</span></td>
                                     <td><strong><span th:text="${payement.montant != null ? payement.montant : '-'}">-</span></strong></td>
                                     <td>
-                                        <a href="@{/administratif/rh/salaire/fiche-de-paie(idEmploye=${employe.id})}" class="btn secondary">Id 2</a>
+                                        <a href="@{/administratif/rh/salaire/importer-fiche-de-paie(idPayement=${payement.id})}" class="btn secondary">Importer la ficeh de paie</a>
                                     </td>
                                 </tr>
                             </tbody>

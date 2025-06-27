@@ -3,10 +3,21 @@ package com.gestioncafe.service.rh;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.FileOutputStream;
 import java.sql.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import com.gestioncafe.model.*;
 import com.gestioncafe.repository.*;
@@ -169,9 +180,48 @@ public class RhSalaireService {
         return ficheDePaies;
     }
 
-    public void ajoutPayement(Long idEmploye, double montant, Date moisReference) {
-        Date datePayement = Date.valueOf(LocalDate.now());
-        String referencePayement = "/uploads/ficheDePaie/"+(datePayement.getTime() / 1000)+".pdf";
-        payementRepository.save(new Payement(idEmploye, montant, moisReference, datePayement, referencePayement));
+    @Transactional
+    public void ajoutPayement(Long idEmploye, double salaireDeBase, double abscences, double commissions,
+        double retenuesSociales, double impots, double salaireBrut, double salaireNetImposable,
+        double salaireNet, double retenueAvance, double netAPayer, Date moisReference) {
+        try {
+            Date datePayement = Date.valueOf(LocalDate.now());
+            String pdfNom = (datePayement.getTime() / 1000)+".pdf";
+            String referencePayement = "/uploads/ficheDePaie/"+pdfNom;
+            payementRepository.save(new Payement(idEmploye, netAPayer, moisReference, datePayement, referencePayement));
+            Employe employe = employeRepository.findById(idEmploye).orElseThrow(() -> new RuntimeException("Employé introuvable"));
+
+            Document document = new Document();
+            File file = new File(referencePayement);
+            file.getParentFile().mkdirs(); 
+            PdfWriter.getInstance(document, new FileOutputStream(file));
+            document.open();
+            document.add(new Paragraph("Fiche de Paie"));
+            document.add(new Paragraph("Mois concerne : " + moisReference));
+            document.add(new Paragraph("Id Employé: " + employe.getId()));
+            document.add(new Paragraph("Nom : " + employe.getNom()));
+            document.add(new Paragraph("Genre : " + employe.getGenre().getValeur()));
+            document.add(new Paragraph("Recrutement : " + employe.getDateRecrutement()));
+            document.add(new Paragraph("Contact : " + employe.getContact()));
+            document.add(new Paragraph("------------------------------------------------------------------"));
+            document.add(new Paragraph("Salaire de base : " + salaireDeBase + " Ar"));
+            document.add(new Paragraph("Absences : " + abscences + " Ar"));
+            document.add(new Paragraph("Commissions : " + commissions + " Ar"));
+            document.add(new Paragraph("Retenues sociales : " + retenuesSociales + " Ar"));
+            document.add(new Paragraph("Impôts : " + impots + " Ar"));
+            document.add(new Paragraph("Salaire brut : " + salaireBrut + " Ar"));
+            document.add(new Paragraph("Salaire net imposable : " + salaireNetImposable + " Ar"));
+            document.add(new Paragraph("Salaire net : " + salaireNet + " Ar"));
+            document.add(new Paragraph("Retenue avance : " + retenueAvance + " Ar"));
+            document.add(new Paragraph("Net à payer : " + netAPayer + " Ar"));
+            document.add(new Paragraph("Ce : " + datePayement));
+        } catch (Exception e) {
+            throw new RuntimeException("Échec du paiement : " + e.getMessage(), e);
+        }
+    }
+
+    public Payement getPayementById(Long id) {
+        return payementRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payement non trouvé avec l'ID: " + id));
     }
 }

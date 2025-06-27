@@ -1,5 +1,11 @@
 package com.gestioncafe.controller.rh;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.File;
+import java.nio.file.Files;
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +16,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 
 import com.gestioncafe.service.rh.*;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.gestioncafe.repository.*;
 import com.gestioncafe.model.*;
 
@@ -144,32 +153,71 @@ public class RhSalaireController {
     }
 
     @PostMapping("/payer-fiche-de-paie")
-    public String payer(@RequestParam("idEmploye") String idEmploye, @RequestParam("netAPayer") String montant, @RequestParam("moisReference") String moisReference, Model model) {
+    public String payer(@RequestParam("idEmploye") String idEmploye, @RequestParam("moisReference") String moisReference, @RequestParam("salaireDeBase") String salaireDeBase, 
+        @RequestParam("abscences") String abscences, @RequestParam("commissions") String commissions, @RequestParam("retenuesSociales") String retenuesSociales, 
+        @RequestParam("impots") String impots, @RequestParam("salaireBrut") String salaireBrut, @RequestParam("salaireNetImposable") String salaireNetImposable,
+        @RequestParam("salaireNet") String salaireNet, @RequestParam("retenueAvance") String retenueAvance, @RequestParam("netAPayer") String montant, Model model) {
         String erreur = "";
         try {
-            double montantDouble = Double.parseDouble(montant);    
-            try{
-                Long id = Long.parseLong(idEmploye); 
-                try {
-                    java.sql.Date dateReference = java.sql.Date.valueOf(moisReference);
-                    try{
-                        rhSalaireService.ajoutPayement(id, montantDouble, dateReference);
-                        model.addAttribute("succesPayemet", "Payement de "+montant+" pour l'employe");
-                        return "redirect:/administratif/rh/salaire/fiche-de-paie?idEmploye="+idEmploye;
-                    } catch(Exception e) {
-                        erreur = "Erreur dans le payement : "+ e.getMessage();
-                    }
-                } catch(IllegalArgumentException e) {
-                    erreur = "Erreur dans le payement : La date est en format invalide.";
-                }
-            } catch(NumberFormatException e) {
-                erreur = "Erreur dans le payement : L'employe doit être valide.";
-            }
-        } catch(NumberFormatException e) {
-            erreur = "Erreur dans le payement :  Le net a payer doit être un nombre valide.";
+            Long id = Long.parseLong(idEmploye);
+            java.sql.Date date = java.sql.Date.valueOf(moisReference);
+            double base = Double.parseDouble(salaireDeBase);
+            double abs = Double.parseDouble(abscences);
+            double comm = Double.parseDouble(commissions);
+            double retenueSoc = Double.parseDouble(retenuesSociales);
+            double imp = Double.parseDouble(impots);
+            double brut = Double.parseDouble(salaireBrut);
+            double netImp = Double.parseDouble(salaireNetImposable);
+            double net = Double.parseDouble(salaireNet);
+            double avance = Double.parseDouble(retenueAvance);
+            double netAPayer = Double.parseDouble(montant);
+
+            rhSalaireService.ajoutPayement(
+                id, base, abs, comm, retenueSoc, imp, brut, netImp, net, avance, netAPayer, date
+            );
+
+            model.addAttribute("succesPayemet", "Payement de " + montant + " pour l'employe");
+            return "redirect:/administratif/rh/salaire/fiche-de-paie?idEmploye=" + idEmploye;
+
+        } catch (NumberFormatException e) {
+            erreur = "Erreur : une valeur numérique est invalide (" + e.getMessage() + ")";
+        } catch (IllegalArgumentException e) {
+            erreur = "Erreur : la date est invalide (" + moisReference + ")";
+        } catch (Exception e) {
+            erreur = "Erreur dans le payement : " + e.getMessage();
         }
         System.out.println(erreur);
         model.addAttribute("erreurPayement", erreur);
-        return "/administratif/rh/salaire/fiche-de-paie(idEmploye="+idEmploye+")";
+        return "/administratif/rh/salaire/fiche-de-paie(idEmploye=" + idEmploye + ")";
     }
+
+    @GetMapping("/importer-fiche-de-paie")
+    public void importerFicheDePaie(@RequestParam("idPayement") Long idPayement, HttpServletResponse response) {
+        try {
+            Payement payement = rhSalaireService.getPayementById(idPayement);
+            if (payement == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Payement introuvable.");
+                return;
+            }
+            String referencePayement = payement.getReferencePayement();
+            File file = new File(referencePayement);
+            if (!file.exists()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Fichier PDF non trouvé à : " + referencePayement);
+                return;
+            }
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            response.setContentLengthLong(file.length());
+            Files.copy(file.toPath(), response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException e) {
+            try {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur lors de l'envoi du PDF.");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }
+

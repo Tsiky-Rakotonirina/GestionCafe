@@ -31,3 +31,10 @@ INSERT INTO raison_commission(valeur) VALUES ('sur-vente');
 
 insert into commission(id_raison_commission, id_employe, date_commission, montant) 
 values (1,1,'2025-05-20',50000);
+
+
+INSERT INTO raison_avance(valeur) VALUES ('maladie');
+
+insert into avance(id_raison_avance, id_employe, date_avance, montant) 
+values (1,1,'2025-05-20',100000);
+
