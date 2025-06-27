@@ -13,6 +13,9 @@ import com.gestioncafe.service.rh.*;
 import com.gestioncafe.repository.*;
 import com.gestioncafe.model.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/administratif/rh")
 public class RhController {
@@ -32,8 +35,12 @@ public class RhController {
 
     @GetMapping("/gestion-salaires")
     public String gestionSalaires(Model model) {
-        // a changer en getALLEmployeActifs
-        model.addAttribute("employes", rhService.getAllEmployes());
+        List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
+        List<Employe> employes = statutEmployes.stream()
+            .map(StatutEmploye::getEmploye)
+            .collect(Collectors.toList());
+        
+        model.addAttribute("employes", employes);
         return "administratif/rh/gestion-salaires";
     }
 

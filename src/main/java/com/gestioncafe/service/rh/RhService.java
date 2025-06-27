@@ -11,9 +11,10 @@ import com.gestioncafe.repository.*;
 @Service
 public class RhService {
     @Autowired
-    private EmployeRepository employeRepository;
+    private StatutEmployeRepository statutEmployeRepository;
 
-    public List<Employe> getAllEmployes() {
-        return employeRepository.findAll();
+    public List<StatutEmploye> getAllEmployesActifs() {
+        return statutEmployeRepository.findDerniersStatutsParEmployeEtStatut(Long.parseLong("1"));
     }
+
 }

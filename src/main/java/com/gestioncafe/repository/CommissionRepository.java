@@ -10,5 +10,5 @@ import com.gestioncafe.model.*;
 @Repository
 public interface CommissionRepository extends JpaRepository<Commission, Long> {
     public List<Commission> findByIdEmployeOrderByDateCommissionDesc(Long idEmploye);
-    List<Commission> findByIdEmployeAndDateCommissionBetween(Long idEmploye, Date dateDebut, Date dateFin);
+    public List<Commission> findByIdEmployeAndDateCommissionBetween(Long idEmploye, Date dateDebut, Date dateFin);
 }
