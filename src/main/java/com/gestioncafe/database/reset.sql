@@ -17,3 +17,4 @@ CREATE TABLE quotidien (
 
 INSERT INTO administratif (nom, mot_de_passe) VALUES ('admin', 'blabla');
 INSERT INTO quotidien (nom, mot_de_passe) VALUES ('employe', 'blabla');
+

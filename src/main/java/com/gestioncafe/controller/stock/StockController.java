@@ -20,4 +20,6 @@ public class StockController {
     public String index() {
         return "administratif/stock/index";
     }
+
+    
 }

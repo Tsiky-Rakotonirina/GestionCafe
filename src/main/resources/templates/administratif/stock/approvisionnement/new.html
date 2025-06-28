@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvel Approvisionnement</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+ <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                        <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+              
+                    <!-- Image de logo -->
+                    <img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo" >
+                    <span>Cafe</span>
+                </a>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a th:href="@{/administratif/logistique}" data-page="logistique" class="nav-link">
+                        <i class="fas fa-chart-line"></i>   
+                        <span>Logistique</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/administratif/stock/fournisseurs}" data-page="fournisseurs" class="nav-link">
+                        <i class="fas fa-truck"></i> 
+                        <span>Fournisseurs</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a th:href="@{/administratif/stock/approvisionnement}" data-page="approvisionnement" class="nav-link">
+                        <i class="fas fa-cart-plus"></i> 
+                        <span>Approvisionnement</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/administratif/stock/matiere-premiere}" data-page="matiere-premiere" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Matiere Premiere</span>
+                    </a>
+                </li>
+                
+             
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+               
+                <div class="user-info">
+                    <span class="user-name">Admin</span>
+                    <span class="user-role">Gérant</span>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="main-content">
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="page-title" id="pageTitle">Approvisionner en <span th:text="${matiere.nom}"></span></h1>
+        </div>
+        <div class="header-right">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Détails de l'approvisionnement</h2>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/administratif/stock/approvisionnement/save}" method="post" id="approForm">
+                        <input type="hidden" name="idMatierePremiere" th:value="${matiere.id}">
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Stock actuel</label>
+                                <div class="form-control" th:text="${matiere.stock} + ' ' + ${matiere.unite.valeur}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantite" class="form-label">Quantité à ajouter</label>
+                                <input type="number" step="0.01" class="form-control" id="quantite" name="quantite" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="fournisseur" class="form-label">Fournisseur</label>
+                                <select class="form-select" id="fournisseur" name="idFournisseur" required>
+                                    <option value="">Sélectionner un fournisseur</option>
+                                    <option th:each="fournisseur : ${fournisseurs}" 
+                                            th:value="${fournisseur.id}" 
+                                            th:attr="data-prix=${fournisseur.prixUnitaire}, data-frais=${fournisseur.frais}"
+                                            th:text="${fournisseur.nom} + ' - ' + ${#numbers.formatDecimal(fournisseur.prixUnitaire, 1, 2)} + ' Ar'">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reference" class="form-label">Référence Facture</label>
+                                <input type="text" class="form-control" id="reference" name="referenceFacture" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Prix Unitaire</label>
+                                <div class="form-control" id="prixUnitaire">0 Ar</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Frais</label>
+                                <div class="form-control" id="frais">0 Ar</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Total</label>
+                                <div class="form-control fw-bold" id="total">0 Ar</div>
+                                <input type="hidden" id="totalValue" name="total">
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="dateAppro" class="form-label">Date d'approvisionnement</label>
+                                <input type="date" class="form-control" id="dateAppro" name="dateApprovisionnement" th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Effet sur le stock</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Stock actuel</label>
+                                                <div class="form-control" id="stockActuel" th:text="${matiere.stock} + ' ' + ${matiere.unite.valeur}"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Quantité ajoutée</label>
+                                                <div class="form-control" id="quantiteAjoutee">0</div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Nouveau stock</label>
+                                                <div class="form-control fw-bold" id="nouveauStock" th:text="${matiere.stock} + ' ' + ${matiere.unite.valeur}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" onclick="history.back()">
+                                <i class="fas fa-arrow-left"></i> Retour
+                            </button>
+                            <div>
+                                <button type="button" class="btn btn-info me-2" id="exportPdf">
+                                    <i class="fas fa-file-pdf"></i> Exporter en PDF
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Enregistrer l'approvisionnement
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/bootstrap5/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/stock/script.js}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fournisseurSelect = document.getElementById('fournisseur');
+        const quantiteInput = document.getElementById('quantite');
+        const prixUnitaireDiv = document.getElementById('prixUnitaire');
+        const fraisDiv = document.getElementById('frais');
+        const totalDiv = document.getElementById('total');
+        const totalValueInput = document.getElementById('totalValue');
+        const quantiteAjouteeDiv = document.getElementById('quantiteAjoutee');
+        const nouveauStockDiv = document.getElementById('nouveauStock');
+        const stockActuel = parseFloat(document.getElementById('stockActuel').textContent);
+        
+        // Mettre à jour les calculs quand les valeurs changent
+        function updateCalculs() {
+            const selectedOption = fournisseurSelect.options[fournisseurSelect.selectedIndex];
+            const prix = selectedOption ? parseFloat(selectedOption.dataset.prix) || 0 : 0;
+            const frais = selectedOption ? parseFloat(selectedOption.dataset.frais) || 0 : 0;
+            const quantite = parseFloat(quantiteInput.value) || 0;
+            
+            // Mettre à jour les affichages
+            prixUnitaireDiv.textContent = prix.toFixed(2) + ' Ar';
+            fraisDiv.textContent = frais.toFixed(2) + ' Ar';
+            
+            // Calculer le total
+            const total = (prix * quantite) + frais;
+            totalDiv.textContent = total.toFixed(2) + ' Ar';
+            totalValueInput.value = total;
+            
+            // Mettre à jour les infos de stock
+            quantiteAjouteeDiv.textContent = quantite + ' ' + document.getElementById('stockActuel').textContent.split(' ')[1];
+            const nouveauStock = stockActuel + quantite;
+            nouveauStockDiv.textContent = nouveauStock.toFixed(2) + ' ' + document.getElementById('stockActuel').textContent.split(' ')[1];
+        }
+        
+        // Écouteurs d'événements
+        fournisseurSelect.addEventListener('change', updateCalculs);
+        quantiteInput.addEventListener('input', updateCalculs);
+        
+        // Export PDF
+        document.getElementById('exportPdf').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.text('Bon d\'approvisionnement', 10, 10);
+            doc.text('Matière première: ' + document.querySelector('.page-title span').textContent, 10, 20);
+            doc.text('Fournisseur: ' + (fournisseurSelect.options[fournisseurSelect.selectedIndex]?.text || ''), 10, 30);
+            doc.text('Quantité: ' + (quantiteInput.value || '0'), 10, 40);
+            doc.text('Prix unitaire: ' + prixUnitaireDiv.textContent, 10, 50);
+            doc.text('Frais: ' + fraisDiv.textContent, 10, 60);
+            doc.text('Total: ' + totalDiv.textContent, 10, 70);
+            doc.text('Référence facture: ' + document.getElementById('reference').value, 10, 80);
+            
+            doc.save('approvisionnement_' + new Date().toISOString().slice(0, 10) + '.pdf');
+        });
+    });
+</script>
+</body>
+</html>

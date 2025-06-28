@@ -428,7 +428,7 @@ CREATE TABLE statut_concurent (
     description VARCHAR(500)   NULL
 );
 
--- Table concurrent
+-- Table concurrent 
 CREATE TABLE concurrent (
     id   SERIAL         PRIMARY KEY,
     nom  VARCHAR(255)   NOT NULL
