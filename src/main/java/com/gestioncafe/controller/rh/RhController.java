@@ -13,7 +13,9 @@ import com.gestioncafe.service.rh.*;
 import com.gestioncafe.repository.*;
 import com.gestioncafe.model.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -52,7 +54,18 @@ public class RhController {
     }
 
     @GetMapping("/gestion-conges")
-    public String gestionConges() {
+    public String gestionConges(Model model) {
+        List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
+        List<Employe> employes = statutEmployes.stream()
+                    .map(StatutEmploye::getEmploye)
+                    .collect(Collectors.toList());
+        Map<Long, Integer> nbjCongeUtilise =rhService.nbjCongeUtilise(employes);
+        Map<Long, Integer> nbjCongeReserve =rhService.nbjCongeReserve(employes);
+        Map<Long, Integer> nbjCongeNonUtilise =rhService.nbjCongeNonUtilise(employes);
+        model.addAttribute("employes", employes);
+        model.addAttribute("nbjCongeUtilise", nbjCongeUtilise);
+        model.addAttribute("nbjCongeReserve", nbjCongeReserve);
+        model.addAttribute("nbjCongeNonUtilise", nbjCongeNonUtilise);
         return "administratif/rh/gestion-conges";
     }
 

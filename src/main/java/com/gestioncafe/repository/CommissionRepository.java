@@ -14,5 +14,5 @@ public interface CommissionRepository extends JpaRepository<Commission, Long> {
     public List<Commission> findByIdEmployeOrderByDateCommissionDesc(Long idEmploye);
     public List<Commission> findByIdEmployeAndDateCommissionBetween(Long idEmploye, Date dateDebut, Date dateFin);
     @Query("SELECT c FROM Commission c WHERE c.dateCommission BETWEEN :start AND :end")
-    List<Commission> findAllBetweenDates(@Param("start") Date start, @Param("end") Date end);
+    public List<Commission> findAllBetweenDates(@Param("start") Date start, @Param("end") Date end);
 }

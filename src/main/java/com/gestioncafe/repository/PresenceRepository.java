@@ -9,5 +9,5 @@ import com.gestioncafe.model.*;
 
 @Repository
 public interface PresenceRepository  extends JpaRepository<Presence, Long> {
-    List<Presence> findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(Long idEmploye, Date dateDebut, Date dateFin);
+    public List<Presence> findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(Long idEmploye, Date dateDebut, Date dateFin);
 }

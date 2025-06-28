@@ -12,5 +12,5 @@ import com.gestioncafe.model.*;
 @Repository
 public interface GradeEmployeRepository extends JpaRepository<Employe, Long>{
     @Query("SELECT COALESCE(ge.grade.salaire, 0.0) FROM GradeEmploye ge WHERE ge.idEmploye = :idEmploye AND ge.dateGrade <= :date ORDER BY ge.dateGrade DESC")
-    double findSalaireByEmployeAndDate(Long idEmploye, Date date);
+    public double findSalaireByEmployeAndDate(Long idEmploye, Date date);
 }

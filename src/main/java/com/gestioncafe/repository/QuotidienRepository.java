@@ -6,5 +6,5 @@ import com.gestioncafe.model.*;
 
 @Repository
 public interface QuotidienRepository extends JpaRepository<Quotidien, Long> {
-    Quotidien findByNomAndMotDePasse(String nom, String motDePasse);
+    public Quotidien findByNomAndMotDePasse(String nom, String motDePasse);
 }

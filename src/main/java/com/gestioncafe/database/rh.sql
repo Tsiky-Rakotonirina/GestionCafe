@@ -173,6 +173,7 @@ CREATE TABLE type_conge (
     id          SERIAL         PRIMARY KEY,
     nom         VARCHAR(255)   NOT NULL,
     nb_jour     INTEGER        NOT NULL,
+    obligatoire BOOLEAN        NOT NULL,
     description VARCHAR(500)   NULL
 );
 

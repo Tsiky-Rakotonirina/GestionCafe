@@ -13,8 +13,8 @@ import com.gestioncafe.model.*;
 public interface PayementRepository extends JpaRepository<Payement, Long>{
     public List<Payement> findByIdEmployeOrderByMoisReferenceDesc(Long idEmploye);
     @Query("SELECT p FROM Payement p WHERE p.idEmploye = :idEmploye ORDER BY p.moisReference DESC")
-    Payement findLatestPayementByEmployeId(Long idEmploye);
+    public Payement findLatestPayementByEmployeId(Long idEmploye);
     @Query("SELECT p FROM Payement p WHERE p.moisReference IN :moisRefs")
-    List<Payement> findAllByMoisReferenceIn(@Param("moisRefs") List<Date> moisRefs);
+    public List<Payement> findAllByMoisReferenceIn(@Param("moisRefs") List<Date> moisRefs);
 
 }

@@ -26,7 +26,11 @@ public class RhService {
     private CommissionRepository commissionRepository;
     @Autowired
     private AvanceRepository avanceRepository;
-    
+    @Autowired 
+    private CongeRepository congeRepository;
+    @Autowired
+    private TypeCongeRepository typeCongeRepository;
+
     public List<StatutEmploye> getAllEmployesActifs() {
         return statutEmployeRepository.findDerniersStatutsParEmployeEtStatut(Long.parseLong("1"));
     }
@@ -187,5 +191,69 @@ public class RhService {
 
         return result;
     }
-}
+
+    public Map<Long, Integer> nbjCongeUtilise(List<Employe> employes) {
+        Map<Long, Integer> map = new HashMap<>();
+        int anneeActuelle = LocalDate.now().getYear();
+
+        List<Object[]> resultats = congeRepository.getDureeCongeParEmploye(anneeActuelle);
+
+        for (Object[] ligne : resultats) {
+            Long idEmploye = (Long) ligne[0];
+            Long somme = (Long) ligne[1]; // Car SUM retourne un Long (type SQL)
+            map.put(idEmploye, somme.intValue());
+        }
+
+        // S'assurer que chaque employé de la liste a une entrée dans la map
+        for (Employe e : employes) {
+            map.putIfAbsent(e.getId(), 0);
+        }
+
+        return map;
+    }
+
+    public Map<Long, Integer> nbjCongeReserve(List<Employe> employes) {
+        Map<Long, Integer> map = new HashMap<>();
+        int anneeActuelle = LocalDate.now().getYear();
+
+        List<Object[]> resultats = congeRepository.getDureeCongeReserveParEmploye(anneeActuelle);
+
+        for (Object[] ligne : resultats) {
+            Long idEmploye = (Long) ligne[0];
+            Long somme = (Long) ligne[1];
+            map.put(idEmploye, somme.intValue());
+        }
+
+        // S'assurer que tous les employés ont une valeur, même si 0
+        for (Employe e : employes) {
+            map.putIfAbsent(e.getId(), 0);
+        }
+
+        return map;
+    }
+
+    public Map<Long, Integer> nbjCongeNonUtilise(List<Employe> employes) {
+        Map<Long, Integer> map = new HashMap<>();
+
+        // 1. Récupérer le nombre total de jours autorisés pour tous les types obligatoires
+        Integer nbTotal = typeCongeRepository.getNbJourTotalObligatoire();
+        if (nbTotal == null) nbTotal = 0;
+
+        // 2. Récupérer les jours utilisés et réservés déjà calculés
+        Map<Long, Integer> utilise = nbjCongeUtilise(employes);
+        Map<Long, Integer> reserve = nbjCongeReserve(employes);
+
+        // 3. Calcul du reste
+        for (Employe emp : employes) {
+            Long id = emp.getId();
+            int u = utilise.getOrDefault(id, 0);
+            int r = reserve.getOrDefault(id, 0);
+            int restant = nbTotal - (u + r);
+            map.put(id, Math.max(restant, 0)); // pour éviter les valeurs négatives
+        }
+
+        return map;
+    }
+
+} 
 
