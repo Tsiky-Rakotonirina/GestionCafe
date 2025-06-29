@@ -28,10 +28,10 @@
                     <div class="search-filters">
                         <div class="search-input">
                             <i class="fas fa-search"></i>
-                            <input type="text" placeholder="Rechercher une matière première...">
+                            <input type="text" id="searchNom" placeholder="Rechercher une matière première...">
                         </div>
-                        <select class="form-select">
-                            <option>Toutes les unités</option>
+                        <select class="form-select" id="searchUnite">
+                            <option value="">Toutes les unités</option>
                             <option>kg</option>
                             <option>L</option>
                             <option>sachet</option>
@@ -109,7 +109,7 @@
                     <th><i class="fas fa-cogs"></i> Actions</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="matiereTableBody">
                 <tr th:each="mp : ${matieres}">
                     <td>
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -176,5 +176,40 @@
     </main>
 </div>
 <script th:src="@{/templates/script.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchNom = document.getElementById('searchNom');
+    const searchUnite = document.getElementById('searchUnite');
+    const tableBody = document.getElementById('matiereTableBody');
+
+    function normalize(str) {
+        return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function filterTable() {
+        const nomVal = normalize(searchNom.value);
+        const uniteVal = normalize(searchUnite.value);
+
+        Array.from(tableBody.querySelectorAll('tr')).forEach(tr => {
+            // Récupère le nom (dernier span dans le td)
+            const nomSpan = tr.querySelector('td:nth-child(1) span:last-child');
+            const nom = nomSpan ? normalize(nomSpan.textContent) : '';
+            // Récupère l'unité (span dans le 2e td)
+            const uniteSpan = tr.querySelector('td:nth-child(2) span');
+            const unite = uniteSpan ? normalize(uniteSpan.textContent) : '';
+
+            const matchNom = nom.includes(nomVal);
+            const matchUnite = !uniteVal || unite === uniteVal;
+
+            tr.style.display = (matchNom && matchUnite) ? '' : 'none';
+        });
+    }
+
+    if (searchNom && searchUnite && tableBody) {
+        searchNom.addEventListener('input', filterTable);
+        searchUnite.addEventListener('change', filterTable);
+    }
+});
+</script>
 </body>
 </html>
