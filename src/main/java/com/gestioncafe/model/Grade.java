@@ -2,6 +2,7 @@ package com.gestioncafe.model;
 
 import jakarta.persistence.*;
 import java.sql.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "grade")

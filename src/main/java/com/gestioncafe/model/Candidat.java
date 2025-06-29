@@ -2,43 +2,39 @@ package com.gestioncafe.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import com.gestioncafe.model.Genre;
-import com.gestioncafe.model.Candidat;
-
 
 @Entity
-@Table(name = "employe")
-public class Employe {
+@Table(name = "candidat")
+public class Candidat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String nom;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_genre", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "id_genre", nullable = false)
     private Genre genre;
 
     @Column(name = "date_naissance", nullable = false)
     private LocalDate dateNaissance;
 
-    @Column(nullable = false)
+    @Column(name = "date_candidature", nullable = false)
+    private LocalDate dateCandidature;
+
     private String contact;
 
-    @Column(name = "date_recrutement", nullable = false)
-    private LocalDate dateRecrutement;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_candidat", referencedColumnName = "id")
-    private Candidat candidat;
-
-    @Column
     private String image;
 
-    @Column(name = "reference_cv", columnDefinition = "TEXT")
+    @Column(name = "reference_cv")
     private String referenceCv;
+
+    @ManyToOne
+    @JoinColumn(name = "id_grade", nullable = false)
+    private Grade grade;
+
+    public Candidat() {}
 
     public Long getId() {
         return this.id;
@@ -72,28 +68,20 @@ public class Employe {
         this.dateNaissance = dateNaissance;
     }
 
+    public LocalDate getDateCandidature() {
+        return this.dateCandidature;
+    }
+
+    public void setDateCandidature(LocalDate dateCandidature) {
+        this.dateCandidature = dateCandidature;
+    }
+
     public String getContact() {
         return this.contact;
     }
 
     public void setContact(String contact) {
         this.contact = contact;
-    }
-
-    public LocalDate getDateRecrutement() {
-        return this.dateRecrutement;
-    }
-
-    public void setDateRecrutement(LocalDate dateRecrutement) {
-        this.dateRecrutement = dateRecrutement;
-    }
-
-    public Candidat getCandidat() {
-        return this.candidat;
-    }
-
-    public void setCandidat(Candidat candidat) {
-        this.candidat = candidat;
     }
 
     public String getImage() {
@@ -112,5 +100,12 @@ public class Employe {
         this.referenceCv = referenceCv;
     }
 
-    // Getters & Setters
+    public Grade getGrade() {
+        return this.grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
 }

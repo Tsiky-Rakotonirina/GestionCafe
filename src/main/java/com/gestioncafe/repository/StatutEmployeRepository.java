@@ -25,4 +25,8 @@ public interface StatutEmployeRepository extends JpaRepository<StatutEmploye, Lo
     public List<StatutEmploye> findDerniersStatutsParEmployeEtStatut(@Param("idStatut") Long idStatut);
     public Optional<StatutEmploye> findTopByEmploye_IdOrderByDateStatutDesc(Long idEmploye);
     public Optional<StatutEmploye> findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(Long idEmploye, Date dateStatut);
+
+    List<StatutEmploye> findByEmployeOrderByDateStatutDesc(Employe employe);
+    List<StatutEmploye> findByStatut_Id(Long statutId);
+
 }

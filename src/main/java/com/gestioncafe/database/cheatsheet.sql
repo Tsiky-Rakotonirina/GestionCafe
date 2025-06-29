@@ -1,4 +1,8 @@
 -- Create a new database
+DROP DATABASE pg1;
+CREATE DATABASE pg1;
+\c pg1;
+
 CREATE DATABASE database_name;
 
 -- Drop an existing database

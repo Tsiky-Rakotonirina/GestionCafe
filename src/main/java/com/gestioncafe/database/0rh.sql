@@ -41,29 +41,23 @@ CREATE TABLE langue (
 );
 
 CREATE TABLE candidat (
-    id                  SERIAL       PRIMARY KEY,
-    date_candidature    DATE         NOT NULL,
-    nom                 VARCHAR(255) NOT NULL,
-    id_genre            INTEGER      NOT NULL,
-    date_naissance      DATE         NOT NULL,
-    contact             VARCHAR(20)  NOT NULL,
-    image               VARCHAR(255) NULL,
-    reference_cv        TEXT         NULL,
-    id_grade            INTEGER      NOT NULL,
+    id               SERIAL       PRIMARY KEY,
+    nom              VARCHAR(255) NOT NULL,
+    id_genre         INTEGER      NOT NULL,
+    date_naissance   DATE         NOT NULL,
+    date_candidature DATE         NOT NULL,
+    image            VARCHAR(255) NULL,
+    reference_cv     TEXT         NULL,
 
     CONSTRAINT fk_candidat_genre
         FOREIGN KEY (id_genre)
-        REFERENCES genre(id),
-
-    CONSTRAINT fk_candidat_grade
-        FOREIGN KEY (id_grade)
-        REFERENCES grade(id)
+        REFERENCES genre(id)
 );
 
 -- Table detail_candidat
 CREATE TABLE detail_candidat (
     id               SERIAL  PRIMARY KEY,
-    id_candidat      INTEGER NOT NULL,
+    id_candidat       INTEGER NOT NULL,
     id_serie_bac     INTEGER NULL,
     id_formation     INTEGER NULL,
     id_langue        INTEGER NULL,
@@ -92,15 +86,14 @@ CREATE TABLE detail_candidat (
 
 -- Table employe
 CREATE TABLE employe (
-    id               SERIAL          PRIMARY KEY,
-    id_candidat      INTEGER         NOT NULL,
-    date_recrutement DATE            NOT NULL,
-    nom              VARCHAR(255)    NULL,
-    id_genre         INTEGER         NULL,
-    date_naissance   DATE            NULL,
-    contact          VARCHAR(20)     NULL,
-    image            VARCHAR(255)    NULL,
-    reference_cv     VARCHAR(255)    NULL,
+    id               SERIAL       PRIMARY KEY,
+    nom              VARCHAR(255) NOT NULL,
+    id_genre         INTEGER      NOT NULL,
+    date_naissance   DATE         NOT NULL,
+    date_recrutement DATE         NOT NULL,
+    id_candidat      INTEGER      NOT NULL,
+    image            VARCHAR(255) NULL,
+    reference_cv     TEXT         NULL,
 
     CONSTRAINT fk_employe_candidat
         FOREIGN KEY (id_candidat)
@@ -109,27 +102,6 @@ CREATE TABLE employe (
     CONSTRAINT fk_employe_genre
         FOREIGN KEY (id_genre)
         REFERENCES genre(id)
-);
-
-CREATE TABLE statut (
-    id          SERIAL        PRIMARY KEY,
-    valeur      VARCHAR(255)  NOT NULL,
-    description VARCHAR(500)  NULL
-);
-
-CREATE TABLE statut_employe (
-    id            SERIAL       PRIMARY KEY,
-    id_employe    INTEGER      NOT NULL,
-    date_statut   TIMESTAMP    NOT NULL,
-    id_statut     INTEGER      NOT NULL,
-
-    CONSTRAINT fk_statut_employe_statut
-        FOREIGN KEY (id_statut)
-        REFERENCES statut(id),
-
-    CONSTRAINT fk_activite_employe_employe
-        FOREIGN KEY (id_employe)
-        REFERENCES employe(id)
 );
 
 -- Table grade_employe
@@ -149,46 +121,14 @@ CREATE TABLE grade_employe (
 );
 
 -- Table presence_employe
-CREATE TABLE presence (
+CREATE TABLE presence_employe (
     id            SERIAL      PRIMARY KEY,
     id_employe    INTEGER     NOT NULL,
-    date_presence DATE        NOT NULL,
-    date_arrivee  TIMESTAMP   NULL,
-    est_present   BOOLEAN     NULL
+    date_presence TIMESTAMP   NOT NULL,
 
     CONSTRAINT fk_presence_employe_employe
         FOREIGN KEY (id_employe)
         REFERENCES employe(id)
-);
-
--- Table jour_ferie
-CREATE TABLE jour_ferie (
-    id          SERIAL       PRIMARY KEY,
-    nom         VARCHAR(255) NOT NULL,
-    date_ferie  DATE         NOT NULL
-);
-
--- Table type_conge
-CREATE TABLE type_conge (
-    id          SERIAL         PRIMARY KEY,
-    nom         VARCHAR(255)   NOT NULL,
-    nb_jour     INTEGER        NOT NULL,
-    obligatoire BOOLEAN        NOT NULL,
-    description VARCHAR(500)   NULL
-);
-
--- Table conge
-CREATE TABLE conge (
-    id            SERIAL       PRIMARY KEY,
-    id_type_conge INTEGER      NOT NULL,
-    date_debut    DATE         NOT NULL,
-    date_fin      DATE         NOT NULL,
-    duree         INTEGER      NOT NULL,
-    id_employe    INTEGER      NOT NULL,
-
-    CONSTRAINT fk_conge_type_conge
-        FOREIGN KEY (id_type_conge)
-        REFERENCES type_conge(id)
 );
 
 -- Table irsa
@@ -206,11 +146,42 @@ CREATE TABLE cotisation_sociale (
     taux  DECIMAL(5,2) NOT NULL
 );
 
+-- Table jour_ferie
+CREATE TABLE jour_ferie (
+    id          SERIAL       PRIMARY KEY,
+    nom         VARCHAR(255) NOT NULL,
+    date_ferie  DATE         NOT NULL,
+    paye        BOOLEAN      NOT NULL DEFAULT FALSE
+);
+
+-- Table type_conge
+CREATE TABLE type_conge (
+    id          SERIAL         PRIMARY KEY,
+    valeur      VARCHAR(255)   NOT NULL,
+    description VARCHAR(500)   NULL,
+    paye        BOOLEAN        NOT NULL DEFAULT FALSE
+);
+
+-- Table conge
+CREATE TABLE conge (
+    id            SERIAL       PRIMARY KEY,
+    id_type_conge INTEGER      NOT NULL,
+    date_debut    DATE         NOT NULL,
+    date_fin      DATE         NOT NULL,
+    duree         INTEGER      NOT NULL,
+    id_employe    INTEGER      NOT NULL,
+
+    CONSTRAINT fk_conge_type_conge
+        FOREIGN KEY (id_type_conge)
+        REFERENCES type_conge(id)
+);
+
 -- Table raison_avance
 CREATE TABLE raison_avance (
     id          SERIAL         PRIMARY KEY,
     valeur      VARCHAR(255)   NOT NULL,
-    description VARCHAR(500)   NULL
+    description VARCHAR(500)   NULL,
+    paye        BOOLEAN        NOT NULL DEFAULT FALSE
 );
 
 -- Table avance
@@ -238,25 +209,10 @@ CREATE TABLE commission (
     id                     SERIAL       PRIMARY KEY,
     id_raison_commission   INTEGER      NOT NULL,
     id_employe             INTEGER      NOT NULL,
-    date_commission        DATE         NOT NULL,
+    date_commssion         DATE         NOT NULL,
     montant                DECIMAL(10,2) NOT NULL,
 
     CONSTRAINT fk_commission_raison_commission
         FOREIGN KEY (id_raison_commission)
         REFERENCES raison_commission(id)
 );
-
--- Table payement employe
-CREATE TABLE payement (
-    id                 SERIAL        PRIMARY KEY,
-    id_employe         INTEGER       NOT NULL,
-    date_payement      DATE          NOT NULL,
-    montant            DECIMAL(10,2) NOT NULL,
-    reference_payement VARCHAR(255)  NULL,
-    mois_reference     DATE          NOT NULL,
-
-    CONSTRAINT fk_payement_employe_employe
-        FOREIGN KEY (id_employe)
-        REFERENCES employe(id)
-);
-
