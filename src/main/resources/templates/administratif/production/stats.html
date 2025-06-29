@@ -109,7 +109,7 @@
                                 Total Vendu
                             </h4>
                             <p class="stat-value" style="font-size: 1.2rem; color: var(--warning-color);"
-                               th:text="${data != null and #lists.size(data) > 0 ? #aggregates.sum(data) + ' unités' : '0 unités'}">0 unités
+                               th:text="${totalVenduPeriode != null ? #numbers.formatDecimal(totalVenduPeriode, 1, 'COMMA', 2, 'POINT') + ' unités' : '0 unités'}">0 unités
                             </p>
                         </div>
                     </div>

@@ -123,6 +123,7 @@ public class ProductionController {
             somme = somme.add(val);
             nbPeriodes++;
         }
+        BigDecimal totalVenduPeriode = somme; // Ajout : total vendu pour la période sélectionnée
         BigDecimal moyenne = nbPeriodes > 0 ? somme.divide(BigDecimal.valueOf(nbPeriodes), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
 
         // Calcul du bénéfice moyen par période (jour/mois/année) sur la période sélectionnée
@@ -137,6 +138,7 @@ public class ProductionController {
         model.addAttribute("data", data);
         model.addAttribute("moyenneProduits", moyenne);
         model.addAttribute("beneficeMoyen", beneficeMoyen);
+        model.addAttribute("totalVenduPeriode", totalVenduPeriode); // Ajout
 
         System.out.println("periodeCourbe=" + periodeCourbe + ", periodes=" + periodes);
         System.out.println("data=" + data);
