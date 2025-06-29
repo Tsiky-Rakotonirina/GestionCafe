@@ -113,7 +113,7 @@
                                             <form th:action="@{/administratif/rh/conge/ajout-conge}" method="post" class="form-example">
                                                 <div class="form-group">
                                                     <label class="form-label">Type de conge:</label>
-                                                    <select class="form-select" name="idRaison">
+                                                    <select class="form-select" name="typeConge">
                                                         <option value="" >Choisir un type </option>
                                                         <option th:each="typeConge : ${typeConges}" th:value="${typeConge.id}">
                                                             <span th:text="${typeConge != null ? typeConge.nom : '-'}">-</span>

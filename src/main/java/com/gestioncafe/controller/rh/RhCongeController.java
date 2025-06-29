@@ -23,13 +23,29 @@ public class RhCongeController {
     @Autowired
     private RhCongeService rhCongeService;
 
-    @GetMapping("/calendrier")
-    public String calendrier() {
-        return "redirect:/administratif/rh/gestion-conges";
+    @PostMapping("/ajout-conge")
+    public String ajoutConge(@RequestParam("typeConge") String typeConge, @RequestParam("dateDebut") String dateDebut, @RequestParam("dateFin") String dateFin, @RequestParam("idEmploye") String idEmploye, Model model) {
+        String erreur = "";
+        try{
+            Long idTypeConge = Long.parseLong(typeConge);
+            java.sql.Date debut = java.sql.Date.valueOf(dateDebut);
+            java.sql.Date fin = java.sql.Date.valueOf(dateFin);
+            Long id = Long.parseLong(idEmploye);
+            rhCongeService.ajoutConge(id, idTypeConge, debut, fin);
+        } catch (NumberFormatException e) {
+            erreur = "Erreur : les Id doivent etre des valeurs numeriques";
+        } catch (IllegalArgumentException e) {
+            erreur = "Erreur : date en format invalide";
+        } catch (Exception e) {
+            erreur = "Erreur dans l ajout conge : " + e.getMessage();
+        }
+        model.addAttribute("erreurAjoutConge", erreur);
+        return "redirect:/administratif/rh/gevstion-conges";
     }
 
-    @PostMapping("/ajout-conge")
-    public String ajoutConge() {
-        return "redirect:/administratif/rh/gestion-conges";
+     @GetMapping("/calendrier")
+    public String calendrier(Model model) {
+        model.addAttribute("jours", rhCongeService.jours());
+        return "administratif/rh/calendrier";
     }
 }

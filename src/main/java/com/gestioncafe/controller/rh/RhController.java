@@ -66,6 +66,7 @@ public class RhController {
         model.addAttribute("nbjCongeUtilise", nbjCongeUtilise);
         model.addAttribute("nbjCongeReserve", nbjCongeReserve);
         model.addAttribute("nbjCongeNonUtilise", nbjCongeNonUtilise);
+        model.addAttribute("typeConges", rhService.getAllTypeConges());
         return "administratif/rh/gestion-conges";
     }
 

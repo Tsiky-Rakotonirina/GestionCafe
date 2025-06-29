@@ -192,6 +192,10 @@ public class RhService {
         return result;
     }
 
+    public List<TypeConge> getAllTypeConges() {
+        return typeCongeRepository.findAll();
+    }
+
     public Map<Long, Integer> nbjCongeUtilise(List<Employe> employes) {
         Map<Long, Integer> map = new HashMap<>();
         int anneeActuelle = LocalDate.now().getYear();
