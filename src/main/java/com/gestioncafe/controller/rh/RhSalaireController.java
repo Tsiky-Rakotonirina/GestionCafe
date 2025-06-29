@@ -216,7 +216,5 @@ public class RhSalaireController {
         return "redirect:/administratif/rh/salaire/commission?idEmploye="+idEmploye;
     }
 
-
-
 }
 
