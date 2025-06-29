@@ -1,28 +1,54 @@
 package com.gestioncafe.model.production;
 
+import java.math.BigDecimal;
+
 import com.gestioncafe.model.PackageProduit;
-import jakarta.persistence.*;
+import com.gestioncafe.model.Unite;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "produit")
 public class Produit {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String nom;
 
     private String description;
 
-    private double stock;
+    @Column(nullable = false)
+    private BigDecimal stock;
 
     private String image;
 
-    private double delaiPeremption;
+    @Column(name = "delai_peremption")
+    private BigDecimal delaiPeremption;
 
-    @OneToOne
-    @JoinColumn(name = "id_package")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_unite", nullable = false)
+    private Unite unite;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_package", nullable = false)
     private PackageProduit packageProduit;
 
+
+    public Unite getUnite() {
+        return unite;
+    }
+
+    public void setUnite(Unite unite) {
+        this.unite = unite;
+    }
 
     public PackageProduit getPackageProduit() {
         return packageProduit;
@@ -56,11 +82,11 @@ public class Produit {
         this.description = description;
     }
 
-    public double getStock() {
+    public BigDecimal getStock() {
         return stock;
     }
 
-    public void setStock(double stock) {
+    public void setStock(BigDecimal stock) {
         this.stock = stock;
     }
 
@@ -72,11 +98,11 @@ public class Produit {
         this.image = image;
     }
 
-    public double getDelaiPeremption() {
+    public BigDecimal getDelaiPeremption() {
         return delaiPeremption;
     }
 
-    public void setDelaiPeremption(double delaiPeremption) {
+    public void setDelaiPeremption(BigDecimal delaiPeremption) {
         this.delaiPeremption = delaiPeremption;
     }
 }

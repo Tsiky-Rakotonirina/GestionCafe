@@ -136,11 +136,11 @@ public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Inte
                 WHEN :periode = 'annee' THEN TO_CHAR(v.date_vente, 'YYYY')
                 ELSE TO_CHAR(v.date_vente, 'YYYY-MM-DD')
             END as periode,
-            AVG(dv.montant - dv.quantite * COALESCE(r.estimation, 0)) as benefice_moyen
+            AVG(dv.montant) as benefice_moyen
         FROM details_vente dv
         JOIN vente v ON dv.id_vente = v.id
         JOIN produit p ON dv.id_produit = p.id
-        LEFT JOIN recette r ON r.id_produit = p.id
+        -- LEFT JOIN recette r ON r.id_produit = p.id -- plus besoin
         GROUP BY periode
         ORDER BY periode
         """, nativeQuery = true)
@@ -148,11 +148,11 @@ public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Inte
 
     // Bénéfice estimé total pour la période sélectionnée
     @Query(value = """
-        SELECT COALESCE(SUM(dv.montant - dv.quantite * COALESCE(r.estimation, 0)), 0)
+        SELECT COALESCE(SUM(dv.montant), 0)
         FROM details_vente dv
         JOIN vente v ON dv.id_vente = v.id
         JOIN produit p ON dv.id_produit = p.id
-        LEFT JOIN recette r ON r.id_produit = p.id
+        -- LEFT JOIN recette r ON r.id_produit = p.id -- plus besoin
         WHERE (
             (:periode = 'jour' AND v.date_vente >= NOW() - INTERVAL '60 days') OR
             (:periode = 'mois' AND v.date_vente >= date_trunc('month', NOW()) - INTERVAL '11 months') OR
@@ -170,11 +170,11 @@ public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Inte
                 WHEN :periode = 'annee' THEN TO_CHAR(v.date_vente, 'YYYY')
                 ELSE TO_CHAR(v.date_vente, 'YYYY-MM-DD')
             END as periode,
-            COALESCE(SUM(dv.montant - dv.quantite * COALESCE(r.estimation, 0)), 0) as benefice_total
+            COALESCE(SUM(dv.montant), 0) as benefice_total
         FROM details_vente dv
         JOIN vente v ON dv.id_vente = v.id
         JOIN produit p ON dv.id_produit = p.id
-        LEFT JOIN recette r ON r.id_produit = p.id
+        -- LEFT JOIN recette r ON r.id_produit = p.id -- plus besoin
         WHERE (
             (:periode = 'jour' AND v.date_vente >= NOW() - INTERVAL '60 days') OR
             (:periode = 'mois' AND v.date_vente >= date_trunc('month', NOW()) - INTERVAL '11 months') OR

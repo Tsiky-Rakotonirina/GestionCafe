@@ -1,20 +1,18 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "package")
 public class PackageProduit {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String nom;
 
-    private String valeur;
-
-    private double estimation;
+    @Column(name = "cout")
+    private double cout;
 
 
     public void setId(Integer id) {
@@ -33,19 +31,11 @@ public class PackageProduit {
         this.nom = nom;
     }
 
-    public String getValeur() {
-        return valeur;
+    public double getCout() {
+        return cout;
     }
 
-    public void setValeur(String valeur) {
-        this.valeur = valeur;
-    }
-
-    public double getEstimation() {
-        return estimation;
-    }
-
-    public void setEstimation(double estimation) {
-        this.estimation = estimation;
+    public void setCout(double cout) {
+        this.cout = cout;
     }
 }

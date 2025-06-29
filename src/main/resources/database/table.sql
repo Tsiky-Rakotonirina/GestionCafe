@@ -123,13 +123,17 @@ CREATE TABLE fournisseur
 );
 
 -- Table detail_fournisseur
-CREATE TABLE prix_matiere_premiere
+CREATE TABLE detail_fournisseur
 (
     id                  SERIAL PRIMARY KEY,
     id_fournisseur      INTEGER        NOT NULL,
     id_matiere_premiere INTEGER        NOT NULL,
-    prix_unitaire       DECIMAL(10, 2) NOT NULL,
+    quantite            DECIMAL(10, 2) NOT NULL, -- à préciser car chez certains fournisseurs, la quantité pourrait se mesurer avec des sacs de 50kg.
+    id_unite            INTEGER        NOT NULL,
+    prix                DECIMAL(10, 2) NOT NULL,
     date_modification   DATE           NOT NULL,
+
+    FOREIGN KEY (id_unite) REFERENCES unite (id),
 
     CONSTRAINT fk_detail_fournisseur_fournisseur
         FOREIGN KEY (id_fournisseur)
@@ -247,23 +251,6 @@ CREATE TABLE utilisation_machine
     date_application DATE,
     utilisation      DECIMAL(10, 2)
 );
-
--- Table utilisation_machine
-/*CREATE TABLE utilisation_machine
-(
-    id         SERIAL PRIMARY KEY,
-    id_machine INTEGER        NOT NULL,
-    id_recette INTEGER        NOT NULL,
-    duree      DECIMAL(10, 2) NOT NULL,
-
-    CONSTRAINT fk_utilisation_machine_machine
-        FOREIGN KEY (id_machine)
-            REFERENCES machine (id),
-
-    CONSTRAINT fk_utilisation_machine_recette
-        FOREIGN KEY (id_recette)
-            REFERENCES recette (id)
-);*/
 
 -- Table etat
 CREATE TABLE etat
