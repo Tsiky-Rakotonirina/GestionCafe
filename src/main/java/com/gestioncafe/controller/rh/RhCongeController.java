@@ -40,7 +40,7 @@ public class RhCongeController {
             erreur = "Erreur dans l ajout conge : " + e.getMessage();
         }
         model.addAttribute("erreurAjoutConge", erreur);
-        return "redirect:/administratif/rh/gevstion-conges";
+        return "redirect:/administratif/rh/gestion-conges";
     }
 
      @GetMapping("/calendrier")

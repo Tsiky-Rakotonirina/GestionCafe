@@ -49,6 +49,7 @@ public class RhSalaireController {
             erreur = "L'ID de l'employé doit être un nombre valide.";
         }
         model.addAttribute("erreurFicheDePaie", erreur);
+        System.out.println(erreur);
         return "redirect:/administratif/rh/gestion-salaires";
     }
 

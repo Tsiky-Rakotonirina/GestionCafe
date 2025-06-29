@@ -38,3 +38,4 @@ INSERT INTO raison_avance(valeur) VALUES ('maladie');
 insert into avance(id_raison_avance, id_employe, date_avance, montant) 
 values (1,1,'2025-05-20',100000);
 
+INSERT INTO statut

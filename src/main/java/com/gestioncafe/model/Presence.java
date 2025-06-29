@@ -12,21 +12,21 @@ public class Presence {
     private Long idEmploye;
     private Date datePresence;
     private Timestamp dateArrivee;
-    private boolean estpresent;
+    private boolean estPresent;
     public Presence() {
     }
-    public Presence(Long idEmploye, Date datePresence, Timestamp dateArrivee, boolean estpresent) {
+    public Presence(Long idEmploye, Date datePresence, Timestamp dateArrivee, boolean estPresent) {
         this.idEmploye = idEmploye;
         this.datePresence = datePresence;
         this.dateArrivee = dateArrivee;
-        this.estpresent = estpresent;
+        this.estPresent = estPresent;
     }
-    public Presence(Long id, Long idEmploye, Date datePresence, Timestamp dateArrivee, boolean estpresent) {
+    public Presence(Long id, Long idEmploye, Date datePresence, Timestamp dateArrivee, boolean estPresent) {
         this.id = id;
         this.idEmploye = idEmploye;
         this.datePresence = datePresence;
         this.dateArrivee = dateArrivee;
-        this.estpresent = estpresent;
+        this.estPresent = estPresent;
     }
     public Long getId() {
         return id;
@@ -52,10 +52,10 @@ public class Presence {
     public void setDateArrivee(Timestamp dateArrivee) {
         this.dateArrivee = dateArrivee;
     }
-    public boolean isEstpresent() {
-        return estpresent;
+    public boolean isEstPresent() {
+        return estPresent;
     }
-    public void setEstpresent(boolean estpresent) {
-        this.estpresent = estpresent;
+    public void setEstPresent(boolean estPresent) {
+        this.estPresent = estPresent;
     }
 }
