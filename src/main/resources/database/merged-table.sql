@@ -395,57 +395,6 @@ CREATE TABLE detail_fournisseur
             REFERENCES matiere_premiere (id)
 );
 
--- Table approvisionnement
-CREATE TABLE approvisionnement
-(
-    id                     SERIAL PRIMARY KEY,
-    id_detail_fournisseur  INTEGER        NOT NULL,
-    id_matiere_premiere    INTEGER        NOT NULL,
-    quantite               DECIMAL(10, 2) NOT NULL,
-    total                  DECIMAL(10, 2) NOT NULL,
-    date_approvisionnement TIMESTAMP      NOT NULL,
-    date_peremption        TIMESTAMP      NOT NULL,
-    reference_facture      VARCHAR(255)   NOT NULL,
-
-    CONSTRAINT fk_approvisionnement_detail_fournisseur
-        FOREIGN KEY (id_detail_fournisseur)
-            REFERENCES detail_fournisseur (id),
-
-    CONSTRAINT fk_approvisionnement_matiere_premiere
-        FOREIGN KEY (id_matiere_premiere)
-            REFERENCES matiere_premiere (id)
-);
-
-CREATE TABLE production
-(
-    id              SERIAL PRIMARY KEY,
-    id_employe      INTEGER,
-    id_recette      INTEGER,
-    quantite        DECIMAL(10, 2),
-    date_production TIMESTAMP,
-
-    FOREIGN KEY (id_employe) REFERENCES employe (id),
-    FOREIGN KEY (id_recette) REFERENCES recette (id)
-);
-
--- Table mouvement_stock
-CREATE TABLE mouvement_stock
-(
-    id                   SERIAL PRIMARY KEY,
-    id_matiere_premiere  INTEGER        NOT NULL,
-    id_approvisionnement INTEGER,
-    id_production        INTEGER,
-    date_mouvement_stock TIMESTAMP      NOT NULL,
-    quantite             DECIMAL(10, 2) NOT NULL,
-
-    FOREIGN KEY (id_production) REFERENCES production (id),
-    FOREIGN KEY (id_approvisionnement) REFERENCES approvisionnement (id),
-
-    CONSTRAINT fk_mouvement_stock_matiere_premiere
-        FOREIGN KEY (id_matiere_premiere)
-            REFERENCES matiere_premiere (id)
-);
-
 -- Table package
 CREATE TABLE package
 (
@@ -551,6 +500,18 @@ CREATE TABLE details_vente
             REFERENCES produit (id)
 );
 
+CREATE TABLE production
+(
+    id              SERIAL PRIMARY KEY,
+    id_employe      INTEGER,
+    id_recette      INTEGER,
+    quantite        DECIMAL(10, 2),
+    date_production TIMESTAMP,
+
+    FOREIGN KEY (id_employe) REFERENCES employe (id),
+    FOREIGN KEY (id_recette) REFERENCES recette (id)
+);
+
 CREATE TABLE mouvement_stock_produit
 (
     id              SERIAL PRIMARY KEY,
@@ -564,6 +525,45 @@ CREATE TABLE mouvement_stock_produit
     FOREIGN KEY (id_produit) REFERENCES produit (id),
     FOREIGN KEY (id_production) REFERENCES production (id),
     FOREIGN KEY (id_vente) REFERENCES vente (id)
+);
+
+-- Table approvisionnement
+CREATE TABLE approvisionnement
+(
+    id                     SERIAL PRIMARY KEY,
+    id_detail_fournisseur  INTEGER        NOT NULL,
+    id_matiere_premiere    INTEGER        NOT NULL,
+    quantite               DECIMAL(10, 2) NOT NULL,
+    total                  DECIMAL(10, 2) NOT NULL,
+    date_approvisionnement TIMESTAMP      NOT NULL,
+    date_peremption        TIMESTAMP      NOT NULL,
+    reference_facture      VARCHAR(255)   NOT NULL,
+
+    CONSTRAINT fk_approvisionnement_detail_fournisseur
+        FOREIGN KEY (id_detail_fournisseur)
+            REFERENCES detail_fournisseur (id),
+
+    CONSTRAINT fk_approvisionnement_matiere_premiere
+        FOREIGN KEY (id_matiere_premiere)
+            REFERENCES matiere_premiere (id)
+);
+
+-- Table mouvement_stock
+CREATE TABLE mouvement_stock
+(
+    id                   SERIAL PRIMARY KEY,
+    id_matiere_premiere  INTEGER        NOT NULL,
+    id_approvisionnement INTEGER,
+    id_production        INTEGER,
+    date_mouvement_stock TIMESTAMP      NOT NULL,
+    quantite             DECIMAL(10, 2) NOT NULL,
+
+    FOREIGN KEY (id_production) REFERENCES production (id),
+    FOREIGN KEY (id_approvisionnement) REFERENCES approvisionnement (id),
+
+    CONSTRAINT fk_mouvement_stock_matiere_premiere
+        FOREIGN KEY (id_matiere_premiere)
+            REFERENCES matiere_premiere (id)
 );
 
 CREATE TABLE electricite
