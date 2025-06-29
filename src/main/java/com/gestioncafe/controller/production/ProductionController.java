@@ -1,20 +1,30 @@
 package com.gestioncafe.controller.production;
 
-import com.gestioncafe.dto.VentePeriodeStatDTO;
-import com.gestioncafe.dto.VenteProduitStatDTO;
-import com.gestioncafe.service.production.DetailsVenteService;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.gestioncafe.dto.VentePeriodeStatDTO;
+import com.gestioncafe.dto.VenteProduitStatDTO;
+import com.gestioncafe.service.production.DetailsVenteService;
 
 @Controller
 @RequestMapping("/administratif/production")
@@ -53,9 +63,18 @@ public class ProductionController {
         List<VenteProduitStatDTO> stats = detailsVenteService.getVenteStatParProduit();
         List<VentePeriodeStatDTO> courbeTotal = detailsVenteService.getTotalProduitVenduParPeriode(periodeCourbe);
 
+        // Ajout : calcul du max quantiteTotale pour stats
+        int maxQuantiteTotale = stats.stream()
+            .map(VenteProduitStatDTO::getQuantiteTotale)
+            .filter(Objects::nonNull)
+            .max(Comparator.naturalOrder())
+            .orElse(BigDecimal.ONE) // éviter division par zéro
+            .intValue();
+
         model.addAttribute("stats", stats);
         model.addAttribute("courbeTotal", courbeTotal);
         model.addAttribute("periodeCourbe", periodeCourbe);
+        model.addAttribute("maxQuantiteTotale", maxQuantiteTotale);
 
         courbeTotal.sort(Comparator.comparing(VentePeriodeStatDTO::getPeriode));
 

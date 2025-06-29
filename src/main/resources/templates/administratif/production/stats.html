@@ -61,7 +61,7 @@
             </div>
 
             <div style="padding: 2rem;">
-                <canvas id="courbeTotalChart" width="900" height="500" style="max-height:700px;"></canvas>
+                <canvas id="courbeTotalChart" width="900" height="500" style="max-height:700px; height:400px;"></canvas>
 
                 <div
                     style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
@@ -277,7 +277,7 @@
                     <td>
                         <div class="progress-bar" style="width: 100px;">
                             <div class="progress"
-                                 th:style="'width: ' + ${(stat.quantiteTotale * 100 / #aggregates.max(stats.![quantiteTotale]))} + '%'">
+                                 th:style="'width: ' + (${maxQuantiteTotale > 0} ? (${stat.quantiteTotale * 100 / maxQuantiteTotale}) : 0) + '%'">
                             </div>
                         </div>
                     </td>
@@ -319,7 +319,7 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const canvas = document.getElementById('courbeTotalChart');
-        if (canvas) {
+        if (canvas && typeof Chart !== "undefined") {
             const ctx = canvas.getContext('2d');
             new Chart(ctx, {
                 type: 'line',
