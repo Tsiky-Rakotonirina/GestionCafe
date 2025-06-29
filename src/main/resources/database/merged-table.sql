@@ -340,7 +340,7 @@ CREATE TABLE matiere_premiere
             REFERENCES unite (id)
 );
 
--- Table historique d'estimation des prix des matières premières
+-- Table historique d'estimation des prix des matières premières (fait par le gérant)
 CREATE TABLE historique_estimation
 (
     id                  SERIAL PRIMARY KEY,
@@ -459,6 +459,7 @@ CREATE TABLE produit
             REFERENCES package (id)
 );
 
+-- historique des prix de vente des produits
 CREATE TABLE prix_vente_produit
 (
     id               SERIAL PRIMARY KEY,

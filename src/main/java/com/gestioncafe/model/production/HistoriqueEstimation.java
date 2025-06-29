@@ -1,15 +1,8 @@
 package com.gestioncafe.model.production;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "historique_estimation")
@@ -36,21 +29,51 @@ public class HistoriqueEstimation {
     private LocalDate dateApplication;
 
     // Getters et setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() {
+        return id;
+    }
 
-    public MatierePremiere getMatierePremiere() { return matierePremiere; }
-    public void setMatierePremiere(MatierePremiere matierePremiere) { this.matierePremiere = matierePremiere; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public Double getPrix() { return prix; }
-    public void setPrix(Double prix) { this.prix = prix; }
+    public MatierePremiere getMatierePremiere() {
+        return matierePremiere;
+    }
 
-    public Double getQuantite() { return quantite; }
-    public void setQuantite(Double quantite) { this.quantite = quantite; }
+    public void setMatierePremiere(MatierePremiere matierePremiere) {
+        this.matierePremiere = matierePremiere;
+    }
 
-    public Unite getUnite() { return unite; }
-    public void setUnite(Unite unite) { this.unite = unite; }
+    public Double getPrix() {
+        return prix;
+    }
 
-    public LocalDate getDateApplication() { return dateApplication; }
-    public void setDateApplication(LocalDate dateApplication) { this.dateApplication = dateApplication; }
+    public void setPrix(Double prix) {
+        this.prix = prix;
+    }
+
+    public Double getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantite(Double quantite) {
+        this.quantite = quantite;
+    }
+
+    public Unite getUnite() {
+        return unite;
+    }
+
+    public void setUnite(Unite unite) {
+        this.unite = unite;
+    }
+
+    public LocalDate getDateApplication() {
+        return dateApplication;
+    }
+
+    public void setDateApplication(LocalDate dateApplication) {
+        this.dateApplication = dateApplication;
+    }
 }

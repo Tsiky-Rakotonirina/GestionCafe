@@ -71,7 +71,7 @@ public class ProductionController {
             .orElse(BigDecimal.ONE) // éviter division par zéro
             .intValue();
 
-        model.addAttribute("stats", stats);
+        model.addAttribute("stats", stats != null ? stats : new ArrayList<>());
         model.addAttribute("courbeTotal", courbeTotal);
         model.addAttribute("periodeCourbe", periodeCourbe);
         model.addAttribute("maxQuantiteTotale", maxQuantiteTotale);
@@ -171,7 +171,7 @@ public class ProductionController {
         List<VenteProduitStatDTO> stats = detailsVenteService.getVenteStatParProduitFiltre(
             dateExacte, annee, mois, jourMois, jourSemaine, dateDebut, dateFin
         );
-        model.addAttribute("stats", stats);
+        model.addAttribute("stats", stats != null ? stats : new ArrayList<>());
         model.addAttribute("annee", annee);
         model.addAttribute("mois", mois);
         model.addAttribute("jourMois", jourMois);

@@ -1,9 +1,17 @@
 package com.gestioncafe.model.production;
 
-import com.gestioncafe.model.PackageProduit;
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
+
+import com.gestioncafe.model.autre.PackageProduit;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "produit")
@@ -23,6 +31,9 @@ public class Produit {
 
     @Column(name = "delai_peremption")
     private BigDecimal delaiPeremption;
+
+    @Column(name = "prix_vente")
+    private BigDecimal prixVente;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_unite", nullable = false)
@@ -95,5 +106,13 @@ public class Produit {
 
     public void setDelaiPeremption(BigDecimal delaiPeremption) {
         this.delaiPeremption = delaiPeremption;
+    }
+
+    public BigDecimal getPrixVente() {
+        return prixVente;
+    }
+
+    public void setPrixVente(BigDecimal prixVente) {
+        this.prixVente = prixVente;
     }
 }

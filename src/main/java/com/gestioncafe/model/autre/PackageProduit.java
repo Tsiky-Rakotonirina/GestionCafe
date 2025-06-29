@@ -1,4 +1,4 @@
-package com.gestioncafe.model;
+package com.gestioncafe.model.autre;
 
 import jakarta.persistence.*;
 
