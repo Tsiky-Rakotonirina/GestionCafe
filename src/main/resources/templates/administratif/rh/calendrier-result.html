@@ -7,7 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Utilisation de Thymeleaf pour la gestion des ressources CSS -->
-    <link rel="stylesheet" th:href="@{/css/rh/calendrier.css}">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
 </head>
 <body>
@@ -28,16 +27,17 @@
         </div>
     </header>
     <main class="content">
-            <h1>Calendrier</h1>
-            <label for="yearSelect">Choisir une année :</label>
-            <select id="yearSelect"></select>
-                <form id="calendarForm" method="post" th:action="@{/administratif/rh/calendrier}">
-                    <div class="calendar-container" id="calendar"></div>
-                    <button id="validateBtn" type="submit">Valider les jours sélectionnés</button>
-                </form>
+        <h1>Résultat du calendrier</h1>
 
-            <div class="calendar-container" id="calendar"></div>
+        <p th:text="${message}"></p>
+
+        <ul>
+            <li th:each="date : ${dates}" th:text="${date}"></li>
+        </ul>
+
+        <a th:href="@{/administratif/rh/calendrier}">Retour au calendrier</a>
     </main>
+
     <!-- Utilisation de Thymeleaf pour le script JS -->
     <!-- <script th:src="@{/templates/script.js}"></script> -->
     <script th:src="@{/js/rh/calendrier.js}"></script> 
