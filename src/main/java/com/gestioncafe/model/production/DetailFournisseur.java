@@ -1,17 +1,9 @@
 package com.gestioncafe.model.production;
 
-import java.time.LocalDate;
-
 import com.gestioncafe.model.tiers.Fournisseur;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "detail_fournisseur")
@@ -41,25 +33,61 @@ public class DetailFournisseur {
     @Column(name = "date_modification", nullable = false)
     private LocalDate dateModification;
 
+
     // Getters et setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() {
+        return id;
+    }
 
-    public Fournisseur getFournisseur() { return fournisseur; }
-    public void setFournisseur(Fournisseur fournisseur) { this.fournisseur = fournisseur; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public MatierePremiere getMatierePremiere() { return matierePremiere; }
-    public void setMatierePremiere(MatierePremiere matierePremiere) { this.matierePremiere = matierePremiere; }
+    public Fournisseur getFournisseur() {
+        return fournisseur;
+    }
 
-    public Double getQuantite() { return quantite; }
-    public void setQuantite(Double quantite) { this.quantite = quantite; }
+    public void setFournisseur(Fournisseur fournisseur) {
+        this.fournisseur = fournisseur;
+    }
 
-    public Unite getUnite() { return unite; }
-    public void setUnite(Unite unite) { this.unite = unite; }
+    public MatierePremiere getMatierePremiere() {
+        return matierePremiere;
+    }
 
-    public Double getPrix() { return prix; }
-    public void setPrix(Double prix) { this.prix = prix; }
+    public void setMatierePremiere(MatierePremiere matierePremiere) {
+        this.matierePremiere = matierePremiere;
+    }
 
-    public LocalDate getDateModification() { return dateModification; }
-    public void setDateModification(LocalDate dateModification) { this.dateModification = dateModification; }
+    public Double getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantite(Double quantite) {
+        this.quantite = quantite;
+    }
+
+    public Unite getUnite() {
+        return unite;
+    }
+
+    public void setUnite(Unite unite) {
+        this.unite = unite;
+    }
+
+    public Double getPrix() {
+        return prix;
+    }
+
+    public void setPrix(Double prix) {
+        this.prix = prix;
+    }
+
+    public LocalDate getDateModification() {
+        return dateModification;
+    }
+
+    public void setDateModification(LocalDate dateModification) {
+        this.dateModification = dateModification;
+    }
 }
