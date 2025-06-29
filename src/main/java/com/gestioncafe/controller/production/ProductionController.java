@@ -47,7 +47,7 @@ public class ProductionController {
 
     @GetMapping("/machine")
     public String machine() {
-        return "administratif/production/machine";
+        return "redirect:/machines";
     }
 
     @GetMapping("/mat-premiere")

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Machine</title>
+</head>
+<body>
+<h2 th:text="${machine.id == null} ? 'Ajouter une machine' : 'Modifier la machine'"></h2>
+<form th:action="@{/machines/save}" th:object="${machine}" method="post">
+    <input type="hidden" th:field="*{id}" />
+    <label>Nom :</label>
+    <input type="text" th:field="*{nom}" required/><br/>
+    <label>Marque :</label>
+    <input type="text" th:field="*{marque}" /><br/>
+    <label>Puissance :</label>
+    <input type="number" th:field="*{puissance}" step="0.01" required/><br/>
+    <label>Taux d'activité (%) :</label>
+    <input type="number" th:field="*{tauxActivite}" step="0.01" required/><br/>
+
+    <h3>Utilisations de machine</h3>
+    <div id="utilisationsContainer"></div>
+    <button type="button" onclick="addUtilisation()">Ajouter utilisation</button>
+    <br><br>
+
+    <button type="submit">Valider</button>
+    <a th:href="@{/machines}">Annuler</a>
+</form>
+
+<datalist id="produitsList">
+    <option th:each="p : ${produits}" th:value="${p.id}" th:text="${p.nom}"></option>
+</datalist>
+<datalist id="unitesList">
+    <option th:each="u : ${unites}" th:value="${u.id}" th:text="${u.nom}"></option>
+</datalist>
+
+<script>
+function addUtilisation() {
+    const container = document.getElementById('utilisationsContainer');
+    const idx = container.children.length;
+    const div = document.createElement('div');
+    div.className = 'utilisation-group';
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input list="produitsList" name="utilisations[${idx}].idProduit" placeholder="Produit" style="width:90px;" required/>
+        <input type="number" name="utilisations[${idx}].duree" placeholder="Durée" step="0.01" required style="width:70px;"/>
+        <input list="unitesList" name="utilisations[${idx}].idUnite" placeholder="Unité" style="width:70px;" required/>
+        <button type="button" onclick="this.parentElement.remove()">Suppr</button>
+    `;
+    container.appendChild(div);
+}
+</script>
+</body>
+</html>
