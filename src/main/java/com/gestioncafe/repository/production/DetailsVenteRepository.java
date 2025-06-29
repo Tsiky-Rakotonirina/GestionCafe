@@ -184,4 +184,7 @@ public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Inte
         ORDER BY periode
         """, nativeQuery = true)
     List<Object[]> getBeneficeTotalParPeriode(@Param("periode") String periode);
+
+    // Vérifie s'il existe au moins un détail de vente pour ce produit
+    boolean existsByProduitId(Integer produitId);
 }

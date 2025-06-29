@@ -1,22 +1,24 @@
 package com.gestioncafe.model.production;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "recette")
 public class Recette {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "id_produit")
+    @JoinColumn(name = "id_produit", nullable = false)
     private Produit produit;
 
+    @Column(name = "quantite_produite", nullable = false)
     private BigDecimal quantiteProduite;
-    private BigDecimal tempsFabrication;
 
+    @Column(name = "temps_fabrication", nullable = false)
+    private BigDecimal tempsFabrication;
 
     public Integer getId() {
         return id;

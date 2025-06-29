@@ -12,6 +12,11 @@
 <div class="main-content" id="mainContent">
     <div th:replace="~{administratif/layout/header :: header('Produits')}"></div>
     <main class="content">
+        <!-- Message d'erreur suppression -->
+        <div th:if="${deleteError}" class="alert alert-danger" style="margin-bottom: 1.5rem;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${deleteError}">Erreur lors de la suppression</span>
+        </div>
         <!-- Modern Header -->
         <div class="page-header modern-header">
             <div class="header-content">
@@ -93,7 +98,8 @@
                         </div>
                     </td>
                     <td>
-                        <span style="color: var(--primary-color); font-weight: bold;" th:text="${produit.prixVente} + ' €'">0 €</span>
+                        <span style="color: var(--primary-color); font-weight: bold;"
+                              th:text="${prixVenteMap[produit.id]} + ' €'">0 €</span>
                     </td>
                     <td>
                         <div style="display: flex; gap: 0.5rem;">

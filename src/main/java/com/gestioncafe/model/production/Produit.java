@@ -32,9 +32,6 @@ public class Produit {
     @Column(name = "delai_peremption")
     private BigDecimal delaiPeremption;
 
-    @Column(name = "prix_vente")
-    private BigDecimal prixVente;
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_unite", nullable = false)
     private Unite unite;
@@ -107,12 +104,7 @@ public class Produit {
     public void setDelaiPeremption(BigDecimal delaiPeremption) {
         this.delaiPeremption = delaiPeremption;
     }
-
-    public BigDecimal getPrixVente() {
-        return prixVente;
-    }
-
-    public void setPrixVente(BigDecimal prixVente) {
-        this.prixVente = prixVente;
-    }
 }
+   
+  
+

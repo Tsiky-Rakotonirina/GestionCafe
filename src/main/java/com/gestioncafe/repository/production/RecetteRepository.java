@@ -8,4 +8,5 @@ import com.gestioncafe.model.production.Recette;
 
 public interface RecetteRepository extends JpaRepository<Recette, Integer> {
     List<Recette> findByProduitId(Integer produitId);
+    boolean existsByProduitId(Integer produitId);
 }

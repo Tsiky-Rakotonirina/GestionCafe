@@ -4,14 +4,22 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gestioncafe.model.production.Produit;
 import com.gestioncafe.repository.production.ProduitRepository;
+import com.gestioncafe.repository.production.RecetteRepository;
+import com.gestioncafe.repository.production.DetailsVenteRepository;
 
 @Service
 public class ProduitService {
     private final ProduitRepository produitRepository;
+
+    @Autowired
+    private RecetteRepository recetteRepository;
+    @Autowired
+    private DetailsVenteRepository detailsVenteRepository;
 
     public ProduitService(ProduitRepository produitRepository) {
         this.produitRepository = produitRepository;
@@ -43,5 +51,15 @@ public class ProduitService {
             return produit.getStock() != null ? produit.getStock() : BigDecimal.ZERO;
         }
         return BigDecimal.ZERO;
+    }
+
+    // Vérifie si le produit est utilisé dans d'autres tables (recette, vente, etc.)
+    public boolean isProduitUtilise(Integer idProduit) {
+        // Vérifie dans Recette
+        boolean utiliseDansRecette = recetteRepository.existsByProduitId(idProduit);
+        // Vérifie dans DetailsVente
+        boolean utiliseDansVente = detailsVenteRepository.existsByProduitId(idProduit);
+        // Ajoutez d'autres vérifications si besoin
+        return utiliseDansRecette || utiliseDansVente;
     }
 }

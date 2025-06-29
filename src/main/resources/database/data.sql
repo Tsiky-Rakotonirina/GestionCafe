@@ -38,24 +38,25 @@ INSERT INTO package(id, nom, cout)
 VALUES (1, 'sachet plastique', 200.0);
 
 -- Produits
-INSERT INTO produit(id, nom, description, stock, image, delai_peremption, id_unite, id_package)
-VALUES (1, 'Café Noir', 'Café noir classique', 100, NULL, 30, 1, 1),
-       (2, 'Cappuccino', 'Café avec lait mousseux', 50, NULL, 20, 1, 1),
-       (3, 'Expresso', 'Petit café serré', 80, NULL, 15, 1, 1),
-       (4, 'Thé Chai', 'Thé épicé', 60, NULL, 25, 1, 1),
-       (5, 'Chocolat Chaud', 'Boisson chaude au chocolat', 70, NULL, 20, 1, 1),
-       (6, 'Latte', 'Café au lait doux', 90, NULL, 18, 1, 1),
-       (7, 'Thé Vert', 'Thé vert nature', 55, NULL, 30, 1, 1),
-       (8, 'Moka', 'Café moka chocolaté', 65, NULL, 22, 1, 1),
-       (9, 'Macchiato', 'Café macchiato', 40, NULL, 15, 1, 1),
-       (10, 'Americano', 'Café allongé', 75, NULL, 20, 1, 1);
+INSERT INTO produit(nom, description, stock, image, delai_peremption, id_unite, id_package)
+VALUES ('Café Noir', 'Café noir classique', 100, NULL, 30, 1, 1),
+       ('Cappuccino', 'Café avec lait mousseux', 50, NULL, 20, 1, 1),
+       ('Expresso', 'Petit café serré', 80, NULL, 15, 1, 1),
+       ('Thé Chai', 'Thé épicé', 60, NULL, 25, 1, 1),
+       ('Chocolat Chaud', 'Boisson chaude au chocolat', 70, NULL, 20, 1, 1),
+       ('Latte', 'Café au lait doux', 90, NULL, 18, 1, 1),
+       ('Thé Vert', 'Thé vert nature', 55, NULL, 30, 1, 1),
+       ('Moka', 'Café moka chocolaté', 65, NULL, 22, 1, 1),
+       ('Macchiato', 'Café macchiato', 40, NULL, 15, 1, 1),
+       ('Americano', 'Café allongé', 75, NULL, 20, 1, 1);
 
 -- Prix de vente des produits
-INSERT INTO prix_vente_produit(id, id_produit, prix_vente, date_application)
-VALUES (1, 1, 2000, '2024-01-01'),
-       (2, 2, 2500, '2024-01-01'),
-       (3, 1, 2100, '2024-06-01'), -- test: nouveau prix pour Café Noir
-       (4, 2, 2600, '2024-06-01'); -- test: nouveau prix pour Cappuccino
+INSERT INTO prix_vente_produit(id_produit, prix_vente, date_application)
+VALUES (1, 2000, '2024-01-01'),
+       (2, 2500, '2024-01-01'),
+       (1, 2100, '2024-06-01'), -- test: nouveau prix pour Café Noir
+       (2, 2600, '2024-06-01');
+-- test: nouveau prix pour Cappuccino
 
 -- Ventes
 INSERT INTO vente(date_vente, id_client, id_employe)
@@ -72,14 +73,15 @@ VALUES ('2025-06-23 10:00:00', 1, 1),
        ('2023-02-20 12:00:00', 1, 1),
        ('2022-12-25 09:15:00', 2, 1),
        ('2024-06-25 09:00:00', 1, 1), -- test: nouvelle vente
-       ('2024-06-25 10:00:00', 2, 1); -- test: nouvelle vente
+       ('2024-06-25 10:00:00', 2, 1);
+-- test: nouvelle vente
 
 -- Détails des ventes (produit, quantité, prix unitaire, montant)
 INSERT INTO details_vente(id_vente, id_produit, quantite, prix_unitaire, montant)
-VALUES (1, 1, 2, 2000, 4000), -- 2 Café Noir
-       (1, 2, 1, 2500, 2500), -- 1 Cappuccino
-       (2, 1, 1, 2000, 2000), -- 1 Café Noir
-       (2, 2, 3, 2500, 7500), -- 3 Cappuccino
+VALUES (1, 1, 2, 2000, 4000),  -- 2 Café Noir
+       (1, 2, 1, 2500, 2500),  -- 1 Cappuccino
+       (2, 1, 1, 2000, 2000),  -- 1 Café Noir
+       (2, 2, 3, 2500, 7500),  -- 3 Cappuccino
        (3, 1, 4, 2000, 8000),
        (3, 2, 2, 2500, 5000),
        (4, 1, 3, 2000, 6000),
@@ -103,7 +105,8 @@ VALUES (1, 1, 2, 2000, 4000), -- 2 Café Noir
        (13, 1, 1, 2100, 2100), -- test: vente Café Noir avec nouveau prix
        (13, 2, 2, 2600, 5200), -- test: vente Cappuccino avec nouveau prix
        (14, 1, 3, 2100, 6300), -- test: vente Café Noir avec nouveau prix
-       (14, 2, 1, 2600, 2600); -- test: vente Cappuccino avec nouveau prix
+       (14, 2, 1, 2600, 2600);
+-- test: vente Cappuccino avec nouveau prix
 
 -- Données test supplémentaires pour produit
 INSERT INTO produit(nom, description, stock, image, delai_peremption, id_unite, id_package)
@@ -121,7 +124,8 @@ VALUES ('2024-06-26 11:00:00', 1, 1);
 
 INSERT INTO details_vente(id_vente, id_produit, quantite, prix_unitaire, montant)
 VALUES (15, 3, 2, 1800, 3600), -- 2 Expresso
-       (15, 4, 1, 2200, 2200); -- 1 Thé Chai
+       (15, 4, 1, 2200, 2200);
+-- 1 Thé Chai
 
 -- Matières premières (avec unités cohérentes)
 INSERT INTO matiere_premiere(nom, id_unite, stock, image)
@@ -174,16 +178,15 @@ VALUES
 
 -- Données test pour historique_estimation des prix des matières premières
 INSERT INTO historique_estimation(id_matiere_premiere, prix, quatite, id_unite, date_application)
-VALUES 
-    (1, 12000, 50, 2, '2024-06-01'), -- Café vert, 50kg à 12000, unité kg
-    (1, 12500, 60, 2, '2024-06-15'), -- Café vert, 60kg à 12500, unité kg
-    (2, 4000, 25, 2, '2024-06-05'),  -- Sucre, 25kg à 4000, unité kg
-    (2, 4200, 30, 2, '2024-06-20'),  -- Sucre, 30kg à 4200, unité kg
-    (3, 9000, 20, 3, '2024-06-08'),  -- Lait, 20L à 9000, unité L
-    (3, 9500, 25, 3, '2024-06-22'),  -- Lait, 25L à 9500, unité L
-    (4, 2500, 10, 4, '2024-06-09'),  -- Chocolat, 10 sachets à 2500, unité sachet
-    (5, 1800, 15, 4, '2024-06-11'),  -- Thé vert, 15 sachets à 1800, unité sachet
-    (6, 3500, 10, 3, '2024-06-13'),  -- Crème, 10L à 3500, unité L
-    (7, 4000, 5, 3, '2024-06-14'),   -- Miel, 5L à 4000, unité L
-    (8, 1200, 2, 5, '2024-06-17'),   -- Cannelle, 2 boîtes à 1200, unité boîte
-    (9, 900, 1, 5, '2024-06-19');    -- Vanille, 1 boîte à 900, unité boîte
+VALUES (1, 12000, 50, 2, '2024-06-01'), -- Café vert, 50kg à 12000, unité kg
+       (1, 12500, 60, 2, '2024-06-15'), -- Café vert, 60kg à 12500, unité kg
+       (2, 4000, 25, 2, '2024-06-05'),  -- Sucre, 25kg à 4000, unité kg
+       (2, 4200, 30, 2, '2024-06-20'),  -- Sucre, 30kg à 4200, unité kg
+       (3, 9000, 20, 3, '2024-06-08'),  -- Lait, 20L à 9000, unité L
+       (3, 9500, 25, 3, '2024-06-22'),  -- Lait, 25L à 9500, unité L
+       (4, 2500, 10, 4, '2024-06-09'),  -- Chocolat, 10 sachets à 2500, unité sachet
+       (5, 1800, 15, 4, '2024-06-11'),  -- Thé vert, 15 sachets à 1800, unité sachet
+       (6, 3500, 10, 3, '2024-06-13'),  -- Crème, 10L à 3500, unité L
+       (7, 4000, 5, 3, '2024-06-14'),   -- Miel, 5L à 4000, unité L
+       (8, 1200, 2, 5, '2024-06-17'),   -- Cannelle, 2 boîtes à 1200, unité boîte
+       (9, 900, 1, 5, '2024-06-19'); -- Vanille, 1 boîte à 900, unité boîte

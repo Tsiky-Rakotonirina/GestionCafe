@@ -1,5 +1,6 @@
 package com.gestioncafe.service.production;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,5 +31,33 @@ public class MatierePremiereService {
 
     public void deleteById(Integer id) {
         repository.deleteById(id);
+    }
+
+    // Retourne le prix unitaire courant de la matière première (à adapter selon votre modèle)
+    public BigDecimal getPrixUnitaire(Integer idMatierePremiere) {
+        return repository.findById(idMatierePremiere)
+            .map(mp -> {
+                var historiques = mp.getHistoriquesEstimation();
+                if (historiques != null && !historiques.isEmpty()) {
+                    // Prend le prix de la dernière estimation (date la plus récente)
+                    return historiques.stream()
+                        .filter(h -> h.getPrix() != null)
+                        .max((h1, h2) -> {
+                            if (h1.getDateApplication() == null) return -1;
+                            if (h2.getDateApplication() == null) return 1;
+                            return h1.getDateApplication().compareTo(h2.getDateApplication());
+                        })
+                        .map(h -> {
+                            Number prix = h.getPrix();
+                            return (prix instanceof BigDecimal)
+                                ? (BigDecimal) prix
+                                : new BigDecimal(prix.toString());
+                        })
+                        .orElse(BigDecimal.ZERO);
+                }
+                
+                return BigDecimal.ZERO;
+            })
+            .orElse(BigDecimal.ZERO);
     }
 }

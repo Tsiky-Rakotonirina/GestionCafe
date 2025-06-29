@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${produit.id == null ? 'Ajouter' : 'Modifier'} + ' un produit'"></title>
+    <title th:text="${produit.id == null ? 'Ajouter un produit' : 'Modifier un produit'}">Produit</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
@@ -51,7 +51,7 @@
                         <i th:class="${produit.id == null ? 'fas fa-plus' : 'fas fa-edit'}"></i>
                     </div>
                     <div>
-                        <h2 th:text="${produit.id == null ? 'Ajouter' : 'Modifier'} + ' un produit'">Formulaire produit</h2>
+                        <h2 th:text="${produit.id == null ? 'Ajouter un produit' : 'Modifier un produit'}">Formulaire produit</h2>
                         <p class="header-subtitle" th:text="${produit.id == null ? 'Créer un nouveau produit' : 'Modifier les informations existantes'}">Gestion des produits</p>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                     <span th:text="${produit.id == null ? 'Nouveau produit' : 'Modification'}">Formulaire</span>
                 </h3>
             </div>
-            <form th:action="@{${produit.id == null} ? '/produits/add' : '/produits/edit/' + ${produit.id}}"
+            <form th:action="@{/produits/save}"
                   th:object="${produit}" method="post" enctype="multipart/form-data"
                   style="padding: 2rem;">
                 <div class="form-flex-container">
@@ -161,6 +161,33 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Mode de calcul du prix de vente Field -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-euro-sign"></i>
+                                Mode de calcul du prix de vente
+                            </label>
+                            <select name="modePrix" class="form-select" id="modePrixSelect" required onchange="togglePrixFields()">
+                                <option value="coefficient">Calcul par coefficient</option>
+                                <option value="manuel">Saisie manuelle</option>
+                            </select>
+                        </div>
+                        <!-- Champ coefficient (affiché si modePrix = coefficient) -->
+                        <div class="form-group" id="coefficientField" style="display: none;">
+                            <label class="form-label">
+                                <i class="fas fa-percentage"></i>
+                                Coefficient multiplicateur
+                            </label>
+                            <input type="number" step="0.01" min="0" name="coefficient" class="form-input" placeholder="Coefficient (ex: 1.5)">
+                        </div>
+                        <!-- Champ prix de vente manuel (affiché si modePrix = manuel) -->
+                        <div class="form-group" id="prixVenteManuelField" style="display: none;">
+                            <label class="form-label">
+                                <i class="fas fa-euro-sign"></i>
+                                Prix de vente manuel (€)
+                            </label>
+                            <input type="number" step="0.01" min="0" name="prixVenteManuel" class="form-input" placeholder="Prix de vente">
+                        </div>
                     </div>
                     <!-- Right: Ingrédients -->
                     <div class="form-ingredients-box">
@@ -206,7 +233,7 @@
 
         // Matière première
         const selectMp = document.createElement('select');
-        selectMp.name = `ingredients[${index}].idMatierePremiere`;
+        selectMp.name = `ingredientsWrapper.ingredients[${index}].idMatierePremiere`;
         selectMp.required = true;
         matieres.forEach(mp => {
             const opt = document.createElement('option');
@@ -221,14 +248,14 @@
         inputQte.type = 'number';
         inputQte.step = '0.01';
         inputQte.min = '0';
-        inputQte.name = `ingredients[${index}].quantite`;
+        inputQte.name = `ingredientsWrapper.ingredients[${index}].quantite`;
         inputQte.placeholder = 'Quantité';
         inputQte.required = true;
         if (quantite) inputQte.value = quantite;
 
         // Unité
         const selectUnite = document.createElement('select');
-        selectUnite.name = `ingredients[${index}].idUnite`;
+        selectUnite.name = `ingredientsWrapper.ingredients[${index}].idUnite`;
         selectUnite.required = true;
         unites.forEach(u => {
             const opt = document.createElement('option');
@@ -261,14 +288,25 @@
         rows.forEach((row, idx) => {
             row.querySelectorAll('select, input').forEach(input => {
                 if (input.name.includes('idMatierePremiere'))
-                    input.name = `ingredients[${idx}].idMatierePremiere`;
+                    input.name = `ingredientsWrapper.ingredients[${idx}].idMatierePremiere`;
                 if (input.name.includes('quantite'))
-                    input.name = `ingredients[${idx}].quantite`;
+                    input.name = `ingredientsWrapper.ingredients[${idx}].quantite`;
                 if (input.name.includes('idUnite'))
-                    input.name = `ingredients[${idx}].idUnite`;
+                    input.name = `ingredientsWrapper.ingredients[${idx}].idUnite`;
             });
         });
     }
+
+    function togglePrixFields() {
+        var mode = document.getElementById('modePrixSelect').value;
+        document.getElementById('coefficientField').style.display = (mode === 'coefficient') ? '' : 'none';
+        document.getElementById('prixVenteManuelField').style.display = (mode === 'manuel') ? '' : 'none';
+    }
+
+    // Affiche le bon champ au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        togglePrixFields();
+    });
 
     window.addIngredientRow = addIngredientRow;
     window.updateIngredientIndexes = updateIngredientIndexes;

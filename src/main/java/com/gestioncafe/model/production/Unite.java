@@ -1,6 +1,15 @@
 package com.gestioncafe.model.production;
 
-import jakarta.persistence.*;
+import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "unite")
@@ -12,7 +21,7 @@ public class Unite {
     private String nom;
 
     @Column(name = "valeur_pr_norme")
-    private double valeurParNorme;
+    private BigDecimal valeurParNorme;
 
     @ManyToOne
     @JoinColumn(name = "categorie_unite_id")
@@ -35,11 +44,11 @@ public class Unite {
         this.nom = nom;
     }
 
-    public double getValeurParNorme() {
+    public BigDecimal getValeurParNorme() {
         return valeurParNorme;
     }
 
-    public void setValeurParNorme(double valeurParNorme) {
+    public void setValeurParNorme(BigDecimal valeurParNorme) {
         this.valeurParNorme = valeurParNorme;
     }
 
@@ -49,5 +58,10 @@ public class Unite {
 
     public void setCategorieUnite(CategorieUnite categorieUnite) {
         this.categorieUnite = categorieUnite;
+    }
+
+    // Si tu utilises encore getValeurPrNorme() dans le code, ajoute aussi :
+    public BigDecimal getValeurPrNorme() {
+        return getValeurParNorme();
     }
 }
