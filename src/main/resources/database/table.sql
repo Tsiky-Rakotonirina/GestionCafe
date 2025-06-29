@@ -535,36 +535,6 @@ CREATE TABLE mouvement_stock
             REFERENCES matiere_premiere (id)
 );
 
--- Table prevision
-CREATE TABLE prevision
-(
-    id             SERIAL PRIMARY KEY,
-    nb_client      INTEGER        NOT NULL,
-    recette        DECIMAL(10, 2) NOT NULL,
-    stock          DECIMAL(10, 2) NOT NULL,
-    benefice       DECIMAL(10, 2) NOT NULL,
-    date_prevision TIMESTAMP      NOT NULL
-);
-
--- Table detail_prevision
-CREATE TABLE detail_prevision
-(
-    id            SERIAL PRIMARY KEY,
-    id_prevision  INTEGER        NOT NULL,
-    id_produit    INTEGER        NOT NULL,
-    quantite      DECIMAL(10, 2) NOT NULL,
-    prix_unitaire DECIMAL(10, 2) NOT NULL,
-    total         DECIMAL(10, 2) NOT NULL,
-
-    CONSTRAINT fk_detail_prevision_prevision
-        FOREIGN KEY (id_prevision)
-            REFERENCES prevision (id),
-
-    CONSTRAINT fk_detail_prevision_produit
-        FOREIGN KEY (id_produit)
-            REFERENCES produit (id)
-);
-
 -- Table besoins
 CREATE TABLE besoins
 (

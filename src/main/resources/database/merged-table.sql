@@ -8,8 +8,8 @@ CREATE TABLE administratif
 -- Table genre
 CREATE TABLE genre
 (
-    id          SERIAL PRIMARY KEY,
-    nom         VARCHAR(255)
+    id  SERIAL PRIMARY KEY,
+    nom VARCHAR(255)
 );
 
 CREATE TABLE tiers
@@ -330,10 +330,10 @@ CREATE TABLE unite
 CREATE TABLE matiere_premiere
 (
     id       SERIAL PRIMARY KEY,
-    nom      VARCHAR(255)   NOT NULL,
-    id_unite INTEGER        NOT NULL,
+    nom      VARCHAR(255) NOT NULL,
+    id_unite INTEGER      NOT NULL,
     stock    DECIMAL(10, 2) DEFAULT 0, -- d
-    image    VARCHAR(255)   NULL,
+    image    VARCHAR(255) NULL,
 
     CONSTRAINT fk_matiere_premiere_unite
         FOREIGN KEY (id_unite)
@@ -403,8 +403,8 @@ CREATE TABLE approvisionnement
     id_matiere_premiere    INTEGER        NOT NULL,
     quantite               DECIMAL(10, 2) NOT NULL,
     total                  DECIMAL(10, 2) NOT NULL,
-    date_approvisionnement DATE           NOT NULL,
-    date_peremption        DATE           NOT NULL,
+    date_approvisionnement TIMESTAMP      NOT NULL,
+    date_peremption        TIMESTAMP      NOT NULL,
     reference_facture      VARCHAR(255)   NOT NULL,
 
     CONSTRAINT fk_approvisionnement_detail_fournisseur
@@ -416,15 +416,29 @@ CREATE TABLE approvisionnement
             REFERENCES matiere_premiere (id)
 );
 
+CREATE TABLE production
+(
+    id              SERIAL PRIMARY KEY,
+    id_employe      INTEGER,
+    id_recette      INTEGER,
+    quantite        DECIMAL(10, 2),
+    date_production TIMESTAMP,
+
+    FOREIGN KEY (id_employe) REFERENCES employe (id),
+    FOREIGN KEY (id_recette) REFERENCES recette (id)
+);
+
 -- Table mouvement_stock
 CREATE TABLE mouvement_stock
 (
     id                   SERIAL PRIMARY KEY,
     id_matiere_premiere  INTEGER        NOT NULL,
-    id_approvisionnement INTEGER        NOT NULL,
+    id_approvisionnement INTEGER,
+    id_production        INTEGER,
     date_mouvement_stock TIMESTAMP      NOT NULL,
     quantite             DECIMAL(10, 2) NOT NULL,
 
+    FOREIGN KEY (id_production) REFERENCES production (id),
     FOREIGN KEY (id_approvisionnement) REFERENCES approvisionnement (id),
 
     CONSTRAINT fk_mouvement_stock_matiere_premiere
@@ -535,6 +549,21 @@ CREATE TABLE details_vente
     CONSTRAINT fk_details_vente_produit
         FOREIGN KEY (id_produit)
             REFERENCES produit (id)
+);
+
+CREATE TABLE mouvement_stock_produit
+(
+    id              SERIAL PRIMARY KEY,
+    id_produit      INTEGER,
+    id_production   INTEGER,
+    id_vente        INTEGER,
+    date_mouvement  TIMESTAMP NOT NULL,
+    date_peremption TIMESTAMP NOT NULl,
+    quantite        DECIMAL(10, 2),
+
+    FOREIGN KEY (id_produit) REFERENCES produit (id),
+    FOREIGN KEY (id_production) REFERENCES production (id),
+    FOREIGN KEY (id_vente) REFERENCES vente (id)
 );
 
 CREATE TABLE electricite
