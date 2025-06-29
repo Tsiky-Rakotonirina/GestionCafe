@@ -1,6 +1,6 @@
 // Script AJAX pour filtrer les produits vendus sans recharger la page
-const filtreForm = document.querySelector('form[action*="stats-filtre"]');
-const tableBody = document.querySelector('table tbody');
+const filtreForm = document.getElementById('statsFiltreForm');
+const tableBody = document.querySelector('table.data-table tbody');
 
 if (filtreForm && tableBody) {
     filtreForm.addEventListener('submit', function (e) {
@@ -14,7 +14,7 @@ if (filtreForm && tableBody) {
                 // Extraire le tbody du HTML retourné
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                const newTbody = doc.querySelector('table tbody');
+                const newTbody = doc.querySelector('table.data-table tbody');
                 if (newTbody) {
                     tableBody.innerHTML = newTbody.innerHTML;
                 }
@@ -41,6 +41,7 @@ if (courbeForm && chartCanvas && spanMoyenneProduit && spanBeneficeMoyen) {
                 spanMoyenneProduit.innerHTML = json.moyenneProduit;
                 spanBeneficeMoyen.innerHTML = json.beneficeMoyen;
 
+                // Réinitialise le graphique si besoin
                 if (!chartInstance) chartInstance = Chart.getChart(chartCanvas);
                 if (chartInstance) {
                     chartInstance.data.labels = json.labels;

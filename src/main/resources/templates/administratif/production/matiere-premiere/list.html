@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Matières Premières - Caf-E</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+</head>
+<body>
+<div th:replace="~{administratif/layout/sidebar :: sidebar}"></div>
+<div class="main-content" id="mainContent">
+    <div th:replace="~{administratif/layout/header :: header('Matières Premières')}"></div>
+    <main class="content">
+        <!-- Modern Header -->
+        <div class="page-header modern-header">
+            <div class="header-content">
+                <div class="header-title-section">
+                    <div class="header-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div>
+                        <h2>Gestion des Matières Premières</h2>
+                        <p class="header-subtitle">Catalogue complet des ingrédients et matières premières</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="search-filters">
+                        <div class="search-input">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Rechercher une matière première...">
+                        </div>
+                        <select class="form-select">
+                            <option>Toutes les unités</option>
+                            <option>kg</option>
+                            <option>L</option>
+                            <option>sachet</option>
+                            <option>boîte</option>
+                        </select>
+                    </div>
+                    <a th:href="@{/administratif/production/matiere-premiere/ajouter}" class="btn primary">
+                        <i class="fas fa-plus"></i>
+                        Ajouter Matière Première
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid" style="margin-bottom: 2rem;">
+            <div class="stat-card primary hover-lift">
+                <div class="stat-icon">
+                    <i class="fas fa-cubes"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Matières</h3>
+                    <p class="stat-value" th:text="${#lists.size(matieres)}">0</p>
+                </div>
+            </div>
+
+            <div class="stat-card success hover-lift">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>En Stock</h3>
+                    <p class="stat-value">85%</p>
+                </div>
+            </div>
+
+            <div class="stat-card warning hover-lift">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Stock Faible</h3>
+                    <p class="stat-value">3</p>
+                </div>
+            </div>
+
+            <div class="stat-card info hover-lift">
+                <div class="stat-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Fournisseurs</h3>
+                    <p class="stat-value">12</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Materials Grid -->
+        <div class="customers-grid" th:if="${not #lists.isEmpty(matieres)}">
+            <div class="customer-card" th:each="mp : ${matieres}">
+                <div class="customer-badge primary">
+                    <i class="fas fa-leaf"></i>
+                    Matière 1ère
+                </div>
+                <div class="customer-avatar">
+                    <img th:if="${mp.image}" th:src="@{${mp.image}}" th:alt="${mp.nom}" 
+                         style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;"/>
+                    <div th:unless="${mp.image}" style="width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
+                        <span th:text="${#strings.substring(mp.nom, 0, 1)}">M</span>
+                    </div>
+                </div>
+                <div class="customer-info">
+                    <h4 th:text="${mp.nom}">Nom matière première</h4>
+                    <p class="customer-since" th:text="'Unité: ' + (${mp.unite != null ? mp.unite.nom : 'Non définie'})">Unité de mesure</p>
+                </div>
+                <div class="customer-stats">
+                    <div class="customer-stat">
+                        <span class="stat-value" th:text="${mp.stock != null ? mp.stock : '0'}">0</span>
+                        <span class="stat-label">Stock</span>
+                    </div>
+                    <div class="customer-stat">
+                        <span class="stat-value">€</span>
+                        <span class="stat-label">Prix Moyen</span>
+                    </div>
+                </div>
+                <div class="customer-contact">
+                    <div class="contact-item">
+                        <i class="fas fa-boxes"></i>
+                        <span th:text="'Stock: ' + (${mp.stock != null ? mp.stock : '0'}) + ' ' + (${mp.unite != null ? mp.unite.nom : ''})">Stock disponible</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-ruler"></i>
+                        <span th:text="'Unité: ' + (${mp.unite != null ? mp.unite.nom : 'Non définie'})">Unité de mesure</span>
+                    </div>
+                </div>
+                <div class="customer-actions">
+                    <a th:href="@{'/administratif/production/matiere-premiere/details/' + ${mp.id}}" class="btn outline small">
+                        <i class="fas fa-eye"></i>
+                        Détails
+                    </a>
+                    <a th:href="@{'/administratif/production/matiere-premiere/modifier/' + ${mp.id}}" class="btn warning small">
+                        <i class="fas fa-edit"></i>
+                        Modifier
+                    </a>
+                    <a th:href="@{'/administratif/production/matiere-premiere/supprimer/' + ${mp.id}}" 
+                       class="btn danger small" 
+                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette matière première ?')">
+                        <i class="fas fa-trash"></i>
+                        Supprimer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(matieres)}" class="chart-card hover-glow" style="text-align: center; padding: 4rem 2rem;">
+            <div style="color: var(--gray-400); margin-bottom: 2rem;">
+                <i class="fas fa-boxes" style="font-size: 4rem;"></i>
+            </div>
+            <h3 style="color: var(--gray-600); margin-bottom: 1rem;">Aucune matière première</h3>
+            <p style="color: var(--gray-500); margin-bottom: 2rem;">Commencez par ajouter vos premières matières premières pour gérer votre stock.</p>
+            <a th:href="@{/administratif/production/matiere-premiere/ajouter}" class="btn primary">
+                <i class="fas fa-plus"></i>
+                Ajouter la première matière première
+            </a>
+        </div>
+    </main>
+</div>
+<script th:src="@{/templates/script.js}"></script>
+</body>
+</html>

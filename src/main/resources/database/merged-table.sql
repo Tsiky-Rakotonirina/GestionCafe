@@ -332,7 +332,7 @@ CREATE TABLE matiere_premiere
     id       SERIAL PRIMARY KEY,
     nom      VARCHAR(255)   NOT NULL,
     id_unite INTEGER        NOT NULL,
-    stock    DECIMAL(10, 2) NOT NULL, -- d
+    stock    DECIMAL(10, 2) DEFAULT 0, -- d
     image    VARCHAR(255)   NULL,
 
     CONSTRAINT fk_matiere_premiere_unite
