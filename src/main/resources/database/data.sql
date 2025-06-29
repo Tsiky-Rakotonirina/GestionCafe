@@ -90,49 +90,50 @@ VALUES (1, 1, 2, 2000, 4000), -- 2 Café Noir
        (12, 2, 2, 2500, 5000);
 
 -- Matières premières (avec unités cohérentes)
-INSERT INTO matiere_premiere(id, nom, id_unite, stock, image)
-VALUES (1, 'Café vert', 2, 100, '/images/mp-cafe-vert.jpg'),      -- kg
-       (2, 'Sucre', 2, 50, '/images/mp-sucre.jpg'),               -- kg
-       (3, 'Lait', 3, 30, '/images/mp-lait.jpg'),                 -- L
-       (4, 'Chocolat', 4, 40, '/images/mp-chocolat.jpg'),         -- sachet
-       (5, 'Thé vert', 4, 25, '/images/mp-the-vert.jpg'),         -- sachet
-       (6, 'Crème', 3, 15, '/images/mp-creme.jpg'),               -- L
-       (7, 'Miel', 3, 10, '/images/mp-miel.jpg'),                 -- L
-       (8, 'Cannelle', 5, 8, '/images/mp-cannelle.jpg'),          -- boîte
-       (9, 'Vanille', 5, 5, '/images/mp-vanille.jpg');            -- boîte
+INSERT INTO matiere_premiere(nom, id_unite, stock, image)
+VALUES ('Café vert', 2, 100, '/images/mp-cafe-vert.jpg'), -- kg
+       ('Sucre', 2, 50, '/images/mp-sucre.jpg'),          -- kg
+       ('Lait', 3, 30, '/images/mp-lait.jpg'),            -- L
+       ('Chocolat', 4, 40, '/images/mp-chocolat.jpg'),    -- sachet
+       ('Thé vert', 4, 25, '/images/mp-the-vert.jpg'),    -- sachet
+       ('Crème', 3, 15, '/images/mp-creme.jpg'),          -- L
+       ('Miel', 3, 10, '/images/mp-miel.jpg'),            -- L
+       ('Cannelle', 5, 8, '/images/mp-cannelle.jpg'),     -- boîte
+       ('Vanille', 5, 5, '/images/mp-vanille.jpg');
+-- boîte
 
 -- Fournisseurs
-INSERT INTO fournisseur(id, nom, contact, frais, email)
-VALUES (1, 'Fournisseur A', '0123456789', 1000, 'fournisseurA@mail.com'),
-       (2, 'Fournisseur B', '0987654321', 1500, 'fournisseurB@mail.com');
+INSERT INTO fournisseur(nom, contact, frais, email)
+VALUES ('Fournisseur A', '0123456789', 1000, 'fournisseurA@mail.com'),
+       ('Fournisseur B', '0987654321', 1500, 'fournisseurB@mail.com');
 
 -- Prix par fournisseur (detail_fournisseur) - cohérent avec les matières premières et unités
-INSERT INTO detail_fournisseur(id, id_fournisseur, id_matiere_premiere, quantite, id_unite, prix, date_modification)
-VALUES 
+INSERT INTO detail_fournisseur(id_fournisseur, id_matiere_premiere, quantite, id_unite, prix, date_modification)
+VALUES
     -- Café vert (kg)
-    (1, 1, 1, 50, 2, 12000, '2024-06-01'),
-    (2, 2, 1, 100, 2, 23000, '2024-06-10'),
+    (1, 1, 50, 2, 12000, '2024-06-01'),
+    (2, 1, 100, 2, 23000, '2024-06-10'),
     -- Sucre (kg)
-    (3, 1, 2, 25, 2, 4000, '2024-06-05'),
-    (4, 2, 2, 50, 2, 7900, '2024-06-12'),
+    (1, 2, 25, 2, 4000, '2024-06-05'),
+    (2, 2, 50, 2, 7900, '2024-06-12'),
     -- Lait (L)
-    (5, 1, 3, 20, 3, 9000, '2024-06-08'),
-    (6, 2, 3, 30, 3, 13500, '2024-06-15'),
+    (1, 3, 20, 3, 9000, '2024-06-08'),
+    (2, 3, 30, 3, 13500, '2024-06-15'),
     -- Chocolat (sachet)
-    (7, 1, 4, 10, 4, 2500, '2024-06-09'),
-    (8, 2, 4, 20, 4, 4800, '2024-06-16'),
+    (1, 4, 10, 4, 2500, '2024-06-09'),
+    (2, 4, 20, 4, 4800, '2024-06-16'),
     -- Thé vert (sachet)
-    (9, 1, 5, 15, 4, 1800, '2024-06-11'),
-    (10, 2, 5, 25, 4, 2950, '2024-06-18'),
+    (1, 5, 15, 4, 1800, '2024-06-11'),
+    (2, 5, 25, 4, 2950, '2024-06-18'),
     -- Crème (L)
-    (11, 1, 6, 10, 3, 3500, '2024-06-13'),
-    (12, 2, 6, 15, 3, 5100, '2024-06-20'),
+    (1, 6, 10, 3, 3500, '2024-06-13'),
+    (2, 6, 15, 3, 5100, '2024-06-20'),
     -- Miel (L)
-    (13, 1, 7, 5, 3, 4000, '2024-06-14'),
-    (14, 2, 7, 10, 3, 7900, '2024-06-21'),
+    (1, 7, 5, 3, 4000, '2024-06-14'),
+    (2, 7, 10, 3, 7900, '2024-06-21'),
     -- Cannelle (boîte)
-    (15, 1, 8, 2, 5, 1200, '2024-06-17'),
-    (16, 2, 8, 4, 5, 2300, '2024-06-22'),
+    (1, 8, 2, 5, 1200, '2024-06-17'),
+    (2, 8, 4, 5, 2300, '2024-06-22'),
     -- Vanille (boîte)
-    (17, 1, 9, 1, 5, 900, '2024-06-19'),
-    (18, 2, 9, 2, 5, 1700, '2024-06-23');
+    (1, 9, 1, 5, 900, '2024-06-19'),
+    (2, 9, 2, 5, 1700, '2024-06-23');

@@ -20,7 +20,7 @@
                         <i class="fas fa-boxes"></i>
                     </div>
                     <div>
-                        <h2>Gestion des Matières Premières</h2>
+                        <h2>Gestion Matières Premières</h2>
                         <p class="header-subtitle">Catalogue complet des ingrédients et matières premières</p>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     </div>
                     <a th:href="@{/administratif/production/matiere-premiere/ajouter}" class="btn primary">
                         <i class="fas fa-plus"></i>
-                        Ajouter Matière Première
+                        Ajouter 
                     </a>
                 </div>
             </div>
@@ -89,61 +89,76 @@
             </div>
         </div>
 
-        <!-- Materials Grid -->
-        <div class="customers-grid" th:if="${not #lists.isEmpty(matieres)}">
-            <div class="customer-card" th:each="mp : ${matieres}">
-                <div class="customer-badge primary">
-                    <i class="fas fa-leaf"></i>
-                    Matière 1ère
-                </div>
-                <div class="customer-avatar">
-                    <img th:if="${mp.image}" th:src="@{${mp.image}}" th:alt="${mp.nom}" 
-                         style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;"/>
-                    <div th:unless="${mp.image}" style="width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
-                        <span th:text="${#strings.substring(mp.nom, 0, 1)}">M</span>
-                    </div>
-                </div>
-                <div class="customer-info">
-                    <h4 th:text="${mp.nom}">Nom matière première</h4>
-                    <p class="customer-since" th:text="'Unité: ' + (${mp.unite != null ? mp.unite.nom : 'Non définie'})">Unité de mesure</p>
-                </div>
-                <div class="customer-stats">
-                    <div class="customer-stat">
-                        <span class="stat-value" th:text="${mp.stock != null ? mp.stock : '0'}">0</span>
-                        <span class="stat-label">Stock</span>
-                    </div>
-                    <div class="customer-stat">
-                        <span class="stat-value">€</span>
-                        <span class="stat-label">Prix Moyen</span>
-                    </div>
-                </div>
-                <div class="customer-contact">
-                    <div class="contact-item">
-                        <i class="fas fa-boxes"></i>
-                        <span th:text="'Stock: ' + (${mp.stock != null ? mp.stock : '0'}) + ' ' + (${mp.unite != null ? mp.unite.nom : ''})">Stock disponible</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-ruler"></i>
-                        <span th:text="'Unité: ' + (${mp.unite != null ? mp.unite.nom : 'Non définie'})">Unité de mesure</span>
-                    </div>
-                </div>
-                <div class="customer-actions">
-                    <a th:href="@{'/administratif/production/matiere-premiere/details/' + ${mp.id}}" class="btn outline small">
-                        <i class="fas fa-eye"></i>
-                        Détails
-                    </a>
-                    <a th:href="@{'/administratif/production/matiere-premiere/modifier/' + ${mp.id}}" class="btn warning small">
-                        <i class="fas fa-edit"></i>
-                        Modifier
-                    </a>
-                    <a th:href="@{'/administratif/production/matiere-premiere/supprimer/' + ${mp.id}}" 
-                       class="btn danger small" 
-                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette matière première ?')">
-                        <i class="fas fa-trash"></i>
-                        Supprimer
-                    </a>
-                </div>
+        <!-- Materials Table -->
+        <div class="table-container" th:if="${not #lists.isEmpty(matieres)}">
+            <div style="padding: 1.5rem 2rem; border-bottom: 1px solid rgba(139, 69, 19, 0.1); background: rgba(139, 69, 19, 0.05);">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-boxes"></i>
+                    Matières Premières
+                    <span style="font-size: 0.8rem; background: var(--primary-color); color: white; padding: 0.25rem 0.75rem; border-radius: 12px;"
+                          th:text="${#lists.size(matieres)} + ' matières'">0 matières</span>
+                </h3>
             </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th><i class="fas fa-leaf"></i> Nom</th>
+                    <th><i class="fas fa-ruler"></i> Unité</th>
+                    <th><i class="fas fa-boxes"></i> Stock</th>
+                    <th><i class="fas fa-chart-bar"></i> Statut</th>
+                    <th><i class="fas fa-cogs"></i> Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="mp : ${matieres}">
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div th:if="${mp.image}" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden;">
+                            </div>
+                            <div th:unless="${mp.image}"
+                                style="width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-primary);
+                                display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                <span th:text="${#strings.substring(mp.nom, 0, 1)}">M</span>
+                            </div>
+                            <span th:text="${mp.nom}">Nom matière première</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="background: var(--info-light); color: var(--info-color); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;"
+                              th:text="${mp.unite != null ? mp.unite.nom : 'Non définie'}">Unité</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <strong style="color: var(--success-color);" th:text="${mp.stock != null ? mp.stock : '0'}">0</strong>
+                            <span style="font-size: 0.8rem; color: var(--gray-500);" th:text="${mp.unite != null ? mp.unite.nom : ''}">unité</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge success">
+                            <i class="fas fa-check-circle"></i>
+                            En stock
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a th:href="@{'/administratif/production/matiere-premiere/details/' + ${mp.id}}" 
+                               class="btn outline small" title="Voir les détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a th:href="@{'/administratif/production/matiere-premiere/modifier/' + ${mp.id}}" 
+                               class="btn warning small" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{'/administratif/production/matiere-premiere/supprimer/' + ${mp.id}}" 
+                               class="btn danger small" title="Supprimer"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette matière première ?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- Empty State -->

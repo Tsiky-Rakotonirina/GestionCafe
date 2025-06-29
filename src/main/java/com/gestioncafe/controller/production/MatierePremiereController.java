@@ -1,24 +1,30 @@
 package com.gestioncafe.controller.production;
 
-import com.gestioncafe.model.production.MatierePremiere;
-import com.gestioncafe.model.production.DetailFournisseur;
-import com.gestioncafe.model.production.SeuilMatierePremiere;
-import com.gestioncafe.model.production.HistoriqueEstimation;
-import com.gestioncafe.repository.production.UniteRepository;
-import com.gestioncafe.repository.production.CategorieUniteRepository;
-import com.gestioncafe.service.production.MatierePremiereService;
-import com.gestioncafe.service.production.DetailFournisseurService;
-import com.gestioncafe.service.production.SeuilMatierePremiereService;
-import com.gestioncafe.service.production.HistoriqueEstimationService;
-import com.gestioncafe.service.tiers.FournisseurService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.gestioncafe.model.production.DetailFournisseur;
+import com.gestioncafe.model.production.HistoriqueEstimation;
+import com.gestioncafe.model.production.MatierePremiere;
+import com.gestioncafe.model.production.SeuilMatierePremiere;
+import com.gestioncafe.repository.production.CategorieUniteRepository;
+import com.gestioncafe.repository.production.UniteRepository;
+import com.gestioncafe.service.production.DetailFournisseurService;
+import com.gestioncafe.service.production.HistoriqueEstimationService;
+import com.gestioncafe.service.production.MatierePremiereService;
+import com.gestioncafe.service.production.SeuilMatierePremiereService;
+import com.gestioncafe.service.tiers.FournisseurService;
 
 @Controller
 @RequestMapping("/administratif/production/matiere-premiere")
@@ -99,7 +105,15 @@ public class MatierePremiereController {
                            @ModelAttribute MatierePremiere matierePremiere,
                            @RequestParam("imageFile") MultipartFile imageFile,
                            Model model) throws IOException {
-        matierePremiere.setId(id);
+        // Charger l'entité existante depuis la base
+        MatierePremiere existant = service.findById(id).orElseThrow();
+
+        // Mettre à jour les champs simples
+        existant.setNom(matierePremiere.getNom());
+        existant.setUnite(matierePremiere.getUnite());
+        // Ajoute ici les autres champs simples à mettre à jour si besoin
+
+        // Gérer l'image
         if (imageFile != null && !imageFile.isEmpty()) {
             String uploadDir = "uploads/";
             File dir = new File(uploadDir);
@@ -107,15 +121,13 @@ public class MatierePremiereController {
             String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
             File dest = new File(uploadDir + fileName);
             imageFile.transferTo(dest);
-            matierePremiere.setImage("/" + uploadDir + fileName);
-        } else {
-            // garder l'image existante si non modifiée
-            MatierePremiere existant = service.findById(id).orElse(null);
-            if (existant != null) {
-                matierePremiere.setImage(existant.getImage());
-            }
+            existant.setImage("/" + uploadDir + fileName);
         }
-        service.save(matierePremiere);
+        // Sinon, garder l'image existante (déjà présente sur l'entité)
+
+        // Ne pas toucher aux collections (detailsFournisseur, etc.) ici
+
+        service.save(existant);
         return "redirect:/administratif/production/matiere-premiere";
     }
 
