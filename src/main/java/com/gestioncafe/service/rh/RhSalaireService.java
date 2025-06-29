@@ -53,88 +53,6 @@ public class RhSalaireService {
                 .orElseThrow(() -> new RuntimeException("Employé non trouvé avec l'ID: " + id));
     }
 
-    public List<Commission> getCommissionsByEmployeId(Long idEmploye) {
-        return commissionRepository.findByIdEmployeOrderByDateCommissionDesc(idEmploye);
-    }
-
-    public List<Avance> getAvancesByEmployeId(Long idEmploye) {
-        return avanceRepository.findByIdEmployeOrderByDateAvanceDesc(idEmploye);
-    }
-    
-    public List<RaisonCommission> getAllRaisonCommissions() {
-        return raisonCommissionRepository.findAll();
-    }
-
-    public List<RaisonAvance> getAllRaisonAvances() {
-        return raisonAvanceRepository.findAll();
-    }
-
-    public void ajoutCommission(Long idEmploye, Long idRaison, double montant) throws Exception{
-        if(montant<=0) {
-            throw new Exception("Erreur dans l'ajout : Le montant doit etre strictement positif");
-        }
-        LocalDate localDate = LocalDate.now();
-        Date dateCommission = Date.valueOf(localDate);
-        RaisonCommission raisonCommission = raisonCommissionRepository.findById(idRaison)
-                .orElseThrow(() -> new Exception("Raison non trouvée"));
-        commissionRepository.save(new Commission(raisonCommission, idEmploye, montant, dateCommission));
-    }
-
-    public double retenuPourAvance(Long idEmploye) {
-        LocalDate ceJour = LocalDate.now();
-        ceJour = ceJour.withDayOfMonth(1);  
-        Date dateRepere = Date.valueOf(ceJour);  
-        List<Avance> avances = avanceRepository.findByIdEmployeAndDateAvanceAfter(idEmploye, dateRepere);
-        double totalAvances = 0;
-        for (Avance avance : avances) {
-            totalAvances += avance.getMontant();  
-        }
-        return totalAvances;
-    }
-
-    public double prochainSalaire(Long idEmploye) {
-        LocalDate ceJour  = LocalDate.now().withDayOfMonth(1);
-        Date dateRepere = Date.valueOf(ceJour);
-        double prochainSalaire = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, dateRepere);
-        List<CotisationSociale> cotisationSociales = cotisationSocialeRepository.findAll();
-        double tauxCotisationSociale = 0;
-        for (CotisationSociale cotisationSociale : cotisationSociales) {
-            tauxCotisationSociale += cotisationSociale.getTaux();  
-        }
-        prochainSalaire -= (prochainSalaire * tauxCotisationSociale);
-        List<Irsa>irsas = irsaRepository.findAll();
-        double impots = 0;
-        for (Irsa irsa : irsas) {
-            if (prochainSalaire >= irsa.getSalaireMin() && (irsa.getSalaireMax() == 0 || prochainSalaire <= irsa.getSalaireMax())) {
-                impots = (prochainSalaire - irsa.getSalaireMin()) * irsa.getTaux();
-                break;
-            }
-        }
-        prochainSalaire -= impots;
-        double retenuPourAvance = this.retenuPourAvance(idEmploye);
-        prochainSalaire -= retenuPourAvance;
-        return prochainSalaire;
-    } 
-
-    public void ajoutAvance(Long idEmploye, Long idRaison, double montant) throws Exception{
-        if(montant<=0) {
-            throw new Exception("Erreur dans l'ajout : Le montant doit etre strictement positif");
-        }
-        StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(idEmploye)
-            .orElseThrow(() -> new RuntimeException("Employé non trouvé avec l'ID: " + idEmploye));
-        if(statutEmploye.getIdStatut() != 1) {
-            throw new Exception("Erreur dans l'ajout : employe inactif");
-        }
-        double prochainSalaire = this.prochainSalaire(idEmploye);
-        if(montant > prochainSalaire) {
-            throw new Exception("Erreur dans l'ajout : le montant doit etre inferieur au disponible");
-        }
-        Date dateAvance = Date.valueOf(LocalDate.now());
-        RaisonAvance raisonAvance = raisonAvanceRepository.findById(idRaison)
-                .orElseThrow(() -> new Exception("Raison non trouvée"));
-        avanceRepository.save(new Avance(raisonAvance, idEmploye, montant, dateAvance));
-    }
-
     public List<Payement> getPayementsByEmployeId(Long idEmploye) {
         return payementRepository.findByIdEmployeOrderByMoisReferenceDesc(idEmploye);
     }
@@ -192,6 +110,60 @@ public class RhSalaireService {
         return ficheDePaies;
     }
 
+    
+    public double prochainSalaire(Long idEmploye) {
+        LocalDate ceJour  = LocalDate.now().withDayOfMonth(1);
+        Date dateRepere = Date.valueOf(ceJour);
+        double prochainSalaire = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, dateRepere);
+        List<CotisationSociale> cotisationSociales = cotisationSocialeRepository.findAll();
+        double tauxCotisationSociale = 0;
+        for (CotisationSociale cotisationSociale : cotisationSociales) {
+            tauxCotisationSociale += cotisationSociale.getTaux();  
+        }
+        prochainSalaire -= (prochainSalaire * tauxCotisationSociale);
+        List<Irsa>irsas = irsaRepository.findAll();
+        double impots = 0;
+        for (Irsa irsa : irsas) {
+            if (prochainSalaire >= irsa.getSalaireMin() && (irsa.getSalaireMax() == 0 || prochainSalaire <= irsa.getSalaireMax())) {
+                impots = (prochainSalaire - irsa.getSalaireMin()) * irsa.getTaux();
+                break;
+            }
+        }
+        prochainSalaire -= impots;
+        double retenuPourAvance = this.retenuPourAvance(idEmploye);
+        prochainSalaire -= retenuPourAvance;
+        return prochainSalaire;
+    } 
+
+    public double retenuPourAvance(Long idEmploye) {
+        LocalDate ceJour = LocalDate.now();
+        ceJour = ceJour.withDayOfMonth(1);  
+        Date dateRepere = Date.valueOf(ceJour);  
+        List<Avance> avances = avanceRepository.findByIdEmployeAndDateAvanceAfter(idEmploye, dateRepere);
+        double totalAvances = 0;
+        for (Avance avance : avances) {
+            totalAvances += avance.getMontant();  
+        }
+        return totalAvances;
+    }
+
+    public List<RaisonAvance> getAllRaisonAvances() {
+        return raisonAvanceRepository.findAll();
+    }
+  
+    public List<Avance> getAvancesByEmployeId(Long idEmploye) {
+        return avanceRepository.findByIdEmployeOrderByDateAvanceDesc(idEmploye);
+    }
+    
+
+    public List<RaisonCommission> getAllRaisonCommissions() {
+        return raisonCommissionRepository.findAll();
+    }
+
+    public List<Commission> getCommissionsByEmployeId(Long idEmploye) {
+        return commissionRepository.findByIdEmployeOrderByDateCommissionDesc(idEmploye);
+    }
+
     @Transactional
     public void ajoutPayement(Long idEmploye, double salaireDeBase, double abscences, double commissions,
         double retenuesSociales, double impots, double salaireBrut, double salaireNetImposable,
@@ -236,4 +208,35 @@ public class RhSalaireService {
         return payementRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payement non trouvé avec l'ID: " + id));
     }
+
+    public void ajoutAvance(Long idEmploye, Long idRaison, double montant) throws Exception{
+        if(montant<=0) {
+            throw new Exception("Erreur dans l'ajout : Le montant doit etre strictement positif");
+        }
+        StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(idEmploye)
+            .orElseThrow(() -> new RuntimeException("Employé non trouvé avec l'ID: " + idEmploye));
+        if(statutEmploye.getIdStatut() != 1) {
+            throw new Exception("Erreur dans l'ajout : employe inactif");
+        }
+        double prochainSalaire = this.prochainSalaire(idEmploye);
+        if(montant > prochainSalaire) {
+            throw new Exception("Erreur dans l'ajout : le montant doit etre inferieur au disponible");
+        }
+        Date dateAvance = Date.valueOf(LocalDate.now());
+        RaisonAvance raisonAvance = raisonAvanceRepository.findById(idRaison)
+                .orElseThrow(() -> new Exception("Raison non trouvée"));
+        avanceRepository.save(new Avance(raisonAvance, idEmploye, montant, dateAvance));
+    }
+    
+    public void ajoutCommission(Long idEmploye, Long idRaison, double montant) throws Exception{
+        if(montant<=0) {
+            throw new Exception("Erreur dans l'ajout : Le montant doit etre strictement positif");
+        }
+        LocalDate localDate = LocalDate.now();
+        Date dateCommission = Date.valueOf(localDate);
+        RaisonCommission raisonCommission = raisonCommissionRepository.findById(idRaison)
+                .orElseThrow(() -> new Exception("Raison non trouvée"));
+        commissionRepository.save(new Commission(raisonCommission, idEmploye, montant, dateCommission));
+    }
+
 }

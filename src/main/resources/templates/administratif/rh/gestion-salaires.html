@@ -133,6 +133,27 @@
             </div>
 
             <div>
+                <div>
+                    <h1 th:text="${erreurFicheDePaie != null ? erreurFicheDePaie}"></h1>
+                </div>
+                <div>
+                    <h1 th:text="${erreurAvance != null ? erreurAvance}"></h1>
+                </div>
+                <div>
+                    <h1 th:text="${erreurCommission != null ? erreurCommission}"></h1>
+                </div>
+                <div>
+                    <h1 th:text="${erreurAjoutCommission != null ? erreurAjoutCommission}"></h1>
+                </div>
+                <div>
+                    <h1 th:text="${erreurAjoutAvance != null ? erreurAjoutAvance}"></h1>
+                </div>
+                <div>
+                    <h1 th:text="${erreurPayement != null ? erreurPayement}"></h1>
+                </div>
+            </div>
+
+            <div>
                 <h1>Variation de commission des employés par mois</h1>
 
                 <div th:if="${variationCommission != null}">

@@ -49,7 +49,6 @@ public class RhSalaireController {
             erreur = "L'ID de l'employé doit être un nombre valide.";
         }
         model.addAttribute("erreurFicheDePaie", erreur);
-        System.out.println(erreur);
         return "redirect:/administratif/rh/gestion-salaires";
     }
 
@@ -101,59 +100,7 @@ public class RhSalaireController {
         return "redirect:/administratif/rh/gestion-salaires";
     }
 
-    @PostMapping("/ajout-commission")
-    public String ajoutCommission(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant, @RequestParam("idRaison") String idRaison, Model model) {
-        String erreur = "";
-        try {
-            double montantDouble = Double.parseDouble(montant);    
-            try{
-                Long raison = Long.parseLong(idRaison);
-                Long id = Long.parseLong(idEmploye); 
-                try{
-                    rhSalaireService.ajoutCommission(id, raison, montantDouble);
-                    model.addAttribute("succesAjoutCommission", "Commission de "+montant+" descerne a l'employe");
-                    return "redirect:/administratif/rh/salaire/commission?idEmploye="+idEmploye;
-                } catch(Exception e) {
-                    erreur = "Erreur dans l'ajout : "+ e.getMessage();
-                }
-            } catch(NumberFormatException e) {
-                erreur = "Erreur dans l'ajout : L'employe et la raison doivent être valide.";
-            }
-        } catch(NumberFormatException e) {
-            erreur = "Erreur dans l'ajout :  Le montant doit être un nombre valide.";
-        }
-        System.out.println(erreur);
-        model.addAttribute("erreurAjoutCommission", erreur);
-        return "redirect:/administratif/rh/salaire/commission?idEmploye="+idEmploye;
-    }
-
-    @PostMapping("/ajout-avance")
-    public String ajoutAvance(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant, @RequestParam("idRaison") String idRaison, Model model) {
-        String erreur = "";
-        try {
-            double montantDouble = Double.parseDouble(montant);    
-            try{
-                Long raison = Long.parseLong(idRaison);
-                Long id = Long.parseLong(idEmploye); 
-                try{
-                    rhSalaireService.ajoutAvance(id, raison, montantDouble);
-                    model.addAttribute("succesAjoutAvance", "Avance de "+montant+" accorde a l'employe");
-                    return "redirect:/administratif/rh/salaire/avance?idEmploye="+idEmploye;
-                } catch(Exception e) {
-                    erreur = "Erreur dans l'ajout : "+ e.getMessage();
-                }
-            } catch(NumberFormatException e) {
-                erreur = "Erreur dans l'ajout : L'employe et la raison doivent être valide.";
-            }
-        } catch(NumberFormatException e) {
-            erreur = "Erreur dans l'ajout :  Le montant doit être un nombre valide.";
-        }
-        System.out.println(erreur);
-        model.addAttribute("erreurAjoutAvance", erreur);
-        return "redirect:/administratif/rh/salaire/avance?idEmploye="+idEmploye;
-    }
-
-    @PostMapping("/payer-fiche-de-paie")
+        @PostMapping("/payer-fiche-de-paie")
     public String payer(@RequestParam("idEmploye") String idEmploye, @RequestParam("moisReference") String moisReference, @RequestParam("salaireDeBase") String salaireDeBase, 
         @RequestParam("abscences") String abscences, @RequestParam("commissions") String commissions, @RequestParam("retenuesSociales") String retenuesSociales, 
         @RequestParam("impots") String impots, @RequestParam("salaireBrut") String salaireBrut, @RequestParam("salaireNetImposable") String salaireNetImposable,
@@ -187,7 +134,6 @@ public class RhSalaireController {
         } catch (Exception e) {
             erreur = "Erreur dans le payement : " + e.getMessage();
         }
-        System.out.println(erreur);
         model.addAttribute("erreurPayement", erreur);
         return "/administratif/rh/salaire/fiche-de-paie(idEmploye=" + idEmploye + ")";
     }
@@ -219,6 +165,58 @@ public class RhSalaireController {
             }
         }
     }
+    
+    @PostMapping("/ajout-avance")
+    public String ajoutAvance(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant, @RequestParam("idRaison") String idRaison, Model model) {
+        String erreur = "";
+        try {
+            double montantDouble = Double.parseDouble(montant);    
+            try{
+                Long raison = Long.parseLong(idRaison);
+                Long id = Long.parseLong(idEmploye); 
+                try{
+                    rhSalaireService.ajoutAvance(id, raison, montantDouble);
+                    model.addAttribute("succesAjoutAvance", "Avance de "+montant+" accorde a l'employe");
+                    return "redirect:/administratif/rh/salaire/avance?idEmploye="+idEmploye;
+                } catch(Exception e) {
+                    erreur = "Erreur dans l'ajout : "+ e.getMessage();
+                }
+            } catch(NumberFormatException e) {
+                erreur = "Erreur dans l'ajout : L'employe et la raison doivent être valide.";
+            }
+        } catch(NumberFormatException e) {
+            erreur = "Erreur dans l'ajout :  Le montant doit être un nombre valide.";
+        }
+        model.addAttribute("erreurAjoutAvance", erreur);
+        return "redirect:/administratif/rh/salaire/avance?idEmploye="+idEmploye;
+    }
+
+    @PostMapping("/ajout-commission")
+    public String ajoutCommission(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant, @RequestParam("idRaison") String idRaison, Model model) {
+        String erreur = "";
+        try {
+            double montantDouble = Double.parseDouble(montant);    
+            try{
+                Long raison = Long.parseLong(idRaison);
+                Long id = Long.parseLong(idEmploye); 
+                try{
+                    rhSalaireService.ajoutCommission(id, raison, montantDouble);
+                    model.addAttribute("succesAjoutCommission", "Commission de "+montant+" descerne a l'employe");
+                    return "redirect:/administratif/rh/salaire/commission?idEmploye="+idEmploye;
+                } catch(Exception e) {
+                    erreur = "Erreur dans l'ajout : "+ e.getMessage();
+                }
+            } catch(NumberFormatException e) {
+                erreur = "Erreur dans l'ajout : L'employe et la raison doivent être valide.";
+            }
+        } catch(NumberFormatException e) {
+            erreur = "Erreur dans l'ajout :  Le montant doit être un nombre valide.";
+        }
+        model.addAttribute("erreurAjoutCommission", erreur);
+        return "redirect:/administratif/rh/salaire/commission?idEmploye="+idEmploye;
+    }
+
+
 
 }
 

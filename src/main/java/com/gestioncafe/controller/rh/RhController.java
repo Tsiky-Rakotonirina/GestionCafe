@@ -59,13 +59,10 @@ public class RhController {
         List<Employe> employes = statutEmployes.stream()
                     .map(StatutEmploye::getEmploye)
                     .collect(Collectors.toList());
-        Map<Long, Integer> nbjCongeUtilise =rhService.nbjCongeUtilise(employes);
-        Map<Long, Integer> nbjCongeReserve =rhService.nbjCongeReserve(employes);
-        Map<Long, Integer> nbjCongeNonUtilise =rhService.nbjCongeNonUtilise(employes);
         model.addAttribute("employes", employes);
-        model.addAttribute("nbjCongeUtilise", nbjCongeUtilise);
-        model.addAttribute("nbjCongeReserve", nbjCongeReserve);
-        model.addAttribute("nbjCongeNonUtilise", nbjCongeNonUtilise);
+        model.addAttribute("nbjCongeUtilise", rhService.nbjCongeUtilise(employes));
+        model.addAttribute("nbjCongeReserve", rhService.nbjCongeReserve(employes));
+        model.addAttribute("nbjCongeNonUtilise", rhService.nbjCongeNonUtilise(employes));
         model.addAttribute("typeConges", rhService.getAllTypeConges());
         return "administratif/rh/gestion-conges";
     }
