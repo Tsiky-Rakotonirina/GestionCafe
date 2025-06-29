@@ -21,32 +21,63 @@
     <button type="button" onclick="addUtilisation()">Ajouter utilisation</button>
     <br><br>
 
+    <!-- Affiche uniquement si machine.id n'est pas null (donc en modification) -->
+    <div id="utilisationsExistantes" th:if="${machine.id != null}">
+        <h4>Utilisations existantes</h4>
+        <div th:each="u, idx : ${utilisationsExistantes}" class="utilisation-group">
+            <input type="hidden" name="utilisationsExistantesIds" th:value="${u.id}" />
+            <input type="text" th:value="${u.produit.nom}" readonly style="width:90px;"/>
+            <input type="number" th:value="${u.duree}" readonly style="width:70px;"/>
+            <input type="text" th:value="${u.unite.nom}" readonly style="width:70px;"/>
+            <button type="submit" name="deleteUtilisationId" th:value="${u.id}">Suppr</button>
+        </div>
+    </div>
+
     <button type="submit">Valider</button>
     <a th:href="@{/machines}">Annuler</a>
 </form>
 
 <datalist id="produitsList">
-    <option th:each="p : ${produits}" th:value="${p.id}" th:text="${p.nom}"></option>
+    <option th:each="p : ${produits}" th:value="${p.nom}" th:attr="data-id=${p.id}"></option>
 </datalist>
 <datalist id="unitesList">
-    <option th:each="u : ${unites}" th:value="${u.id}" th:text="${u.nom}"></option>
+    <option th:each="u : ${unites}" th:value="${u.nom}" th:attr="data-id=${u.id}"></option>
 </datalist>
 
 <script>
-function addUtilisation() {
-    const container = document.getElementById('utilisationsContainer');
-    const idx = container.children.length;
-    const div = document.createElement('div');
-    div.className = 'utilisation-group';
-    div.style.marginBottom = '10px';
-    div.innerHTML = `
-        <input list="produitsList" name="utilisations[${idx}].idProduit" placeholder="Produit" style="width:90px;" required/>
-        <input type="number" name="utilisations[${idx}].duree" placeholder="Durée" step="0.01" required style="width:70px;"/>
-        <input list="unitesList" name="utilisations[${idx}].idUnite" placeholder="Unité" style="width:70px;" required/>
-        <button type="button" onclick="this.parentElement.remove()">Suppr</button>
-    `;
-    container.appendChild(div);
-}
+    function addUtilisation() {
+        const container = document.getElementById('utilisationsContainer');
+        const div = document.createElement('div');
+        div.className = 'utilisation-group';
+        div.style.marginBottom = '10px';
+        div.innerHTML = `
+            <input type="text" name="utilisations.idProduit" placeholder="Produit" style="width:90px;" list="produitsList"/>
+            <input type="number" name="utilisations.duree" placeholder="Durée" step="0.01" required style="width:70px;"/>
+            <input type="text" name="utilisations.idUnite" placeholder="Unité" required style="width:70px;" list="unitesList"/>
+            <button type="button" onclick="this.parentElement.remove()">Suppr</button>
+        `;
+        container.appendChild(div);
+    }
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        // Pour chaque utilisation ajoutée
+        document.querySelectorAll('.utilisation-group').forEach(function(group) {
+            // Produit
+            const produitInput = group.querySelector('input[list="produitsList"]');
+            if (produitInput) {
+                const option = Array.from(document.getElementById('produitsList').options)
+                    .find(opt => opt.value === produitInput.value);
+                if (option) produitInput.value = option.getAttribute('data-id');
+            }
+            // Unité
+            const uniteInput = group.querySelector('input[list="unitesList"]');
+            if (uniteInput) {
+                const option = Array.from(document.getElementById('unitesList').options)
+                    .find(opt => opt.value === uniteInput.value);
+                if (option) uniteInput.value = option.getAttribute('data-id');
+            }
+        });
+    });
 </script>
 </body>
 </html>
