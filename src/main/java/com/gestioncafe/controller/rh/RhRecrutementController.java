@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 
 import com.gestioncafe.service.rh.*;
 import com.gestioncafe.repository.*;
@@ -50,6 +49,9 @@ public class RhRecrutementController {
 
     @Autowired
     private FormationService formationService;
+
+    @Autowired
+    private ExperienceService experienceService;
 
     @Autowired
     private EmployeService employeService;
@@ -164,7 +166,7 @@ public class RhRecrutementController {
     @PostMapping("/recruter")
     public String postRecruter(@RequestParam("candidatId") Long candidatId) {
         employeService.recruterCandidat(candidatId);
-        return "redirect:/administratif/rh/recrutement";
+        return "redirect:/administratif/rh/gestion-recrutements";
     }
     
     // @PostMapping("/pdf")
