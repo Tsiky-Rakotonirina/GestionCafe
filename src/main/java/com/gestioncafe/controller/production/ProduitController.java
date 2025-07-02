@@ -1,35 +1,21 @@
 package com.gestioncafe.controller.production;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.*;
-
+import com.gestioncafe.dto.IngredientFormDTO;
+import com.gestioncafe.dto.IngredientsFormWrapper;
+import com.gestioncafe.model.production.*;
+import com.gestioncafe.service.production.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.gestioncafe.dto.IngredientFormDTO;
-import com.gestioncafe.dto.IngredientsFormWrapper;
-import com.gestioncafe.model.production.DetailRecette;
-import com.gestioncafe.model.production.MatierePremiere;
-import com.gestioncafe.model.production.PrixVenteProduit;
-import com.gestioncafe.model.production.Produit;
-import com.gestioncafe.model.production.Recette;
-import com.gestioncafe.model.production.Unite;
-import com.gestioncafe.service.production.DetailRecetteService;
-import com.gestioncafe.service.production.MatierePremiereService;
-import com.gestioncafe.service.production.PackageProduitService;
-import com.gestioncafe.service.production.PrixVenteProduitService;
-import com.gestioncafe.service.production.ProduitService;
-import com.gestioncafe.service.production.RecetteService;
-import com.gestioncafe.service.production.UniteService;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/produits")
@@ -41,8 +27,9 @@ public class ProduitController {
     private final DetailRecetteService detailRecetteService;
     private final MatierePremiereService matierePremiereService;
     private final PrixVenteProduitService prixVenteProduitService;
+    private final com.gestioncafe.service.production.HistoriqueEstimationService historiqueEstimationService;
 
-    public ProduitController(ProduitService produitService, UniteService uniteService, PackageProduitService packageProduitService, RecetteService recetteService, DetailRecetteService detailRecetteService, MatierePremiereService matierePremiereService, PrixVenteProduitService prixVenteProduitService) {
+    public ProduitController(ProduitService produitService, UniteService uniteService, PackageProduitService packageProduitService, RecetteService recetteService, DetailRecetteService detailRecetteService, MatierePremiereService matierePremiereService, PrixVenteProduitService prixVenteProduitService, com.gestioncafe.service.production.HistoriqueEstimationService historiqueEstimationService) {
         this.produitService = produitService;
         this.uniteService = uniteService;
         this.packageProduitService = packageProduitService;
@@ -50,6 +37,7 @@ public class ProduitController {
         this.detailRecetteService = detailRecetteService;
         this.matierePremiereService = matierePremiereService;
         this.prixVenteProduitService = prixVenteProduitService;
+        this.historiqueEstimationService = historiqueEstimationService;
     }
 
     @GetMapping
@@ -100,8 +88,8 @@ public class ProduitController {
         // 3. Ajout des ingrédients (detail_recette) avec la bonne recette
         // On tente d'abord le binding classique, sinon on parse manuellement
         List<IngredientFormDTO> ingredientsList = (ingredientsWrapper != null && ingredientsWrapper.getIngredients() != null && !ingredientsWrapper.getIngredients().isEmpty())
-                ? ingredientsWrapper.getIngredients()
-                : com.gestioncafe.util.IngredientFormParser.parseFromRequest(req);
+            ? ingredientsWrapper.getIngredients()
+            : com.gestioncafe.util.IngredientFormParser.parseFromRequest(req);
 
         for (IngredientFormDTO ing : ingredientsList) {
             try {
@@ -139,10 +127,65 @@ public class ProduitController {
     public String showEditForm(@PathVariable Integer id, Model model) {
         Optional<Produit> produitOpt = produitService.findById(id);
         if (produitOpt.isPresent()) {
-            model.addAttribute("produit", produitOpt.get());
+            Produit produit = produitOpt.get();
+            model.addAttribute("produit", produit);
             model.addAttribute("unites", uniteService.findAll());
             model.addAttribute("packages", packageProduitService.findAll());
             model.addAttribute("matieresPremieres", matierePremiereService.findAll());
+
+            // Pré-remplissage de la recette et des ingrédients
+            List<com.gestioncafe.model.production.Recette> recettes = recetteService.findByProduitId(produit.getId());
+            if (recettes != null && !recettes.isEmpty()) {
+                com.gestioncafe.model.production.Recette recette = recettes.get(0); // On prend la première recette trouvée
+                model.addAttribute("quantiteProduiteRecette", recette.getQuantiteProduite());
+                model.addAttribute("tempsFabricationRecette", recette.getTempsFabrication());
+                // Préparer la liste des ingrédients
+                java.util.List<DetailRecette> details = detailRecetteService.findByRecetteId(recette.getId());
+                java.util.List<com.gestioncafe.dto.IngredientFormDTO> ingredientDTOs = new java.util.ArrayList<>();
+                java.math.BigDecimal coutTotal = java.math.BigDecimal.ZERO;
+                for (DetailRecette detail : details) {
+                    com.gestioncafe.dto.IngredientFormDTO dto = new com.gestioncafe.dto.IngredientFormDTO();
+                    dto.setIdMatierePremiere(detail.getMatierePremiere().getId());
+                    dto.setQuantite(detail.getQuantite().doubleValue());
+                    dto.setIdUnite(detail.getUnite().getId());
+                    ingredientDTOs.add(dto);
+                    // Calcul du coût à partir de l'historique d'estimation, conversion à la norme
+                    java.util.List<com.gestioncafe.model.production.HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
+                    com.gestioncafe.model.production.HistoriqueEstimation estimationRecente = historiques.stream()
+                        .max(java.util.Comparator.comparing(com.gestioncafe.model.production.HistoriqueEstimation::getDateApplication))
+                        .orElse(null);
+                    if (estimationRecente != null && estimationRecente.getPrix() != null) {
+                        // Conversion des quantités à la norme
+                        BigDecimal quantiteRecette = detail.getQuantite();
+                        BigDecimal valeurParNormeRecette = detail.getUnite().getValeurParNorme();
+                        BigDecimal quantiteNorme = quantiteRecette.multiply(valeurParNormeRecette);
+
+                        BigDecimal prixEstime = BigDecimal.valueOf(estimationRecente.getPrix());
+                        BigDecimal valeurParNormeEstimation = estimationRecente.getUnite().getValeurParNorme();
+                        // Prix par unité de norme
+                        BigDecimal prixParNorme = prixEstime.divide(valeurParNormeEstimation, 6, BigDecimal.ROUND_HALF_UP);
+
+                        coutTotal = coutTotal.add(quantiteNorme.multiply(prixParNorme));
+                    }
+                }
+                com.gestioncafe.dto.IngredientsFormWrapper wrapper = new com.gestioncafe.dto.IngredientsFormWrapper();
+                wrapper.setIngredients(ingredientDTOs);
+                model.addAttribute("ingredientsWrapper", wrapper);
+
+                // Pré-remplissage du coefficient si possible
+                com.gestioncafe.model.production.PrixVenteProduit prixVente = prixVenteProduitService.findLastByProduitId(produit.getId());
+                java.math.BigDecimal coefficient = null;
+                if (prixVente != null && coutTotal != null && coutTotal.compareTo(java.math.BigDecimal.ZERO) > 0) {
+                    coefficient = prixVente.getPrixVente().divide(coutTotal, 2, java.math.RoundingMode.HALF_UP);
+                }
+                model.addAttribute("coefficient", coefficient);
+            } else {
+                // Si pas de recette, valeurs par défaut
+                model.addAttribute("quantiteProduiteRecette", null);
+                model.addAttribute("tempsFabricationRecette", null);
+                model.addAttribute("ingredientsWrapper", new com.gestioncafe.dto.IngredientsFormWrapper());
+                model.addAttribute("coefficient", null);
+            }
 
             return "administratif/production/produit/form";
         } else {

@@ -190,7 +190,8 @@
                                 Coefficient multiplicateur
                             </label>
                             <input type="number" step="0.01" min="0" name="coefficient" class="form-input"
-                                   placeholder="Coefficient (ex: 1.5)">
+                                   placeholder="Coefficient (ex: 1.5)"
+                                   th:value="${coefficient}"/>
                         </div>
                         <!-- Champ prix de vente manuel (affiché si modePrix = manuel) -->
                         <div class="form-group" id="prixVenteManuelField" style="display: none;">
@@ -219,7 +220,8 @@
                                 Quantité produite
                             </label>
                             <input type="number" step="0.01" min="0" name="quantiteProduiteRecette"
-                                   class="form-input" placeholder="Quantité produite" required/>
+                                   class="form-input" placeholder="Quantité produite" required
+                                   th:value="${quantiteProduiteRecette}"/>
                         </div>
                         <div class="form-group">
                             <label class="form-label">
@@ -227,7 +229,8 @@
                                 Temps de fabrication (minutes)
                             </label>
                             <input type="number" step="0.01" min="0" name="tempsFabricationRecette"
-                                   class="form-input" placeholder="Temps de fabrication en minutes" required/>
+                                   class="form-input" placeholder="Temps de fabrication en minutes" required
+                                   th:value="${tempsFabricationRecette}"/>
                         </div>
                         <div id="ingredients-list"></div>
                         <button type="button" class="btn outline small" onclick="addIngredientRow()"
@@ -260,9 +263,22 @@
     let unites = /*[[${unites}]]*/[];
     if (!unites) unites = [];
 
+    // Pré-remplissage des ingrédients si édition
+    let ingredientsData = /*[[${ingredientsWrapper != null && ingredientsWrapper.ingredients != null ? ingredientsWrapper.ingredients : null}]]*/null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        togglePrixFields();
+        // Si édition et ingrédients existants, pré-remplir
+        if (ingredientsData && ingredientsData.length > 0) {
+            ingredientsData.forEach(function(ing) {
+                addIngredientRow(ing.idMatierePremiere, ing.quantite, ing.idUnite);
+            });
+        }
+        // Ne rien ajouter si pas d'ingrédient (plus de champ vide par défaut)
+    });
+
     // Ajoute un log JS pour déboguer les ingrédients avant soumission
     document.addEventListener('submit', function (e) {
-        console.log('DEBUG STARTED')
         if (e.target && e.target.matches('form')) {
             const rows = document.querySelectorAll('#ingredients-list .ingredient-row');
             let debug = [];
@@ -272,10 +288,7 @@
                 const unite = row.querySelector('select.unite-select')?.value;
                 debug.push({idx, mp, qte, unite});
             });
-
             console.log('DEBUG INGREDIENTS (avant submit):', debug);
-            console.log(debug);
-            console.log(debug.map(i => `Ingredient ${i.idx}: MP=${i.mp}, Qte=${i.qte}, Unite=${i.unite}`));
         }
     }, true);
 
