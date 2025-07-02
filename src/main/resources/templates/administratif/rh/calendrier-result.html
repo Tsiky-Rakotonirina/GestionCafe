@@ -27,21 +27,19 @@
         </div>
     </header>
     <main class="content">
-        <h1>HELLO WORLD !</h1>
-        <div class="element-section">
-            <h1>Recrutement</h1>
-            <a th:href="@{/administratif/rh/recrutement}" data-page="dashboard" class="nav-link">
-                <i class="fas fa-chart-line"></i>
-            </a>
-        </div>
-        <div class="element-section">
-            <h1>Calendrier</h2>
-                <a th:href="@{/administratif/rh/calendrier}" data-page="dashboard" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                </a>
-            </div>
+        <h1>Résultat du calendrier</h1>
+
+        <p th:text="${message}"></p>
+
+        <ul>
+            <li th:each="date : ${dates}" th:text="${date}"></li>
+        </ul>
+
+        <a th:href="@{/administratif/rh/calendrier}">Retour au calendrier</a>
     </main>
+
     <!-- Utilisation de Thymeleaf pour le script JS -->
     <!-- <script th:src="@{/templates/script.js}"></script> -->
+    <script th:src="@{/js/rh/calendrier.js}"></script> 
 </body>
 </html>
