@@ -258,18 +258,63 @@ public class ProduitController {
     @GetMapping("/fiche/{id}")
     public String ficheTechnique(@PathVariable Integer id, Model model) {
         Optional<Produit> produitOpt = produitService.findById(id);
-        if (produitOpt.isPresent()) {
-            Produit produit = produitOpt.get();
-            model.addAttribute("produit", produit);
-            // Ajoute d'autres attributs nécessaires à la fiche technique si besoin
-            // Exemple : coût de fabrication
-            BigDecimal coutFabrication = produitService.calculerCoutFabrication(id);
-            model.addAttribute("coutFabrication", coutFabrication);
-            // Ajoute d'autres informations selon le besoin métier
-            return "produit/fiche";
-        } else {
-            // Redirige vers la liste si le produit n'existe pas
+        if (produitOpt.isEmpty()) {
             return "redirect:/produits";
         }
+        Produit produit = produitOpt.get();
+        model.addAttribute("produit", produit);
+
+        // Récupérer la recette principale
+        List<Recette> recettes = recetteService.findByProduitId(id);
+        if (recettes == null || recettes.isEmpty()) {
+            model.addAttribute("details", java.util.Collections.emptyList());
+        } else {
+            Recette recette = recettes.get(0);
+            List<DetailRecette> details = detailRecetteService.findByRecetteId(recette.getId());
+            java.util.List<java.util.Map<String, Object>> detailsFiche = new java.util.ArrayList<>();
+            for (DetailRecette detail : details) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("matierePremiere", detail.getMatierePremiere());
+                map.put("quantite", detail.getQuantite());
+                map.put("unite", detail.getUnite());
+                // Calcul du prix unitaire (converti à la norme) et unité d'estimation
+                java.math.BigDecimal prixUnitaire = java.math.BigDecimal.ZERO;
+                String uniteEstimation = "";
+                java.util.List<com.gestioncafe.model.production.HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
+                com.gestioncafe.model.production.HistoriqueEstimation estimationRecente = historiques.stream()
+                        .filter(h -> h.getPrix() != null)
+                        .max(java.util.Comparator.comparing(com.gestioncafe.model.production.HistoriqueEstimation::getDateApplication))
+                        .orElse(null);
+                if (estimationRecente != null && estimationRecente.getPrix() != null) {
+                    java.math.BigDecimal prixEstime = java.math.BigDecimal.valueOf(estimationRecente.getPrix());
+                    java.math.BigDecimal valeurParNormeEstimation = estimationRecente.getUnite() != null && estimationRecente.getUnite().getValeurParNorme() != null ? estimationRecente.getUnite().getValeurParNorme() : java.math.BigDecimal.ONE;
+                    prixUnitaire = prixEstime.divide(valeurParNormeEstimation, 6, java.math.RoundingMode.HALF_UP);
+                    uniteEstimation = estimationRecente.getUnite() != null ? estimationRecente.getUnite().getNom() : "";
+                }
+                map.put("prixUnitaire", prixUnitaire);
+                map.put("uniteEstimation", uniteEstimation);
+                // Conversion de la quantité à la norme (ex: g -> kg)
+                java.math.BigDecimal quantiteNorme = detail.getQuantite();
+                if (detail.getUnite() != null && detail.getUnite().getValeurParNorme() != null) {
+                    quantiteNorme = quantiteNorme.multiply(detail.getUnite().getValeurParNorme());
+                }
+                map.put("quantiteNorme", quantiteNorme);
+                // Prix total = prix unitaire * quantité convertie à la norme
+                java.math.BigDecimal prixTotal = prixUnitaire.multiply(quantiteNorme);
+                map.put("prixTotal", prixTotal);
+                detailsFiche.add(map);
+            }
+            model.addAttribute("details", detailsFiche);
+        }
+
+        // Coût de fabrication
+        BigDecimal coutFabrication = produitService.calculerCoutFabrication(id);
+        model.addAttribute("coutFabrication", coutFabrication);
+
+        // Prix de vente actuel
+        com.gestioncafe.model.production.PrixVenteProduit prixVente = prixVenteProduitService.findLastByProduitId(id);
+        model.addAttribute("prixVente", prixVente != null ? prixVente.getPrixVente() : java.math.BigDecimal.ZERO);
+
+        return "administratif/production/produit/fiche";
     }
 }

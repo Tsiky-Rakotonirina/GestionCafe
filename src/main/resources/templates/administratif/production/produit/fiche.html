@@ -112,8 +112,8 @@
                         <td th:text="${detail.matierePremiere.nom}"></td>
                         <td th:text="${detail.quantite}"></td>
                         <td th:text="${detail.unite.nom}"></td>
-                        <td th:text="${detail.prixUnitaire}"></td>
-                        <td th:text="${#numbers.formatDecimal(detail.prixUnitaire * detail.quantite, 1, 'POINT', 2, 'NONE')}"></td>
+                        <td th:text="${#numbers.formatDecimal(detail.prixUnitaire, 1, 'POINT', 2, 'NONE')} + ' Ar/' + ${detail.uniteEstimation}"></td>
+                        <td th:text="${#numbers.formatDecimal(detail.prixTotal, 1, 'POINT', 2, 'NONE')}"></td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(details)}">
                         <td colspan="5" style="text-align: center; padding: 3rem; color: var(--gray-500);">
@@ -142,7 +142,7 @@
                 </div>
                 <div class="stat-info">
                     <h3>Prix de vente</h3>
-                    <p class="stat-value" th:text="${produit.prixVente} + ' €'">0 €</p>
+                    <p class="stat-value" th:text="${prixVente} + ' €'">0 €</p>
                 </div>
             </div>
         </div>

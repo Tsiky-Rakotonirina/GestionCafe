@@ -20,7 +20,7 @@ public class Unite {
 
     private String nom;
 
-    @Column(name = "valeur_pr_norme")
+    @Column(name = "valeur_pr_norme", precision = 20, scale = 10)
     private BigDecimal valeurParNorme;
 
     @ManyToOne

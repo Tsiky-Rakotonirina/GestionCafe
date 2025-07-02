@@ -321,7 +321,7 @@ CREATE TABLE unite
     id                 SERIAL PRIMARY KEY,
     nom                VARCHAR(50),   --kg, g, l, cl, ...
     categorie_unite_id INTEGER REFERENCES categorie_unite (id),
-    valeur_pr_norme    DECIMAL(10, 2) -- valeur par rapport au norme
+    valeur_pr_norme    DECIMAL(10, 10) -- valeur par rapport au norme
 );
 
 -- Table matiere_premiere

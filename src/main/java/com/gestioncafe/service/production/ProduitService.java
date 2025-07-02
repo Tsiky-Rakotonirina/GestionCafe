@@ -109,10 +109,11 @@ public class ProduitService {
                 .orElse(null);
 
             if (estimationRecente != null && estimationRecente.getPrix() != null) {
-                // Conversion des quantités à la norme
-                BigDecimal quantiteRecette = detail.getQuantite();
-                BigDecimal valeurParNormeRecette = uniteRecette != null && uniteRecette.getValeurParNorme() != null ? uniteRecette.getValeurParNorme() : BigDecimal.ONE;
-                BigDecimal quantiteNorme = quantiteRecette.multiply(valeurParNormeRecette);
+                // Conversion de la quantité à la norme (ex: g -> kg)
+                BigDecimal quantiteNorme = detail.getQuantite();
+                if (uniteRecette != null && uniteRecette.getValeurParNorme() != null) {
+                    quantiteNorme = quantiteNorme.multiply(uniteRecette.getValeurParNorme());
+                }
 
                 BigDecimal prixEstime = BigDecimal.valueOf(estimationRecente.getPrix());
                 Unite uniteEstimation = estimationRecente.getUnite();
