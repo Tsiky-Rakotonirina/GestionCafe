@@ -1,5 +1,6 @@
 package com.gestioncafe.controller.rh;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +21,17 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.gestioncafe.service.rh.*;
+import com.gestioncafe.service.*;
+import com.gestioncafe.service.rh.JourFerieService;
 import com.gestioncafe.repository.*;
 import com.gestioncafe.model.*;
+import com.gestioncafe.model.rh.JourFerie;
 
 @Controller
 @RequestMapping("/administratif/rh")
 public class RhController {
+    @Autowired
+    private JourFerieService jourFerieService;
 
     @Autowired
     private RhService rhService;
@@ -58,7 +64,6 @@ public class RhController {
     @GetMapping
     public String accueil() {
         return "redirect:/administratif/rh/gestion-employes";
-    }
 
     @GetMapping("/gestion-employes")
     public String gestiontEmployes() {
@@ -120,6 +125,19 @@ public class RhController {
     @GetMapping("/parametre")
     public String parametre() {
         return "administratif/rh/parametre";
+    }
+
+    public String index(Model model) {
+        if (!model.containsAttribute("jourFerie")) {
+        }
+        model.addAttribute("listeJoursFeries", jourFerieService.findAll());
+        return "administratif/rh/parametre";
+    }
+
+    @PostMapping("/ajout-jour-ferie")
+    public String ajoutJourFerie(@ModelAttribute("jourFerie") JourFerie jourFerie) {
+        jourFerieService.save(jourFerie);
+        return "redirect:/administratif/rh";
     }
 
 }

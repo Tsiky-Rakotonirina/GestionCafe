@@ -221,6 +221,7 @@ CREATE TABLE avance (
     date_avance      DATE         NOT NULL,
     montant          DECIMAL(10,2) NOT NULL,
 
+
     CONSTRAINT fk_avance_raison_avance
         FOREIGN KEY (id_raison_avance)
         REFERENCES raison_avance(id)
