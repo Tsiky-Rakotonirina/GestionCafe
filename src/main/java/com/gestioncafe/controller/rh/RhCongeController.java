@@ -48,4 +48,5 @@ public class RhCongeController {
         model.addAttribute("jours", rhCongeService.jours());
         return "administratif/rh/calendrier";
     }
+
 }

@@ -82,7 +82,7 @@ public class RhRecrutementController {
             LocalDate today = LocalDate.now();
             candidats = candidats.stream().filter(c -> {
                 if (c.getDateNaissance() == null) return false;
-                int age = Period.between(c.getDateNaissance(), today).getYears();
+                int age = Period.between(c.getDateNaissance().toLocalDate(), today).getYears();
                 boolean afterMin = (minAge == null) || (age >= minAge);
                 boolean beforeMax = (maxAge == null) || (age <= maxAge);
                 return afterMin && beforeMax;

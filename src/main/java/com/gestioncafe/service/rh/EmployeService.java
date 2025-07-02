@@ -11,6 +11,7 @@ import com.gestioncafe.model.*;
 import com.gestioncafe.repository.*;
 
 import java.time.LocalDate;
+import java.sql.Date;
 
 @Service
 public class EmployeService {
@@ -43,7 +44,7 @@ public class EmployeService {
     employe.setNom(candidat.getNom());
     employe.setDateNaissance(candidat.getDateNaissance());
     employe.setContact(candidat.getContact());
-    employe.setDateRecrutement(LocalDate.now());
+    employe.setDateRecrutement(Date.valueOf(LocalDate.now()));
 
     // Liaison avec entités
     employe.setGenre(candidat.getGenre());

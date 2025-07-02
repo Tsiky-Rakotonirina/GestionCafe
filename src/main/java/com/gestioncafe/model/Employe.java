@@ -1,7 +1,7 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.sql.Date;
 import com.gestioncafe.model.Genre;
 import com.gestioncafe.model.Candidat;
 
@@ -22,13 +22,13 @@ public class Employe {
     private Genre genre;
 
     @Column(name = "date_naissance", nullable = false)
-    private LocalDate dateNaissance;
+    private Date dateNaissance;
 
     @Column(nullable = false)
     private String contact;
 
     @Column(name = "date_recrutement", nullable = false)
-    private LocalDate dateRecrutement;
+    private Date dateRecrutement;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_candidat", referencedColumnName = "id")
@@ -64,11 +64,11 @@ public class Employe {
         this.genre = genre;
     }
 
-    public LocalDate getDateNaissance() {
+    public Date getDateNaissance() {
         return this.dateNaissance;
     }
 
-    public void setDateNaissance(LocalDate dateNaissance) {
+    public void setDateNaissance(Date dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 
@@ -80,11 +80,11 @@ public class Employe {
         this.contact = contact;
     }
 
-    public LocalDate getDateRecrutement() {
+    public Date getDateRecrutement() {
         return this.dateRecrutement;
     }
 
-    public void setDateRecrutement(LocalDate dateRecrutement) {
+    public void setDateRecrutement(Date dateRecrutement) {
         this.dateRecrutement = dateRecrutement;
     }
 

@@ -1,23 +1,23 @@
 package com.gestioncafe.model;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class JourCongeFerie {
-    private LocalDate jour;
+    private Date jour;
     private JourFerie jourFerie; // peut être null
     private Employe employe;     // peut être null
 
-    public JourCongeFerie(LocalDate jour, JourFerie jourFerie, Employe employe) {
+    public JourCongeFerie(Date jour, JourFerie jourFerie, Employe employe) {
         this.jour = jour;
         this.jourFerie = jourFerie;
         this.employe = employe;
     }
 
-    public LocalDate getJour() {
+    public Date getJour() {
         return jour;
     }
 
-    public void setJour(LocalDate jour) {
+    public void setJour(Date jour) {
         this.jour = jour;
     }
 

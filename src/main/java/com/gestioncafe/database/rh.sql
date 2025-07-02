@@ -260,3 +260,18 @@ CREATE TABLE payement (
         REFERENCES employe(id)
 );
 
+-- Table presence_employe
+CREATE TABLE presence
+(
+    id            SERIAL PRIMARY KEY,
+    id_employe    INTEGER   NOT NULL,
+    date_presence DATE      NOT NULL,
+    date_arrivee  TIMESTAMP NULL,
+    est_present   BOOLEAN   NULL,
+
+    CONSTRAINT fk_presence_employe_employe
+        FOREIGN KEY (id_employe)
+            REFERENCES employe (id)
+);
+
+

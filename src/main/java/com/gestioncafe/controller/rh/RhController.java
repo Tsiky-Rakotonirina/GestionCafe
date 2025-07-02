@@ -122,21 +122,4 @@ public class RhController {
         return "administratif/rh/parametre";
     }
 
-    @GetMapping("/calendrier")
-    public String calendrier(Model model) {
-        return "administratif/rh/calendrier";
-    }
-
-    @PostMapping("/calendrier")
-    public String traiterCalendrier(@RequestParam(value = "dates", required = false) List<String> dates, Model model) {
-        if (dates == null || dates.isEmpty()) {
-            model.addAttribute("message", "Aucun jour sélectionné.");
-        } else {
-            model.addAttribute("message", "Jours sélectionnés:");
-            model.addAttribute("dates", dates);
-        }
-        return "administratif/rh/calendrier-result";
-    }
-
-
 }

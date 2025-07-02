@@ -28,18 +28,9 @@
         </div>
     </header>
     <main class="content">
-            <h1>Calendrier</h1>
-            <label for="yearSelect">Choisir une année :</label>
-            <select id="yearSelect"></select>
-                <form id="calendarForm" method="post" th:action="@{/administratif/rh/calendrier}">
-                    <div class="calendar-container" id="calendar"></div>
-                    <button id="validateBtn" type="submit">Valider les jours sélectionnés</button>
-                </form>
-
+            <h1>Calendrier : 2025</h1>
             <div class="calendar-container" id="calendar"></div>
     </main>
-    <!-- Utilisation de Thymeleaf pour le script JS -->
-    <!-- <script th:src="@{/templates/script.js}"></script> -->
     <script th:src="@{/js/rh/calendrier.js}"></script> 
 </body>
 </html>

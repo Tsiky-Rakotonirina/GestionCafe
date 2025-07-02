@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,26 +97,35 @@ public class RhCongeService {
 
         // Ajouter les jours fériés dans la plage
         for (JourFerie jf : feries) {
-            LocalDate date = jf.getDateFerie().toLocalDate();
-            if (!date.isBefore(debut) && !date.isAfter(fin)) {
-                liste.add(new JourCongeFerie(date, jf, null));
+            java.sql.Date sqlDate = jf.getDateFerie();
+            if (sqlDate != null) {
+                LocalDate date = sqlDate.toLocalDate();
+                if (!date.isBefore(debut) && !date.isAfter(fin)) {
+                    liste.add(new JourCongeFerie(Date.valueOf(date), jf, null));
+                }
             }
         }
 
         // Ajouter les jours de congé (1 ligne par jour + employé)
         for (Conge c : conges) {
-            LocalDate d1 = c.getDateDebut().toLocalDate();
-            LocalDate d2 = c.getDateFin().toLocalDate();
+            java.sql.Date dDebut = c.getDateDebut();
+            java.sql.Date dFin = c.getDateFin();
 
-            for (LocalDate d = d1; !d.isAfter(d2); d = d.plusDays(1)) {
-                if (!d.isBefore(debut) && !d.isAfter(fin)) {
-                    Employe emp = employesMap.get(c.getIdEmploye());
-                    liste.add(new JourCongeFerie(d, null, emp));
+            if (dDebut != null && dFin != null) {
+                LocalDate d1 = dDebut.toLocalDate();
+                LocalDate d2 = dFin.toLocalDate();
+
+                for (LocalDate d = d1; !d.isAfter(d2); d = d.plusDays(1)) {
+                    if (!d.isBefore(debut) && !d.isAfter(fin)) {
+                        Employe emp = employesMap.get(c.getIdEmploye());
+                        liste.add(new JourCongeFerie(Date.valueOf(d), null, emp));
+                    }
                 }
             }
         }
 
         return liste;
     }
+
 
 }

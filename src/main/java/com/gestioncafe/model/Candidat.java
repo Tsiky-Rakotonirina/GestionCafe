@@ -1,7 +1,7 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 @Table(name = "candidat")
@@ -18,10 +18,10 @@ public class Candidat {
     private Genre genre;
 
     @Column(name = "date_naissance", nullable = false)
-    private LocalDate dateNaissance;
+    private Date dateNaissance;
 
     @Column(name = "date_candidature", nullable = false)
-    private LocalDate dateCandidature;
+    private Date dateCandidature;
 
     private String contact;
 
@@ -60,19 +60,19 @@ public class Candidat {
         this.genre = genre;
     }
 
-    public LocalDate getDateNaissance() {
+    public Date getDateNaissance() {
         return this.dateNaissance;
     }
 
-    public void setDateNaissance(LocalDate dateNaissance) {
+    public void setDateNaissance(Date dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 
-    public LocalDate getDateCandidature() {
+    public Date getDateCandidature() {
         return this.dateCandidature;
     }
 
-    public void setDateCandidature(LocalDate dateCandidature) {
+    public void setDateCandidature(Date dateCandidature) {
         this.dateCandidature = dateCandidature;
     }
 
