@@ -1,4 +1,4 @@
-package com.gestioncafe.service;
+package com.gestioncafe.service.rh;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;

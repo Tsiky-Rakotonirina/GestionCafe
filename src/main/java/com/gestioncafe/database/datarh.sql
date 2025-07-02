@@ -16,6 +16,8 @@ INSERT INTO serie_bac (valeur, description) VALUES
 ('A2', 'Mathematiques-Sciences naturelles'),
 ('C', 'Lettres-Langues'),
 ('D', 'Lettres-Sciences humaines'),
+('L', 'Serie litteraire'),
+('S', 'Serie scientifique'),
 ('Technique', 'Filières techniques');
 
 INSERT INTO formation (valeur, description) VALUES
@@ -40,12 +42,10 @@ INSERT INTO langue (valeur, description) VALUES
 ('Chinois', NULL);
 
 INSERT INTO statut (valeur, description) VALUES
-('En poste', 'Employe actuellement en activite'),
+('Actif', 'Employe actuellement en activite'),
 ('En conge', 'Employe actuellement en conge'),
-('Suspendu', 'Employe temporairement suspendu'),
 ('Demission', 'Employe ayant demissionne'),
-('Licenciement', 'Employe licencie'),
-('Retraite', 'Employe à la retraite');
+('Licenciement', 'Employe licencie');
 
 INSERT INTO type_conge (nom, nb_jour, obligatoire, description) VALUES
 ('Annuel', 30, true, 'Conge annuel paye'),
@@ -80,6 +80,22 @@ INSERT INTO raison_commission (valeur, description) VALUES
 
 INSERT INTO candidat (date_candidature, nom, id_genre, date_naissance, contact, image, reference_cv, id_grade) VALUES
 ('2023-01-15', 'Rakoto Jean', 1, '1990-05-20', '0341234567', 'rakoto_jean.jpg', 'CV_Rakoto_Jean_2023.pdf', 3);
+
+-- Insérer des candidats
+INSERT INTO candidat (nom, id_genre, date_naissance, date_candidature, contact, image, reference_cv, id_grade) VALUES
+('Alice Dupont', 2, '1995-05-14', '2025-06-01', '0123456789', 'candidatCv01.png', 'CV d Alice', 3),
+('Bob Martin', 1, '1990-03-22', '2025-06-02', '0987654321', 'candidatCv01.png', 'CV de Bob', 4),
+('Claire Petit', 2, '1988-11-30', '2025-06-03', '0147253698', 'candidatCv01.png', 'CV de Claire', 2),
+('David Moreau', 1, '1992-07-19', '2025-06-04', '0165894321', 'candidatCv01.png', 'CV de David', 5),
+('Eva Leroy', 2, '1994-01-10', '2025-06-05', '0176543210', 'candidatCv01.png', 'CV d Eva', 1);
+
+-- Insérer des détails des candidats
+INSERT INTO detail_candidat (id_candidat, id_serie_bac, id_formation, id_langue, id_experience) VALUES
+(1, 1, 1, 1, 1),
+(2, 2, 2, 2, 2),
+(3, 1, 3, 1, 1),
+(4, 3, 4, 2, 3),
+(5, 2, 5, 1, 2);
 
 INSERT INTO detail_candidat (id_candidat, id_serie_bac, id_formation, id_langue, id_experience) VALUES
 (1, 1, 4, 1, 3),

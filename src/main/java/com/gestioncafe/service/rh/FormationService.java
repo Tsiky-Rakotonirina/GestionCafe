@@ -1,4 +1,4 @@
-package com.gestioncafe.service;
+package com.gestioncafe.service.rh;
 
 import com.gestioncafe.model.Formation;
 import com.gestioncafe.repository.FormationRepository;

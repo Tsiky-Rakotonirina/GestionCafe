@@ -1,25 +1,14 @@
-package com.gestioncafe.service;
+package com.gestioncafe.service.rh;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.Employe;
-import com.gestioncafe.model.Candidat;
-import com.gestioncafe.repository.CandidatRepository;
-import com.gestioncafe.repository.EmployeRepository;
 import java.time.LocalDateTime;
+import java.sql.*;
 import java.util.List;
-import com.gestioncafe.model.StatutEmploye;
-import com.gestioncafe.model.Statut;
-import com.gestioncafe.repository.StatutEmployeRepository;
-import com.gestioncafe.service.CandidatService;
-import com.gestioncafe.service.DetailCandidatService;
-import com.gestioncafe.service.StatutEmployeService;
 
-import com.gestioncafe.model.Grade;
-import com.gestioncafe.model.GradeEmploye;
-import com.gestioncafe.service.GradeEmployeService;
-
+import com.gestioncafe.model.*;
+import com.gestioncafe.repository.*;
 
 import java.time.LocalDate;
 
@@ -65,11 +54,11 @@ public class EmployeService {
     // Création statut employé avec statut id = 1
     StatutEmploye statutEmploye = new StatutEmploye();
     statutEmploye.setEmploye(employe);
-    statutEmploye.setDateStatut(LocalDateTime.now());
+    statutEmploye.setDateStatut(Date.valueOf(LocalDate.now()));
 
     Statut statut = new Statut();
     statut.setId(1L);
-    statutEmploye.setStatut(statut);
+    statutEmploye.setIdStatut(statut.getId());
 
     statutEmployeService.saveStatutEmploye(statutEmploye);
 
@@ -82,8 +71,8 @@ public class EmployeService {
 
     if (idGrade != null) {
         GradeEmploye gradeEmploye = new GradeEmploye();
-        gradeEmploye.setEmploye(employe);
-        gradeEmploye.setDateGrade(LocalDate.now());
+        gradeEmploye.setIdEmploye(employe.getId());
+        gradeEmploye.setDateGrade(Date.valueOf(LocalDate.now()));
 
         Grade grade = new Grade();
         grade.setId(idGrade);

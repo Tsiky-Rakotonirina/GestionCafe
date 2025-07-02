@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import com.gestioncafe.model.*;
 
 @Repository
-public interface GradeRepository extends JpaRepository<Employe, Long>{
+public interface GradeRepository extends JpaRepository<Grade, Long>{
     
 }
