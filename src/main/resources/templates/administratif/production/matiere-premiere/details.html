@@ -58,6 +58,15 @@
                     <p class="stat-value" th:text="${matierePremiere.unite != null ? matierePremiere.unite.nom : 'Non définie'}">-</p>
                 </div>
             </div>
+            <div class="stat-card info hover-lift">
+                <div class="stat-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Catégorie d'unité</h3>
+                    <p class="stat-value" th:text="${matierePremiere.categorieUnite != null ? matierePremiere.categorieUnite.nom : 'Non définie'}">-</p>
+                </div>
+            </div>
 
             <div class="stat-card warning hover-lift">
                 <div class="stat-icon">

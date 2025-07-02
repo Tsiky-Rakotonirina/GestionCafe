@@ -104,6 +104,7 @@
                 <tr>
                     <th><i class="fas fa-leaf"></i> Nom</th>
                     <th><i class="fas fa-ruler"></i> Unité</th>
+                    <th><i class="fas fa-layer-group"></i> Catégorie</th>
                     <th><i class="fas fa-boxes"></i> Stock</th>
                     <th><i class="fas fa-chart-bar"></i> Statut</th>
                     <th><i class="fas fa-cogs"></i> Actions</th>
@@ -116,8 +117,7 @@
                             <div th:if="${mp.image}" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden;">
                             </div>
                             <div th:unless="${mp.image}"
-                                style="width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-primary);
-                                display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                style="width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
                                 <span th:text="${#strings.substring(mp.nom, 0, 1)}">M</span>
                             </div>
                             <span th:text="${mp.nom}">Nom matière première</span>
@@ -126,6 +126,10 @@
                     <td>
                         <span style="background: var(--info-light); color: var(--info-color); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;"
                               th:text="${mp.unite != null ? mp.unite.nom : 'Non définie'}">Unité</span>
+                    </td>
+                    <td>
+                        <span style="background: var(--info-light); color: var(--info-color); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;"
+                              th:text="${mp.categorieUnite != null ? mp.categorieUnite.nom : 'Non définie'}">Catégorie</span>
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">

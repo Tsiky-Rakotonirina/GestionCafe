@@ -3,15 +3,21 @@ VALUES ('admin', 'admin');
 
 INSERT INTO categorie_unite (nom, norme)
 VALUES ('boisson', 'gobelet de 45cl'),
-       ('consommable', 'unite');
+       ('consommable', 'unite'),
+       ('masse', 'kg'),
+       ('volume', 'L'),
+       ('temps', 'j');
 -- exemple cookie
 
 INSERT INTO unite (nom, categorie_unite_id, valeur_pr_norme)
 VALUES ('gobelet', 1, '1'),
-       ('kg', 1, 1),
-       ('L', 1, 1),
+       ('kg', 3, 1),
+       ('L', 4, 1),
        ('sachet', 2, 1),
-       ('boîte', 2, 1);
+       ('boîte', 2, 1),
+       ('g', 3, 0.001),
+       ('mg', 3, 0.000001),
+       ('cl', 4, 0.01);
 
 -- Genres
 INSERT INTO genre(id, nom)
@@ -128,17 +134,16 @@ VALUES (15, 3, 2, 1800, 3600), -- 2 Expresso
 -- 1 Thé Chai
 
 -- Matières premières (avec unités cohérentes)
-INSERT INTO matiere_premiere(nom, id_unite, stock, image)
-VALUES ('Café vert', 2, 100, '/images/mp-cafe-vert.jpg'), -- kg
-       ('Sucre', 2, 50, '/images/mp-sucre.jpg'),          -- kg
-       ('Lait', 3, 30, '/images/mp-lait.jpg'),            -- L
-       ('Chocolat', 4, 40, '/images/mp-chocolat.jpg'),    -- sachet
-       ('Thé vert', 4, 25, '/images/mp-the-vert.jpg'),    -- sachet
-       ('Crème', 3, 15, '/images/mp-creme.jpg'),          -- L
-       ('Miel', 3, 10, '/images/mp-miel.jpg'),            -- L
-       ('Cannelle', 5, 8, '/images/mp-cannelle.jpg'),     -- boîte
-       ('Vanille', 5, 5, '/images/mp-vanille.jpg');
--- boîte
+INSERT INTO matiere_premiere(nom, id_unite, id_categorie_unite_id, stock, image)
+VALUES ('Café vert', 2, 3,  100, '/images/mp-cafe-vert.jpg'), -- kg
+       ('Sucre', 2, 3,50, '/images/mp-sucre.jpg'),          -- kg
+       ('Lait', 3, 4,30, '/images/mp-lait.jpg'),            -- L
+       ('Chocolat', 4, 2,40, '/images/mp-chocolat.jpg'),    -- sachet
+       ('Thé vert', 4, 2,25, '/images/mp-the-vert.jpg'),    -- sachet
+       ('Crème', 3, 4,15, '/images/mp-creme.jpg'),          -- L
+       ('Miel', 3, 4,10, '/images/mp-miel.jpg'),            -- L
+       ('Cannelle', 5, 1,8, '/images/mp-cannelle.jpg'),     -- boîte
+       ('Vanille', 5, 3,5, '/images/mp-vanille.jpg');
 
 -- Fournisseurs
 INSERT INTO fournisseur(nom, contact, frais, email)

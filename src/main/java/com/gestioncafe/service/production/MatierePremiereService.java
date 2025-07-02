@@ -26,6 +26,7 @@ public class MatierePremiereService {
     }
 
     public MatierePremiere save(MatierePremiere mp) {
+        // S'assurer que la catégorie d'unité est bien renseignée (si logique métier à ajouter)
         return repository.save(mp);
     }
 

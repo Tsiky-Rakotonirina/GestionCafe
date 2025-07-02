@@ -72,7 +72,7 @@ public class ProduitController {
         model.addAttribute("unites", uniteService.findAll());
         model.addAttribute("packages", packageProduitService.findAll());
         model.addAttribute("matieresPremieres", matierePremiereService.findAll());
-        // ...autres listes si besoin...
+
         return "administratif/production/produit/form";
     }
 
@@ -112,31 +112,34 @@ public class ProduitController {
 
         Produit savedProduit = produitService.save(produit);
 
-        // Insérer dans la table prix_vente_produitit
-        PrixVenteProduit pvp = new PrixVenteProduit();
-        pvp.setProduit(savedProduit);
-        pvp.setPrixVente(prixVente);
-        pvp.setDateApplication(LocalDate.now());
-        prixVenteProduitService.save(pvp);
-
-        // Création de la recette associée
+        // Création et sauvegarde de la recette associée
         Recette recette = new Recette();
         recette.setProduit(savedProduit);
         recette.setQuantiteProduite(BigDecimal.ONE); // ou autre valeur
         recette.setTempsFabrication(BigDecimal.ZERO); // à adapter
         Recette savedRecette = recetteService.save(recette);
 
-        // Ajout des ingrédients (detail_recette)
-        for (IngredientFormDTO ing : ingredientsWrapper.getIngredients()) {
-            DetailRecette detail = new DetailRecette();
-            detail.setRecette(savedRecette);
-            MatierePremiere mp = matierePremiereService.findById(ing.getIdMatierePremiere()).orElse(null);
-            Unite unite = uniteService.findById(ing.getIdUnite()).orElse(null);
-            detail.setMatierePremiere(mp);
-            detail.setUnite(unite);
-            detail.setQuantite(BigDecimal.valueOf(ing.getQuantite()));
-            detailRecetteService.save(detail);
+        // Ajout des ingrédients (detail_recette) avec la bonne recette
+        if (ingredientsWrapper != null && ingredientsWrapper.getIngredients() != null) {
+            for (IngredientFormDTO ing : ingredientsWrapper.getIngredients()) {
+                DetailRecette detail = new DetailRecette();
+                detail.setRecette(savedRecette);
+                MatierePremiere mp = matierePremiereService.findById(ing.getIdMatierePremiere()).orElse(null);
+                Unite unite = uniteService.findById(ing.getIdUnite()).orElse(null);
+                detail.setMatierePremiere(mp);
+                detail.setUnite(unite);
+                detail.setQuantite(BigDecimal.valueOf(ing.getQuantite()));
+                detailRecetteService.save(detail);
+            }
         }
+
+        // Insertion du prix de vente
+        PrixVenteProduit pvp = new PrixVenteProduit();
+        pvp.setProduit(savedProduit);
+        pvp.setPrixVente(prixVente);
+        pvp.setDateApplication(LocalDate.now());
+        prixVenteProduitService.save(pvp);
+
         return "redirect:/produits";
     }
 

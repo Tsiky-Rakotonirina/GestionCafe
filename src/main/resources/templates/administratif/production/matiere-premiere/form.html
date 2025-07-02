@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title th:text="${matierePremiere.id == null ? 'Ajouter' : 'Modifier'} + ' une matière première'"></title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
 </head>
 <body>
@@ -20,8 +21,11 @@
                         <i th:class="${matierePremiere.id == null ? 'fas fa-plus' : 'fas fa-edit'}"></i>
                     </div>
                     <div>
-                        <h2 th:text="${matierePremiere.id == null ? 'Ajouter' : 'Modifier'} + ' une matière première'">Formulaire matière première</h2>
-                        <p class="header-subtitle" th:text="${matierePremiere.id == null ? 'Créer une nouvelle matière première' : 'Modifier les informations existantes'}">Gestion des matières premières</p>
+                        <h2 th:text="${matierePremiere.id == null ? 'Ajouter' : 'Modifier'} + ' une matière première'">
+                            Formulaire matière première</h2>
+                        <p class="header-subtitle"
+                           th:text="${matierePremiere.id == null ? 'Créer une nouvelle matière première' : 'Modifier les informations existantes'}">
+                            Gestion des matières premières</p>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -41,20 +45,37 @@
                     <span th:text="${matierePremiere.id == null ? 'Nouvelle matière première' : 'Modification'}">Formulaire</span>
                 </h3>
             </div>
-            
-            <form th:action="@{${matierePremiere.id == null} ? '/administratif/production/matiere-premiere/ajouter' : '/administratif/production/matiere-premiere/modifier/' + ${matierePremiere.id}}" 
+
+            <form th:action="@{${matierePremiere.id == null} ? '/administratif/production/matiere-premiere/ajouter' : '/administratif/production/matiere-premiere/modifier/' + ${matierePremiere.id}}"
                   th:object="${matierePremiere}" method="post" enctype="multipart/form-data"
                   style="padding: 2rem;">
-                
+
                 <!-- Nom Field -->
                 <div class="form-group">
                     <label class="form-label">
                         <i class="fas fa-tag"></i>
                         Nom de la matière première
                     </label>
-                    <input type="text" th:field="*{nom}" class="form-input" 
-                           placeholder="Saisir le nom de la matière première..." 
+                    <input type="text" th:field="*{nom}" class="form-input"
+                           placeholder="Saisir le nom de la matière première..."
                            required/>
+                </div>
+
+
+                <!-- Catégorie d'unité Field -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-layer-group"></i>
+                        Catégorie d'unité
+                    </label>
+                    <select id="categorieUniteSelect" th:field="*{categorieUnite}" class="form-select" required>
+                        <option value="">Choisir une catégorie...</option>
+                        <option th:each="c : ${categoriesUnite}"
+                                th:value="${c.id}"
+                                th:text="${c.nom}"
+                                th:selected="${matierePremiere.categorieUnite != null and c.id == matierePremiere.categorieUnite.id}">
+                        </option>
+                    </select>
                 </div>
 
                 <!-- Unité Field -->
@@ -63,10 +84,11 @@
                         <i class="fas fa-ruler"></i>
                         Unité de mesure
                     </label>
-                    <select th:field="*{unite}" class="form-select" required>
+                    <select id="uniteSelect" th:field="*{unite}" class="form-select" required>
                         <option value="">Choisir une unité...</option>
-                        <option th:each="u : ${unites}" 
-                                th:value="${u.id}" 
+                        <option th:each="u : ${unites}"
+                                th:value="${u.id}"
+                                th:data-categorie="${u.categorieUnite != null ? u.categorieUnite.id : ''}"
                                 th:text="${u.nom}"
                                 th:selected="${matierePremiere.unite != null and u.id == matierePremiere.unite.id}">
                         </option>
@@ -86,8 +108,8 @@
                                 <i class="fas fa-info-circle"></i>
                                 Image actuelle
                             </p>
-                            <img th:src="@{${matierePremiere.image}}" 
-                                 alt="Image actuelle" 
+                            <img th:src="@{${matierePremiere.image}}"
+                                 alt="Image actuelle"
                                  style="max-width: 150px; max-height: 150px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); border: 3px solid rgba(139, 69, 19, 0.2);"/>
                         </div>
                     </div>
@@ -112,7 +134,7 @@
             <div class="alert info">
                 <i class="fas fa-info-circle"></i>
                 <div>
-                    <strong>Information :</strong> 
+                    <strong>Information :</strong>
                     <span th:if="${matierePremiere.id == null}">
                         Tous les champs marqués d'un astérisque sont obligatoires pour créer une nouvelle matière première.
                     </span>
@@ -125,4 +147,31 @@
     </main>
 </div>
 </body>
+<script>
+    // Filtrage dynamique des unités selon la catégorie sélectionnée
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorieSelect = document.getElementById('categorieUniteSelect');
+        const uniteSelect = document.getElementById('uniteSelect');
+        if (!categorieSelect || !uniteSelect) return;
+
+        // Sauvegarde toutes les options d'origine
+        const allOptions = Array.from(uniteSelect.options).filter(opt => opt.value !== "");
+
+        function filterUnites() {
+            const selectedCategorie = categorieSelect.value;
+            // On garde la première option ("Choisir une unité...")
+            uniteSelect.innerHTML = '<option value="">Choisir une unité...</option>';
+            allOptions.forEach(opt => {
+                if (!selectedCategorie || opt.getAttribute('data-categorie') === selectedCategorie) {
+                    uniteSelect.appendChild(opt.cloneNode(true));
+                }
+            });
+        }
+
+        categorieSelect.addEventListener('change', filterUnites);
+
+        // Filtrage initial si une catégorie est déjà sélectionnée
+        filterUnites();
+    });
+</script>
 </html>

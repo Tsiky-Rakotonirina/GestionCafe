@@ -29,6 +29,10 @@ public class MatierePremiere {
     @JoinColumn(name = "id_unite", nullable = false)
     private Unite unite;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_categorie_unite_id", nullable = false)
+    private CategorieUnite categorieUnite;
+
     private String image;
 
     @Column
@@ -57,6 +61,14 @@ public class MatierePremiere {
 
     public String getNom() {
         return nom;
+    }
+
+    public CategorieUnite getCategorieUnite() {
+        return categorieUnite;
+    }
+
+    public void setCategorieUnite(CategorieUnite categorieUnite) {
+        this.categorieUnite = categorieUnite;
     }
 
     public void setNom(String nom) {

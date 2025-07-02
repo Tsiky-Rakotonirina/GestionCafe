@@ -319,21 +319,20 @@ CREATE TABLE categorie_unite
 CREATE TABLE unite
 (
     id                 SERIAL PRIMARY KEY,
-    nom                VARCHAR(50),    --kg, g, l, cl, ...
-    categorie_unite_id INTEGER,
-    valeur_pr_norme    DECIMAL(10, 2), -- valeur par rapport au norme
-
-    FOREIGN KEY (categorie_unite_id) REFERENCES categorie_unite (id)
+    nom                VARCHAR(50),   --kg, g, l, cl, ...
+    categorie_unite_id INTEGER REFERENCES categorie_unite (id),
+    valeur_pr_norme    DECIMAL(10, 2) -- valeur par rapport au norme
 );
 
 -- Table matiere_premiere
 CREATE TABLE matiere_premiere
 (
-    id       SERIAL PRIMARY KEY,
-    nom      VARCHAR(255) NOT NULL,
-    id_unite INTEGER      NOT NULL,
-    stock    DECIMAL(10, 2) DEFAULT 0, -- d
-    image    VARCHAR(255) NULL,
+    id                   SERIAL PRIMARY KEY,
+    nom                  VARCHAR(255) NOT NULL,
+    id_unite             INTEGER      NOT NULL,
+    id_categorie_unite_id INTEGER      NOT NULL REFERENCES categorie_unite (id),
+    stock                DECIMAL(10, 2) DEFAULT 0, -- d
+    image                VARCHAR(255) NULL,
 
     CONSTRAINT fk_matiere_premiere_unite
         FOREIGN KEY (id_unite)
@@ -344,14 +343,11 @@ CREATE TABLE matiere_premiere
 CREATE TABLE historique_estimation
 (
     id                  SERIAL PRIMARY KEY,
-    id_matiere_premiere INTEGER,
+    id_matiere_premiere INTEGER NOT NULL REFERENCES matiere_premiere (id),
     prix                DECIMAL(10, 2),
     quatite             DECIMAL(10, 2),
-    id_unite            INTEGER,
-    date_application    DATE,
-
-    FOREIGN KEY (id_matiere_premiere) REFERENCES matiere_premiere (id),
-    FOREIGN KEY (id_unite) REFERENCES unite (id)
+    id_unite            INTEGER NOT NULL REFERENCES unite (id),
+    date_application    DATE
 );
 
 CREATE TABLE seuil_matiere_premiere

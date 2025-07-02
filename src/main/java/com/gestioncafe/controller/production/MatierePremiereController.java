@@ -58,6 +58,7 @@ public class MatierePremiereController {
 
     // Liste des matières premières
     @GetMapping
+    // S'assurer que la catégorie d'unité est bien transmise à la vue si besoin
     public String list(Model model) {
         model.addAttribute("matieres", service.findAll());
         return "administratif/production/matiere-premiere/list";

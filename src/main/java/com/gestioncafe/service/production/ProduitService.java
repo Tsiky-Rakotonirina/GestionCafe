@@ -7,10 +7,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gestioncafe.model.production.DetailRecette;
+import com.gestioncafe.model.production.HistoriqueEstimation;
+import com.gestioncafe.model.production.MatierePremiere;
 import com.gestioncafe.model.production.Produit;
+import com.gestioncafe.model.production.Recette;
+import com.gestioncafe.model.production.Unite;
+import com.gestioncafe.repository.production.DetailsVenteRepository;
 import com.gestioncafe.repository.production.ProduitRepository;
 import com.gestioncafe.repository.production.RecetteRepository;
-import com.gestioncafe.repository.production.DetailsVenteRepository;
 
 @Service
 public class ProduitService {
@@ -20,6 +25,15 @@ public class ProduitService {
     private RecetteRepository recetteRepository;
     @Autowired
     private DetailsVenteRepository detailsVenteRepository;
+
+    @Autowired
+    private RecetteService recetteService;
+    @Autowired
+    private DetailRecetteService detailRecetteService;
+    @Autowired
+    private MatierePremiereService matierePremiereService;
+    @Autowired
+    private HistoriqueEstimationService historiqueEstimationService;
 
     public ProduitService(ProduitRepository produitRepository) {
         this.produitRepository = produitRepository;
@@ -41,16 +55,37 @@ public class ProduitService {
         produitRepository.deleteById(id);
     }
 
-    // Ajout de la méthode manquante pour le calcul du coût de fabrication
+    // Calcul réel du coût de fabrication d'un produit à partir de la recette et de l'historique d'estimation
     public BigDecimal calculerCoutFabrication(Integer idProduit) {
-        // Exemple de logique fictive, à adapter selon votre modèle métier
         Optional<Produit> produitOpt = findById(idProduit);
-        if (produitOpt.isPresent()) {
-            Produit produit = produitOpt.get();
-            // Remplacer par la vraie logique de calcul du coût
-            return produit.getStock() != null ? produit.getStock() : BigDecimal.ZERO;
+        if (produitOpt.isEmpty()) return BigDecimal.ZERO;
+        Produit produit = produitOpt.get();
+        // Récupérer la recette du produit (on prend la première si plusieurs)
+        List<Recette> recettes = recetteService.findByProduitId(idProduit);
+        if (recettes == null || recettes.isEmpty()) return BigDecimal.ZERO;
+        Recette recette = recettes.get(0);
+        List<DetailRecette> details = detailRecetteService.findByRecetteId(recette.getId());
+        BigDecimal cout = BigDecimal.ZERO;
+        for (DetailRecette detail : details) {
+            MatierePremiere mp = detail.getMatierePremiere();
+            Unite unite = detail.getUnite();
+            // Récupérer le prix unitaire le plus récent dans l'historique d'estimation
+            List<HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(mp);
+            HistoriqueEstimation estimationRecente = historiques.stream()
+                .filter(h -> h.getPrix() != null)
+                .max((h1, h2) -> {
+                    if (h1.getDateApplication() == null) return -1;
+                    if (h2.getDateApplication() == null) return 1;
+                    return h1.getDateApplication().compareTo(h2.getDateApplication());
+                })
+                .orElse(null);
+            BigDecimal prixUnitaire = estimationRecente != null ? BigDecimal.valueOf(estimationRecente.getPrix()) : BigDecimal.ZERO;
+            // Conversion quantité à la norme si besoin
+            BigDecimal valeurNorme = unite != null && unite.getValeurParNorme() != null ? unite.getValeurParNorme() : BigDecimal.ONE;
+            BigDecimal quantiteNorme = detail.getQuantite() != null ? detail.getQuantite().multiply(valeurNorme) : BigDecimal.ZERO;
+            cout = cout.add(prixUnitaire.multiply(quantiteNorme));
         }
-        return BigDecimal.ZERO;
+        return cout;
     }
 
     // Vérifie si le produit est utilisé dans d'autres tables (recette, vente, etc.)
