@@ -5,6 +5,8 @@ public class IngredientFormDTO {
     private Double quantite;
     private Integer idUnite;
 
+    public IngredientFormDTO() {}
+
     public Integer getIdMatierePremiere() {
         return idMatierePremiere;
     }

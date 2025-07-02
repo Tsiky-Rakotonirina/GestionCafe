@@ -2,10 +2,9 @@ package com.gestioncafe.controller.production;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,35 +84,9 @@ public class ProduitController {
         @RequestParam(required = false) BigDecimal prixVenteManuel,
         @ModelAttribute("ingredientsWrapper") IngredientsFormWrapper ingredientsWrapper,
         @RequestParam BigDecimal quantiteProduiteRecette,
-        @RequestParam BigDecimal tempsFabricationRecette
+        @RequestParam BigDecimal tempsFabricationRecette,
+        HttpServletRequest req
     ) {
-        // Debug amélioré : log des paramètres reçus pour les ingrédients
-        System.out.println("=== DEBUG INGREDIENTS ===");
-        if (ingredientsWrapper != null) {
-            System.out.println("Wrapper exists");
-            if (ingredientsWrapper.getIngredients() != null) {
-                System.out.println("Ingredients size: " + ingredientsWrapper.getIngredients().size());
-                int idx = 0;
-                for (IngredientFormDTO ing : ingredientsWrapper.getIngredients()) {
-                    System.out.println("Ingredient [" + idx + "] : idMatierePremiere=" + ing.getIdMatierePremiere()
-                        + ", quantite=" + ing.getQuantite()
-                        + ", idUnite=" + ing.getIdUnite());
-                    idx++;
-                }
-            } else {
-                System.out.println("Ingredients list is null");
-            }
-        } else {
-            System.out.println("Wrapper is null");
-        }
-        // Log supplémentaire : dump des paramètres bruts reçus (optionnel)
-        // Peut être utile si le binding ne fonctionne pas
-        // javax.servlet.http.HttpServletRequest req
-        // Enumeration<String> paramNames = req.getParameterNames();
-        // while (paramNames.hasMoreElements()) {
-        //     String param = paramNames.nextElement();
-        //     System.out.println("Param: " + param + " = " + req.getParameter(param));
-        // }
         // 1. Sauvegarde du produit
         Produit savedProduit = produitService.save(produit);
 
@@ -125,24 +98,27 @@ public class ProduitController {
         Recette savedRecette = recetteService.save(recette);
 
         // 3. Ajout des ingrédients (detail_recette) avec la bonne recette
-        if (ingredientsWrapper != null && ingredientsWrapper.getIngredients() != null) {
-            for (IngredientFormDTO ing : ingredientsWrapper.getIngredients()) {
-                try {
-                    if (ing.getIdMatierePremiere() != null && ing.getIdUnite() != null && ing.getQuantite() != null) {
-                        MatierePremiere mp = matierePremiereService.findById(ing.getIdMatierePremiere()).orElse(null);
-                        Unite unite = uniteService.findById(ing.getIdUnite()).orElse(null);
-                        if (mp != null && unite != null) {
-                            DetailRecette detail = new DetailRecette();
-                            detail.setRecette(savedRecette);
-                            detail.setMatierePremiere(mp);
-                            detail.setUnite(unite);
-                            detail.setQuantite(BigDecimal.valueOf(ing.getQuantite()));
-                            detailRecetteService.save(detail);
-                        }
+        // On tente d'abord le binding classique, sinon on parse manuellement
+        List<IngredientFormDTO> ingredientsList = (ingredientsWrapper != null && ingredientsWrapper.getIngredients() != null && !ingredientsWrapper.getIngredients().isEmpty())
+                ? ingredientsWrapper.getIngredients()
+                : com.gestioncafe.util.IngredientFormParser.parseFromRequest(req);
+
+        for (IngredientFormDTO ing : ingredientsList) {
+            try {
+                if (ing.getIdMatierePremiere() != null && ing.getIdUnite() != null && ing.getQuantite() != null) {
+                    MatierePremiere mp = matierePremiereService.findById(ing.getIdMatierePremiere()).orElse(null);
+                    Unite unite = uniteService.findById(ing.getIdUnite()).orElse(null);
+                    if (mp != null && unite != null) {
+                        DetailRecette detail = new DetailRecette();
+                        detail.setRecette(savedRecette);
+                        detail.setMatierePremiere(mp);
+                        detail.setUnite(unite);
+                        detail.setQuantite(BigDecimal.valueOf(ing.getQuantite()));
+                        detailRecetteService.save(detail);
                     }
-                } catch (Exception e) {
-                    // Log ou gestion d'erreur si besoin
                 }
+            } catch (Exception e) {
+                // Log ou gestion d'erreur si besoin
             }
         }
 
