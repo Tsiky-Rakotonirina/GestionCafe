@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
@@ -20,7 +18,6 @@ import java.util.stream.Collectors;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 
 import com.gestioncafe.service.rh.*;
 import com.gestioncafe.repository.*;
@@ -57,8 +54,6 @@ public class RhController {
     @Autowired
     private FormationService formationService;
 
-    @Autowired
-    private EmployeService employeService;
 
     @GetMapping
     public String accueil() {
@@ -125,11 +120,6 @@ public class RhController {
     @GetMapping("/parametre")
     public String parametre() {
         return "administratif/rh/parametre";
-    }
-
-    @GetMapping
-    public String index(Model model) {
-        return "administratif/rh/index";
     }
 
     @GetMapping("/calendrier")

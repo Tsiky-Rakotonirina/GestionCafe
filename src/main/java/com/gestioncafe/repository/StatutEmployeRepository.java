@@ -27,6 +27,6 @@ public interface StatutEmployeRepository extends JpaRepository<StatutEmploye, Lo
     public Optional<StatutEmploye> findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(Long idEmploye, Date dateStatut);
 
     List<StatutEmploye> findByEmployeOrderByDateStatutDesc(Employe employe);
-    List<StatutEmploye> findByStatut_Id(Long statutId);
+    List<StatutEmploye> findByIdStatut(Long statutId);
 
 }

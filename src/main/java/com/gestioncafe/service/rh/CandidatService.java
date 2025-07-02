@@ -23,7 +23,7 @@ public class CandidatService {
 
     public List<Candidat> getAllCandidats() {
         // Étape 1 : récupérer tous les StatutEmploye avec statut.id = 1
-        List<StatutEmploye> statutEmployes = statutEmployeRepository.findByStatut_Id(1L);
+        List<StatutEmploye> statutEmployes = statutEmployeRepository.findByIdStatut(1L);
 
         // Étape 2 : extraire les id des candidats déjà recrutés
         Set<Long> candidatsRecrutesIds = statutEmployes.stream()
@@ -50,7 +50,7 @@ public class CandidatService {
 
     public List<Candidat> getCandidatsByGenreId(Long genreId) {
     // 1. Récupérer les StatutEmploye avec statut.id = 1
-    List<StatutEmploye> statutEmployes = statutEmployeRepository.findByStatut_Id(1L);
+    List<StatutEmploye> statutEmployes = statutEmployeRepository.findByIdStatut(1L);
 
     // 2. Obtenir les ID des candidats déjà recrutés
     Set<Long> candidatsRecrutesIds = statutEmployes.stream()
