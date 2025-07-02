@@ -85,30 +85,6 @@ public class RhController {
         return "administratif/rh/index";
     }
 
-@GetMapping("/recrutement")
-public String recrutement(Model model) {
-    List<Candidat> candidats = candidatService.getAllCandidats();
-
-    Map<Long, List<DetailCandidat>> detailsMap = candidats.stream()
-        .collect(Collectors.toMap(
-            Candidat::getId,
-            candidat -> detailCandidatService.getDetailsByCandidatId(candidat.getId())
-        ));
-
-    model.addAttribute("genres", genreService.getAllGenres());
-    model.addAttribute("grades", gradeService.getAllGrades());
-    model.addAttribute("seriesBac", serieBacService.getAllSerieBacs());
-
-    // Ajout des nouvelles listes
-    model.addAttribute("langues", langueService.getAllLangues());
-    model.addAttribute("formations", formationService.getAllFormations());
-    model.addAttribute("experiences", experienceService.getAllExperiences());
-
-    model.addAttribute("candidats", candidats);
-    model.addAttribute("detailsMap", detailsMap);
-
-    return "administratif/rh/recrutement";
-}
     @GetMapping("/calendrier")
     public String calendrier(Model model) {
 
