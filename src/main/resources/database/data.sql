@@ -17,7 +17,8 @@ VALUES ('gobelet', 1, '1'),
        ('boîte', 2, 1),
        ('g', 3, 0.001),
        ('mg', 3, 0.000001),
-       ('cl', 4, 0.01);
+       ('cl', 4, 0.01),
+       ('unite', 2, 1);
 
 -- Genres
 INSERT INTO genre(id, nom)
@@ -135,15 +136,15 @@ VALUES (15, 3, 2, 1800, 3600), -- 2 Expresso
 
 -- Matières premières (avec unités cohérentes)
 INSERT INTO matiere_premiere(nom, id_unite, id_categorie_unite_id, stock, image)
-VALUES ('Café vert', 2, 3,  100, '/images/mp-cafe-vert.jpg'), -- kg
-       ('Sucre', 2, 3,50, '/images/mp-sucre.jpg'),          -- kg
-       ('Lait', 3, 4,30, '/images/mp-lait.jpg'),            -- L
-       ('Chocolat', 4, 2,40, '/images/mp-chocolat.jpg'),    -- sachet
-       ('Thé vert', 4, 2,25, '/images/mp-the-vert.jpg'),    -- sachet
-       ('Crème', 3, 4,15, '/images/mp-creme.jpg'),          -- L
-       ('Miel', 3, 4,10, '/images/mp-miel.jpg'),            -- L
-       ('Cannelle', 5, 1,8, '/images/mp-cannelle.jpg'),     -- boîte
-       ('Vanille', 5, 3,5, '/images/mp-vanille.jpg');
+VALUES ('Café vert', 2, 3, 100, '/images/mp-cafe-vert.jpg'), -- kg
+       ('Sucre', 2, 3, 50, '/images/mp-sucre.jpg'),          -- kg
+       ('Lait', 3, 4, 30, '/images/mp-lait.jpg'),            -- L
+       ('Chocolat', 4, 2, 40, '/images/mp-chocolat.jpg'),    -- sachet
+       ('Thé vert', 4, 2, 25, '/images/mp-the-vert.jpg'),    -- sachet
+       ('Crème', 3, 4, 15, '/images/mp-creme.jpg'),          -- L
+       ('Miel', 3, 4, 10, '/images/mp-miel.jpg'),            -- L
+       ('Cannelle', 5, 1, 8, '/images/mp-cannelle.jpg'),     -- boîte
+       ('Vanille', 5, 3, 5, '/images/mp-vanille.jpg');
 
 -- Fournisseurs
 INSERT INTO fournisseur(nom, contact, frais, email)

@@ -1,42 +1,35 @@
 package com.gestioncafe.service.production;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.production.DetailRecette;
-import com.gestioncafe.model.production.HistoriqueEstimation;
-import com.gestioncafe.model.production.MatierePremiere;
-import com.gestioncafe.model.production.Produit;
-import com.gestioncafe.model.production.Recette;
-import com.gestioncafe.model.production.Unite;
+import com.gestioncafe.model.production.*;
 import com.gestioncafe.repository.production.DetailsVenteRepository;
 import com.gestioncafe.repository.production.ProduitRepository;
 import com.gestioncafe.repository.production.RecetteRepository;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProduitService {
     private final ProduitRepository produitRepository;
 
-    @Autowired
-    private RecetteRepository recetteRepository;
-    @Autowired
-    private DetailsVenteRepository detailsVenteRepository;
+    private final RecetteRepository recetteRepository;
+    private final DetailsVenteRepository detailsVenteRepository;
 
-    @Autowired
-    private RecetteService recetteService;
-    @Autowired
-    private DetailRecetteService detailRecetteService;
-    @Autowired
-    private MatierePremiereService matierePremiereService;
-    @Autowired
-    private HistoriqueEstimationService historiqueEstimationService;
+    private final RecetteService recetteService;
+    private final DetailRecetteService detailRecetteService;
+    private final MatierePremiereService matierePremiereService;
+    private final HistoriqueEstimationService historiqueEstimationService;
 
-    public ProduitService(ProduitRepository produitRepository) {
+    public ProduitService(ProduitRepository produitRepository, RecetteRepository recetteRepository, DetailsVenteRepository detailsVenteRepository, RecetteService recetteService, DetailRecetteService detailRecetteService, MatierePremiereService matierePremiereService, HistoriqueEstimationService historiqueEstimationService) {
         this.produitRepository = produitRepository;
+        this.recetteRepository = recetteRepository;
+        this.detailsVenteRepository = detailsVenteRepository;
+        this.recetteService = recetteService;
+        this.detailRecetteService = detailRecetteService;
+        this.matierePremiereService = matierePremiereService;
+        this.historiqueEstimationService = historiqueEstimationService;
     }
 
     public List<Produit> findAll() {
@@ -51,6 +44,31 @@ public class ProduitService {
         return produitRepository.save(produit);
     }
 
+    /**
+     * Calcule le prix de vente à partir du coût de fabrication et du coefficient multiplicateur.
+     * Si le mode est "coefficient", on multiplie le coût par le coefficient.
+     * Si le mode est "manuel", on prend le prix de vente manuel.
+     *
+     * @param idProduit       l'identifiant du produit
+     * @param modePrix        "coefficient" ou "manuel"
+     * @param coefficient     le coefficient multiplicateur (si mode coefficient)
+     * @param prixVenteManuel le prix de vente manuel (si mode manuel)
+     * @return le prix de vente à insérer dans la table prix_vente_produit
+     */
+    public BigDecimal calculerPrixVente(Integer idProduit, String modePrix, BigDecimal coefficient, BigDecimal prixVenteManuel) {
+        if ("coefficient".equals(modePrix)) {
+            BigDecimal cout = calculerCoutFabrication(idProduit);
+            if (coefficient != null) {
+                return cout.multiply(coefficient);
+            } else {
+                return cout;
+            }
+        } else if ("manuel".equals(modePrix) && prixVenteManuel != null) {
+            return prixVenteManuel;
+        }
+        return BigDecimal.ZERO;
+    }
+
     public void deleteById(Integer id) {
         produitRepository.deleteById(id);
     }
@@ -58,17 +76,22 @@ public class ProduitService {
     // Calcul réel du coût de fabrication d'un produit à partir de la recette et de l'historique d'estimation
     public BigDecimal calculerCoutFabrication(Integer idProduit) {
         Optional<Produit> produitOpt = findById(idProduit);
+
         if (produitOpt.isEmpty()) return BigDecimal.ZERO;
         Produit produit = produitOpt.get();
+
         // Récupérer la recette du produit (on prend la première si plusieurs)
         List<Recette> recettes = recetteService.findByProduitId(idProduit);
         if (recettes == null || recettes.isEmpty()) return BigDecimal.ZERO;
+
         Recette recette = recettes.get(0);
         List<DetailRecette> details = detailRecetteService.findByRecetteId(recette.getId());
         BigDecimal cout = BigDecimal.ZERO;
+
         for (DetailRecette detail : details) {
             MatierePremiere mp = detail.getMatierePremiere();
             Unite unite = detail.getUnite();
+
             // Récupérer le prix unitaire le plus récent dans l'historique d'estimation
             List<HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(mp);
             HistoriqueEstimation estimationRecente = historiques.stream()
@@ -79,6 +102,7 @@ public class ProduitService {
                     return h1.getDateApplication().compareTo(h2.getDateApplication());
                 })
                 .orElse(null);
+
             BigDecimal prixUnitaire = estimationRecente != null ? BigDecimal.valueOf(estimationRecente.getPrix()) : BigDecimal.ZERO;
             // Conversion quantité à la norme si besoin
             BigDecimal valeurNorme = unite != null && unite.getValeurParNorme() != null ? unite.getValeurParNorme() : BigDecimal.ONE;

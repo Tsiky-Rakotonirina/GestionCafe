@@ -2,9 +2,9 @@ package com.gestioncafe.controller.production;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,68 +72,84 @@ public class ProduitController {
         model.addAttribute("unites", uniteService.findAll());
         model.addAttribute("packages", packageProduitService.findAll());
         model.addAttribute("matieresPremieres", matierePremiereService.findAll());
+        model.addAttribute("ingredientsWrapper", new IngredientsFormWrapper());
 
         return "administratif/production/produit/form";
     }
 
     @PostMapping("/save")
     public String saveProduit(
-            @ModelAttribute Produit produit,
-            @RequestParam String modePrix,
-            @RequestParam(required = false) BigDecimal coefficient,
-            @RequestParam(required = false) BigDecimal prixVenteManuel,
-            @ModelAttribute IngredientsFormWrapper ingredientsWrapper
+        @ModelAttribute Produit produit,
+        @RequestParam String modePrix,
+        @RequestParam(required = false) BigDecimal coefficient,
+        @RequestParam(required = false) BigDecimal prixVenteManuel,
+        @ModelAttribute("ingredientsWrapper") IngredientsFormWrapper ingredientsWrapper,
+        @RequestParam BigDecimal quantiteProduiteRecette,
+        @RequestParam BigDecimal tempsFabricationRecette
     ) {
-        BigDecimal prixVente = BigDecimal.ZERO;
-        if ("coefficient".equals(modePrix)) {
-            BigDecimal cout = BigDecimal.ZERO;
-            // Calcul du coût de fabrication selon les ingrédients
-            for (IngredientFormDTO ing : ingredientsWrapper.getIngredients()) {
-                MatierePremiere mp = matierePremiereService.findById(ing.getIdMatierePremiere()).orElse(null);
-                Unite unite = uniteService.findById(ing.getIdUnite()).orElse(null);
-                if (mp != null && unite != null) {
-                    // Récupère le prix unitaire de la matière première (à adapter selon votre modèle)
-                    BigDecimal prixUnitaire = matierePremiereService.getPrixUnitaire(mp.getId());
-                    // Conversion quantité à la norme
-                    BigDecimal valeurNorme = unite.getValeurParNorme() != null ? unite.getValeurParNorme() : BigDecimal.ONE;
-                    BigDecimal quantiteNorme = BigDecimal.valueOf(ing.getQuantite()).multiply(valeurNorme);
-                    System.out.println("MP: " + mp.getNom() + " | Prix unitaire: " + prixUnitaire + " | Quantité norme: " + quantiteNorme);
-                    cout = cout.add(prixUnitaire.multiply(quantiteNorme));
+        // Debug amélioré : log des paramètres reçus pour les ingrédients
+        System.out.println("=== DEBUG INGREDIENTS ===");
+        if (ingredientsWrapper != null) {
+            System.out.println("Wrapper exists");
+            if (ingredientsWrapper.getIngredients() != null) {
+                System.out.println("Ingredients size: " + ingredientsWrapper.getIngredients().size());
+                int idx = 0;
+                for (IngredientFormDTO ing : ingredientsWrapper.getIngredients()) {
+                    System.out.println("Ingredient [" + idx + "] : idMatierePremiere=" + ing.getIdMatierePremiere()
+                        + ", quantite=" + ing.getQuantite()
+                        + ", idUnite=" + ing.getIdUnite());
+                    idx++;
                 }
-            }
-            if (coefficient != null) {
-                prixVente = cout.multiply(coefficient);
+            } else {
+                System.out.println("Ingredients list is null");
             }
         } else {
-            if (prixVenteManuel != null) {
-                prixVente = prixVenteManuel;
-            }
+            System.out.println("Wrapper is null");
         }
-
+        // Log supplémentaire : dump des paramètres bruts reçus (optionnel)
+        // Peut être utile si le binding ne fonctionne pas
+        // javax.servlet.http.HttpServletRequest req
+        // Enumeration<String> paramNames = req.getParameterNames();
+        // while (paramNames.hasMoreElements()) {
+        //     String param = paramNames.nextElement();
+        //     System.out.println("Param: " + param + " = " + req.getParameter(param));
+        // }
+        // 1. Sauvegarde du produit
         Produit savedProduit = produitService.save(produit);
 
-        // Création et sauvegarde de la recette associée
+        // 2. Création et sauvegarde de la recette associée avec les données du formulaire
         Recette recette = new Recette();
         recette.setProduit(savedProduit);
-        recette.setQuantiteProduite(BigDecimal.ONE); // ou autre valeur
-        recette.setTempsFabrication(BigDecimal.ZERO); // à adapter
+        recette.setQuantiteProduite(quantiteProduiteRecette);
+        recette.setTempsFabrication(tempsFabricationRecette);
         Recette savedRecette = recetteService.save(recette);
 
-        // Ajout des ingrédients (detail_recette) avec la bonne recette
+        // 3. Ajout des ingrédients (detail_recette) avec la bonne recette
         if (ingredientsWrapper != null && ingredientsWrapper.getIngredients() != null) {
             for (IngredientFormDTO ing : ingredientsWrapper.getIngredients()) {
-                DetailRecette detail = new DetailRecette();
-                detail.setRecette(savedRecette);
-                MatierePremiere mp = matierePremiereService.findById(ing.getIdMatierePremiere()).orElse(null);
-                Unite unite = uniteService.findById(ing.getIdUnite()).orElse(null);
-                detail.setMatierePremiere(mp);
-                detail.setUnite(unite);
-                detail.setQuantite(BigDecimal.valueOf(ing.getQuantite()));
-                detailRecetteService.save(detail);
+                try {
+                    if (ing.getIdMatierePremiere() != null && ing.getIdUnite() != null && ing.getQuantite() != null) {
+                        MatierePremiere mp = matierePremiereService.findById(ing.getIdMatierePremiere()).orElse(null);
+                        Unite unite = uniteService.findById(ing.getIdUnite()).orElse(null);
+                        if (mp != null && unite != null) {
+                            DetailRecette detail = new DetailRecette();
+                            detail.setRecette(savedRecette);
+                            detail.setMatierePremiere(mp);
+                            detail.setUnite(unite);
+                            detail.setQuantite(BigDecimal.valueOf(ing.getQuantite()));
+                            detailRecetteService.save(detail);
+                        }
+                    }
+                } catch (Exception e) {
+                    // Log ou gestion d'erreur si besoin
+                }
             }
         }
 
-        // Insertion du prix de vente
+        // 4. Calcul et insertion du prix de vente dans prix_vente_produit
+        BigDecimal prixVente = produitService.calculerPrixVente(
+            savedProduit.getId(), modePrix, coefficient, prixVenteManuel
+        );
         PrixVenteProduit pvp = new PrixVenteProduit();
         pvp.setProduit(savedProduit);
         pvp.setPrixVente(prixVente);
@@ -151,7 +167,7 @@ public class ProduitController {
             model.addAttribute("unites", uniteService.findAll());
             model.addAttribute("packages", packageProduitService.findAll());
             model.addAttribute("matieresPremieres", matierePremiereService.findAll());
-            
+
             return "administratif/production/produit/form";
         } else {
             return "redirect:/produits";
