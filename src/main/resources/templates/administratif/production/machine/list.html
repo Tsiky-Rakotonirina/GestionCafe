@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Liste des machines</title>
+</head>
+<body>
+<h2>Liste des machines</h2>
+<a th:href="@{/machines/create}">Ajouter une machine</a>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Marque</th>
+            <th>Puissance</th>
+            <th>Taux d'activité (%)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr th:each="machine : ${machines}">
+        <td th:text="${machine.id}"></td>
+        <td th:text="${machine.nom}"></td>
+        <td th:text="${machine.marque}"></td>
+        <td th:text="${machine.puissance}"></td>
+        <td th:text="${machine.tauxActivite}"></td>
+        <td>
+            <a th:href="@{'/machines/edit/' + ${machine.id}}">Modifier</a>
+            <a th:href="@{'/machines/delete/' + ${machine.id}}" onclick="return confirm('Supprimer ?')">Supprimer</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
