@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CafeManager Pro - Gestion de Café</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Utilisation de Thymeleaf pour la gestion des ressources CSS -->
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/marketing/dashboard.css}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="product-info">
+                <!-- Lien vers la page administratif -->
+                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <!-- Image de logo -->
+                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="content">
+        <table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Genre</th>
+            <th>Lieu</th>
+            <th>Produit</th>
+            <th>Âge</th>
+            <th>Budget Moyen</th>
+            <th>Estimation Prix</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="m : ${marketingList}">
+            <td th:text="${m.id}"></td>
+            <td th:text="${m.genre.valeur}"></td>
+            <td th:text="${m.lieu.nom}"></td>
+            <td th:text="${m.produit.nom}"></td>
+            <td th:text="${m.age}"></td>
+            <td th:text="${m.budgetMoyen}"></td>
+            <td th:text="${m.estimationPrixProduit}"></td>
+        </tr>
+    </tbody>
+    <p>Âge moyen : <span th:text="${averageAge}">0</span> ans</p>
+    <p>Pourcentage Hommes : <span th:text="${pourcentageHommes}">0</span>%</p>
+    <p>Pourcentage Femmes : <span th:text="${pourcentageFemmes}">0</span>%</p>
+    <p>Moyenne Budget Moyen : <span th:text="${averageBudgetMoyen}">0</span></p>
+    <p>Moyenne Estimation Prix Produit : <span th:text="${averageEstimationPrixProduit}">0</span></p>
+
+    <h3>Nombre d'apparitions par Lieu</h3>
+    <ul>
+        <li th:each="entry : ${lieuxCounts}">
+            <span th:text="${entry.key.nom}">Lieu</span> : <span th:text="${entry.value}">0</span> fois
+        </li>
+    </ul>
+
+    <h3>Nombre d'apparitions par Produit</h3>
+    <ul>
+        <li th:each="entry : ${produitsCounts}">
+            <span th:text="${entry.key.nom}">Produit</span> : <span th:text="${entry.value}">0</span> fois
+        </li>
+    </ul>
+
+</table>
+
+    </main>
+        <script th:src="@{/js/marketing/dashboard.js}"></script> 
+
+    <!-- Utilisation de Thymeleaf pour le script JS -->
+    <!-- <script th:src="@{/templates/script.js}"></script> -->
+</body>
+</html>

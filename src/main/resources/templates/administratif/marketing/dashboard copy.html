@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafeManager Pro - Gestion de Café</title>
+    <title>CafeManager Pro - Dashboard Analytics</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Utilisation de Thymeleaf pour la gestion des ressources CSS -->
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <link rel="stylesheet" th:href="@{/css/marketing/dashboard.css}">
 </head>
@@ -38,7 +37,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>Âge Moyen</h3>
-                    <div class="stat-value" th:text="${averageAge}">0</div>
+                    <div class="stat-value" th:text="${averageAge}">28</div>
                     <span class="stat-unit">ans</span>
                 </div>
             </div>
@@ -50,8 +49,8 @@
                 </div>
                 <div class="stat-content">
                     <h3>Budget Moyen</h3>
-                    <div class="stat-value" th:text="${averageBudgetMoyen}">0</div>
-                    <span class="stat-unit">Ar</span>
+                    <div class="stat-value" th:text="${averageBudgetMoyen}">45.50</div>
+                    <span class="stat-unit">€</span>
                 </div>
             </div>
 
@@ -62,8 +61,8 @@
                 </div>
                 <div class="stat-content">
                     <h3>Prix Moyen Estimé</h3>
-                    <div class="stat-value" th:text="${averageEstimationPrixProduit}">0</div>
-                    <span class="stat-unit">Ar</span>
+                    <div class="stat-value" th:text="${averageEstimationPrixProduit}">12.75</div>
+                    <span class="stat-unit">€</span>
                 </div>
             </div>
 
@@ -74,63 +73,52 @@
                 </div>
                 <div class="stat-content">
                     <h3>Total Clients</h3>
-                    <div class="stat-value" th:text="${#lists.size(marketingList)}">0</div>
+                    <div class="stat-value" id="totalClients">156</div>
                     <span class="stat-unit">personnes</span>
                 </div>
             </div>
         </div>
 
-   <!-- Graphiques principaux -->
+        <!-- Graphiques principaux -->
+        <div class="charts-grid">
+            <!-- Répartition Hommes/Femmes -->
             <div class="chart-card">
-            <div class="chart-header">
-                <h3><i class="fas fa-venus-mars"></i> Répartition par Genre</h3>
-            </div>
-            <div class="chart-content">
-                <div class="gender-chart">
-                    <div class="pie-chart-simple" 
-                        th:style="'--men-percentage:' + ${pourcentageHommes}">
-                    </div>
-                    <div class="chart-legend">
-                        <div class="legend-item">
-                            <span class="legend-color men-color"></span>
-                            <span>Hommes</span>
-                            <span class="percentage">
-                                <span th:text="${pourcentageHommes}">0</span>%
-                            </span>
+                <div class="chart-header">
+                    <h3><i class="fas fa-venus-mars"></i> Répartition par Genre</h3>
+                </div>
+                <div class="chart-content">
+                    <div class="gender-chart">
+                        <div class="pie-chart" id="genderPie">
+                            <div class="pie-segment men" id="menSegment"></div>
+                            <div class="pie-segment women" id="womenSegment"></div>
                         </div>
-                        <div class="legend-item">
-                            <span class="legend-color women-color"></span>
-                            <span>Femmes</span>
-                            <span class="percentage">
-                                <span th:text="${pourcentageFemmes}">0</span>%
-                            </span>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color men-color"></span>
+                                <span>Hommes</span>
+                                <span class="percentage" th:text="${pourcentageHommes}" id="menPercent">60</span>%
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color women-color"></span>
+                                <span>Femmes</span>
+                                <span class="percentage" th:text="${pourcentageFemmes}" id="womenPercent">40</span>%
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
             <!-- Top Lieux -->
-<!-- Top Lieux -->
             <div class="chart-card">
                 <div class="chart-header">
                     <h3><i class="fas fa-map-marker-alt"></i> Lieux Populaires</h3>
                 </div>
                 <div class="chart-content">
                     <div class="progress-bars" id="lieuxChart">
-                        <div th:each="entry : ${lieuxCounts}" class="progress-item">
-                            <span class="progress-label" th:text="${entry.key.nom}">Lieu</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill lieu"
-                                    th:style="'width:' + (${entry.value} * 5) + '%'">
-                                </div>
-                            </div>
-                            <span class="progress-value" th:text="${entry.value + ' fois'}">0 fois</span>
-                        </div>
+                        <!-- Les barres seront générées par JavaScript -->
                     </div>
                 </div>
             </div>
-
-
 
             <!-- Top Produits -->
             <div class="chart-card">
@@ -139,17 +127,49 @@
                 </div>
                 <div class="chart-content">
                     <div class="progress-bars" id="produitsChart">
-                        <div th:each="entry : ${produitsCounts}" class="progress-item">
-                            <span class="progress-label" th:text="${entry.key.nom}">Produit</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill produit" th:data-width="${entry.value}" data-width="0%"></div>
-                            </div>
-                            <span class="progress-value" th:text="${entry.value}">0</span>
-                        </div>
+                        <!-- Les barres seront générées par JavaScript -->
                     </div>
                 </div>
             </div>
 
+            <!-- Analyse des Âges -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-area"></i> Répartition par Âge</h3>
+                </div>
+                <div class="chart-content">
+                    <div class="age-distribution" id="ageChart">
+                        <div class="age-group">
+                            <span class="age-label">18-25 ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 25%"></div>
+                            </div>
+                            <span class="age-percent">25%</span>
+                        </div>
+                        <div class="age-group">
+                            <span class="age-label">26-35 ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 45%"></div>
+                            </div>
+                            <span class="age-percent">45%</span>
+                        </div>
+                        <div class="age-group">
+                            <span class="age-label">36-50 ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 20%"></div>
+                            </div>
+                            <span class="age-percent">20%</span>
+                        </div>
+                        <div class="age-group">
+                            <span class="age-label">50+ ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 10%"></div>
+                            </div>
+                            <span class="age-percent">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Tableau de données détaillées -->
@@ -175,15 +195,15 @@
                     </thead>
                     <tbody>
                         <tr th:each="m : ${marketingList}">
-                            <td th:text="${m.id}"></td>
+                            <td th:text="${m.id}">1</td>
                             <td>
-                                <span class="gender-badge" th:text="${m.genre.valeur}" th:class="${m.genre.valeur == 'Homme' ? 'male' : 'female'}"></span>
+                                <span class="gender-badge" th:text="${m.genre.valeur}" th:class="${m.genre.valeur == 'Homme' ? 'male' : 'female'}">Homme</span>
                             </td>
-                            <td th:text="${m.lieu.nom}"></td>
-                            <td th:text="${m.produit.nom}"></td>
-                            <td th:text="${m.age}"></td>
-                            <td class="budget-cell" th:text="${m.budgetMoyen}"></td>
-                            <td class="price-cell" th:text="${m.estimationPrixProduit}"></td>
+                            <td th:text="${m.lieu.nom}">Paris</td>
+                            <td th:text="${m.produit.nom}">Cappuccino</td>
+                            <td th:text="${m.age}">28</td>
+                            <td class="budget-cell" th:text="${m.budgetMoyen}">45.50€</td>
+                            <td class="price-cell" th:text="${m.estimationPrixProduit}">4.50€</td>
                         </tr>
                     </tbody>
                 </table>
@@ -191,8 +211,6 @@
         </div>
     </main>
 
-    <script th:src="@{/js/marketing/dashboard.js}"></script>
-    <!-- Utilisation de Thymeleaf pour le script JS -->
-    <!-- <script th:src="@{/templates/script.js}"></script> -->
+        <script th:src="@{/js/marketing/dashboard.js}"></script> 
 </body>
 </html>
