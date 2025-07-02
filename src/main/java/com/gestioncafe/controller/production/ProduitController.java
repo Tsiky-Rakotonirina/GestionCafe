@@ -1,7 +1,6 @@
 package com.gestioncafe.controller.production;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,7 +168,7 @@ public class ProduitController {
         PrixVenteProduit pvp = new PrixVenteProduit();
         pvp.setProduit(savedProduit);
         pvp.setPrixVente(prixVente);
-        pvp.setDateApplication(LocalDate.now());
+        pvp.setDateApplication(java.time.LocalDateTime.now());
         prixVenteProduitService.save(pvp);
 
         return "redirect:/produits";

@@ -1,14 +1,20 @@
 package com.gestioncafe.service.production;
 
-import com.gestioncafe.model.production.*;
-import com.gestioncafe.repository.production.DetailsVenteRepository;
-import com.gestioncafe.repository.production.ProduitRepository;
-import com.gestioncafe.repository.production.RecetteRepository;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.gestioncafe.model.production.DetailRecette;
+import com.gestioncafe.model.production.HistoriqueEstimation;
+import com.gestioncafe.model.production.MatierePremiere;
+import com.gestioncafe.model.production.Produit;
+import com.gestioncafe.model.production.Recette;
+import com.gestioncafe.model.production.Unite;
+import com.gestioncafe.repository.production.DetailsVenteRepository;
+import com.gestioncafe.repository.production.ProduitRepository;
+import com.gestioncafe.repository.production.RecetteRepository;
 
 @Service
 public class ProduitService {
@@ -76,7 +82,6 @@ public class ProduitService {
     // Calcul réel du coût de fabrication d'un produit à partir de la recette et de l'historique d'estimation
     public BigDecimal calculerCoutFabrication(Integer idProduit) {
         Optional<Produit> produitOpt = findById(idProduit);
-
         if (produitOpt.isEmpty()) return BigDecimal.ZERO;
         Produit produit = produitOpt.get();
 
@@ -90,7 +95,7 @@ public class ProduitService {
 
         for (DetailRecette detail : details) {
             MatierePremiere mp = detail.getMatierePremiere();
-            Unite unite = detail.getUnite();
+            Unite uniteRecette = detail.getUnite();
 
             // Récupérer le prix unitaire le plus récent dans l'historique d'estimation
             List<HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(mp);
@@ -103,11 +108,20 @@ public class ProduitService {
                 })
                 .orElse(null);
 
-            BigDecimal prixUnitaire = estimationRecente != null ? BigDecimal.valueOf(estimationRecente.getPrix()) : BigDecimal.ZERO;
-            // Conversion quantité à la norme si besoin
-            BigDecimal valeurNorme = unite != null && unite.getValeurParNorme() != null ? unite.getValeurParNorme() : BigDecimal.ONE;
-            BigDecimal quantiteNorme = detail.getQuantite() != null ? detail.getQuantite().multiply(valeurNorme) : BigDecimal.ZERO;
-            cout = cout.add(prixUnitaire.multiply(quantiteNorme));
+            if (estimationRecente != null && estimationRecente.getPrix() != null) {
+                // Conversion des quantités à la norme
+                BigDecimal quantiteRecette = detail.getQuantite();
+                BigDecimal valeurParNormeRecette = uniteRecette != null && uniteRecette.getValeurParNorme() != null ? uniteRecette.getValeurParNorme() : BigDecimal.ONE;
+                BigDecimal quantiteNorme = quantiteRecette.multiply(valeurParNormeRecette);
+
+                BigDecimal prixEstime = BigDecimal.valueOf(estimationRecente.getPrix());
+                Unite uniteEstimation = estimationRecente.getUnite();
+                BigDecimal valeurParNormeEstimation = uniteEstimation != null && uniteEstimation.getValeurParNorme() != null ? uniteEstimation.getValeurParNorme() : BigDecimal.ONE;
+                // Prix par unité de norme
+                BigDecimal prixParNorme = prixEstime.divide(valeurParNormeEstimation, 6, java.math.RoundingMode.HALF_UP);
+
+                cout = cout.add(quantiteNorme.multiply(prixParNorme));
+            }
         }
         return cout;
     }

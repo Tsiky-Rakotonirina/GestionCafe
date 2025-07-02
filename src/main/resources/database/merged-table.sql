@@ -424,7 +424,7 @@ CREATE TABLE prix_vente_produit
     id               SERIAL PRIMARY KEY,
     id_produit       INTEGER NOT NULL,
     prix_vente       DECIMAL(10, 2),
-    date_application DATE
+    date_application TIMESTAMP
 );
 
 -- Table recette
