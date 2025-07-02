@@ -1,28 +1,12 @@
 const months = [
-  "janvier", "février", "mars", "avril", "mai", "juin",
-  "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+  "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+  "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
 ];
 
 const days = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-const yearSelect = document.getElementById('yearSelect');
 const calendarContainer = document.getElementById('calendar');
-const currentYear = new Date().getFullYear();
-
-let selectedDates = new Set();
-
-// Remplir le menu d'années
-for (let y = currentYear - 10; y <= currentYear + 10; y++) {
-  const option = document.createElement('option');
-  option.value = y;
-  option.textContent = y;
-  if (y === currentYear) option.selected = true;
-  yearSelect.appendChild(option);
-}
-
-yearSelect.addEventListener('change', () => {
-  generateCalendar(parseInt(yearSelect.value));
-  selectedDates.clear();
-});
+const selectedDates = new Set();
+const year = 2025; // fixé comme dans <h1>Calendrier : 2025</h1>
 
 function generateCalendar(year) {
   calendarContainer.innerHTML = '';
@@ -32,7 +16,7 @@ function generateCalendar(year) {
     monthDiv.className = 'month';
 
     const title = document.createElement('h3');
-    title.textContent = `${months[m][0].toUpperCase() + months[m].slice(1)} ${year}`;
+    title.textContent = `${months[m]} ${year}`;
     monthDiv.appendChild(title);
 
     const header = document.createElement('div');
@@ -47,10 +31,8 @@ function generateCalendar(year) {
     const grid = document.createElement('div');
     grid.className = 'days-grid';
 
-    const firstDayDate = new Date(year, m, 1);
-    let startDay = firstDayDate.getDay(); // 0 = Dim
-    startDay = (startDay === 0) ? 6 : startDay - 1;
-
+    const firstDay = new Date(year, m, 1).getDay();
+    let startDay = (firstDay === 0) ? 6 : firstDay - 1;
     const daysInMonth = new Date(year, m + 1, 0).getDate();
 
     for (let i = 0; i < startDay; i++) {
@@ -61,7 +43,6 @@ function generateCalendar(year) {
 
     for (let d = 1; d <= daysInMonth; d++) {
       const btn = document.createElement('button');
-      btn.type = 'button';
       btn.textContent = d;
       btn.className = 'day-button';
 
@@ -76,6 +57,7 @@ function generateCalendar(year) {
           selectedDates.add(dateValue);
           btn.classList.add('selected');
         }
+        console.log("Dates sélectionnées :", Array.from(selectedDates));
       });
 
       grid.appendChild(btn);
@@ -86,26 +68,4 @@ function generateCalendar(year) {
   }
 }
 
-const form = document.getElementById('calendarForm');
-form.addEventListener('submit', (e) => {
-  // Supprimer anciens inputs
-  const oldInputs = form.querySelectorAll('input[name="dates"]');
-  oldInputs.forEach(i => i.remove());
-
-  if (selectedDates.size === 0) {
-    e.preventDefault();
-    alert("Veuillez sélectionner au moins un jour.");
-    return;
-  }
-
-  selectedDates.forEach(date => {
-    const hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'dates';
-    hiddenInput.value = date;
-    form.appendChild(hiddenInput);
-  });
-});
-
-// Générer calendrier au chargement
-generateCalendar(currentYear);
+generateCalendar(year);
