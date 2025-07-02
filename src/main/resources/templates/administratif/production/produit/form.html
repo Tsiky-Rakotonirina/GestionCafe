@@ -86,7 +86,8 @@
             </div>
             <form th:action="@{/produits/save}" th:object="${produit}" method="post" enctype="multipart/form-data"
                   style="padding: 2rem;">
-                <!-- Champs cachés supprimés : le binding est assuré par les lignes dynamiques -->
+                <!-- Champ caché pour l'ID du produit (important pour l'édition) -->
+                <input type="hidden" th:field="*{id}" />
                 <div class="form-flex-container">
                     <!-- Left: Main fields -->
                     <div class="form-main-fields">

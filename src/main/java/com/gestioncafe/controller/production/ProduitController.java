@@ -1,21 +1,39 @@
 package com.gestioncafe.controller.production;
 
-import com.gestioncafe.dto.IngredientFormDTO;
-import com.gestioncafe.dto.IngredientsFormWrapper;
-import com.gestioncafe.model.production.*;
-import com.gestioncafe.service.production.*;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.gestioncafe.dto.IngredientFormDTO;
+import com.gestioncafe.dto.IngredientsFormWrapper;
+import com.gestioncafe.model.production.DetailRecette;
+import com.gestioncafe.model.production.MatierePremiere;
+import com.gestioncafe.model.production.PrixVenteProduit;
+import com.gestioncafe.model.production.Produit;
+import com.gestioncafe.model.production.Recette;
+import com.gestioncafe.model.production.Unite;
+import com.gestioncafe.service.production.DetailRecetteService;
+import com.gestioncafe.service.production.MatierePremiereService;
+import com.gestioncafe.service.production.PackageProduitService;
+import com.gestioncafe.service.production.PrixVenteProduitService;
+import com.gestioncafe.service.production.ProduitService;
+import com.gestioncafe.service.production.RecetteService;
+import com.gestioncafe.service.production.UniteService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/produits")
@@ -75,18 +93,52 @@ public class ProduitController {
         @RequestParam BigDecimal tempsFabricationRecette,
         HttpServletRequest req
     ) {
-        // 1. Sauvegarde du produit
-        Produit savedProduit = produitService.save(produit);
 
-        // 2. Création et sauvegarde de la recette associée avec les données du formulaire
-        Recette recette = new Recette();
-        recette.setProduit(savedProduit);
-        recette.setQuantiteProduite(quantiteProduiteRecette);
-        recette.setTempsFabrication(tempsFabricationRecette);
+        Produit savedProduit;
+        if (produit.getId() != null) {
+            // Edition : on met à jour l'existant
+            Optional<Produit> oldOpt = produitService.findById(produit.getId());
+            if (oldOpt.isPresent()) {
+                Produit old = oldOpt.get();
+                old.setNom(produit.getNom());
+                old.setDescription(produit.getDescription());
+                old.setUnite(produit.getUnite());
+                old.setPackageProduit(produit.getPackageProduit());
+                old.setStock(produit.getStock());
+                old.setImage(produit.getImage());
+                old.setDelaiPeremption(produit.getDelaiPeremption());
+                savedProduit = produitService.save(old);
+            } else {
+                // Si jamais l'id n'existe pas, fallback création
+                savedProduit = produitService.save(produit);
+            }
+        } else {
+            // Création
+            savedProduit = produitService.save(produit);
+        }
+
+        // 2. Création ou MAJ de la recette associée
+        Recette recette;
+        List<Recette> recettesExistantes = recetteService.findByProduitId(savedProduit.getId());
+        if (recettesExistantes != null && !recettesExistantes.isEmpty()) {
+            recette = recettesExistantes.get(0);
+            recette.setQuantiteProduite(quantiteProduiteRecette);
+            recette.setTempsFabrication(tempsFabricationRecette);
+        } else {
+            recette = new Recette();
+            recette.setProduit(savedProduit);
+            recette.setQuantiteProduite(quantiteProduiteRecette);
+            recette.setTempsFabrication(tempsFabricationRecette);
+        }
         Recette savedRecette = recetteService.save(recette);
 
-        // 3. Ajout des ingrédients (detail_recette) avec la bonne recette
-        // On tente d'abord le binding classique, sinon on parse manuellement
+        // 3. Suppression des anciens ingrédients (detail_recette) si édition
+        List<DetailRecette> oldDetails = detailRecetteService.findByRecetteId(savedRecette.getId());
+        for (DetailRecette old : oldDetails) {
+            detailRecetteService.deleteById(old.getId());
+        }
+
+        // 4. Ajout des nouveaux ingrédients
         List<IngredientFormDTO> ingredientsList = (ingredientsWrapper != null && ingredientsWrapper.getIngredients() != null && !ingredientsWrapper.getIngredients().isEmpty())
             ? ingredientsWrapper.getIngredients()
             : com.gestioncafe.util.IngredientFormParser.parseFromRequest(req);
@@ -163,7 +215,7 @@ public class ProduitController {
                         BigDecimal prixEstime = BigDecimal.valueOf(estimationRecente.getPrix());
                         BigDecimal valeurParNormeEstimation = estimationRecente.getUnite().getValeurParNorme();
                         // Prix par unité de norme
-                        BigDecimal prixParNorme = prixEstime.divide(valeurParNormeEstimation, 6, BigDecimal.ROUND_HALF_UP);
+                        BigDecimal prixParNorme = prixEstime.divide(valeurParNormeEstimation, 6, java.math.RoundingMode.HALF_UP);
 
                         coutTotal = coutTotal.add(quantiteNorme.multiply(prixParNorme));
                     }
