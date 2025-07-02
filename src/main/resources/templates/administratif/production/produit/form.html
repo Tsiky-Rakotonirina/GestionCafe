@@ -225,6 +225,9 @@
     var unites = /*[[${unites}]]*/ [];
     if (!unites) unites = [];
 
+    // On suppose que chaque matierePremiere a un champ categorieUnite (objet avec id)
+    // et chaque unite a un champ categorieUnite (objet avec id)
+
     function addIngredientRow(mpId, quantite, uniteId) {
         const list = document.getElementById('ingredients-list');
         const index = list.children.length;
@@ -235,10 +238,13 @@
         const selectMp = document.createElement('select');
         selectMp.name = `ingredientsWrapper.ingredients[${index}].idMatierePremiere`;
         selectMp.required = true;
+        selectMp.className = 'matiere-select';
         matieres.forEach(mp => {
             const opt = document.createElement('option');
             opt.value = mp.id;
             opt.text = mp.nom;
+            if (mp.categorieUnite && mp.categorieUnite.id)
+                opt.setAttribute('data-categorie', mp.categorieUnite.id);
             if (mpId && mp.id == mpId) opt.selected = true;
             selectMp.appendChild(opt);
         });
@@ -257,13 +263,33 @@
         const selectUnite = document.createElement('select');
         selectUnite.name = `ingredientsWrapper.ingredients[${index}].idUnite`;
         selectUnite.required = true;
-        unites.forEach(u => {
-            const opt = document.createElement('option');
-            opt.value = u.id;
-            opt.text = u.nom;
-            if (uniteId && u.id == uniteId) opt.selected = true;
-            selectUnite.appendChild(opt);
+        selectUnite.className = 'unite-select';
+
+        // Fonction pour filtrer les unités selon la catégorie de la matière première sélectionnée
+        function filterUnites() {
+            const selectedMp = selectMp.options[selectMp.selectedIndex];
+            const categorieId = selectedMp ? selectedMp.getAttribute('data-categorie') : null;
+            selectUnite.innerHTML = '';
+            unites.forEach(u => {
+                if (!u.categorieUnite || !u.categorieUnite.id) return;
+                if (!categorieId || u.categorieUnite.id == categorieId) {
+                    const opt = document.createElement('option');
+                    opt.value = u.id;
+                    opt.text = u.nom;
+                    opt.setAttribute('data-categorie', u.categorieUnite.id);
+                    if (uniteId && u.id == uniteId) opt.selected = true;
+                    selectUnite.appendChild(opt);
+                }
+            });
+        }
+
+        // Initialiser la liste des unités selon la matière première sélectionnée
+        selectMp.addEventListener('change', function() {
+            filterUnites();
         });
+
+        // Initialiser la liste au chargement de la ligne
+        filterUnites();
 
         // Bouton supprimer
         const btnRemove = document.createElement('button');
