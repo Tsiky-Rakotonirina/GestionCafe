@@ -1,29 +1,42 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "genre") 
 public class Genre {
     @Id
-    private Integer id;
-
-    private String nom;
-
-
-    public void setId(Integer id) {
-        this.id = id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String valeur;
+    private String description;
+    public Genre() {
     }
-
-    public Integer getId() {
+    public Genre(String valeur, String description) {
+        this.valeur = valeur;
+        this.description = description;
+    }
+    public Genre(Long id, String valeur, String description) {
+        this.id = id;
+        this.valeur = valeur;
+        this.description = description;
+    }
+    public Long getId() {
         return id;
     }
-
-    public String getNom() {
-        return nom;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    public void setNom(String nom) {
-        this.nom = nom;
+    public String getValeur() {
+        return valeur;
     }
+    public void setValeur(String valeur) {
+        this.valeur = valeur;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    } 
 }

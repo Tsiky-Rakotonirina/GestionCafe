@@ -6,5 +6,5 @@ import com.gestioncafe.model.*;
 
 @Repository
 public interface AdministratifRepository extends JpaRepository<Administratif, Long> {
-    Administratif findByNomAndMotDePasse(String nom, String motDePasse);
+    public Administratif findByNomAndMotDePasse(String nom, String motDePasse);
 }

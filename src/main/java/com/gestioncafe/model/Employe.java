@@ -1,56 +1,116 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.*;
+import java.sql.Date;
+import com.gestioncafe.model.Genre;
+import com.gestioncafe.model.Candidat;
 
-import java.time.LocalDate;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
-public class Employe extends Tiers {
+@Table(name = "employe")
+public class Employe {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String nom;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_genre", referencedColumnName = "id")
+    private Genre genre;
+
     @Column(name = "date_naissance", nullable = false)
-    private LocalDate dateNaissance;
+    private Date dateNaissance;
+
+    @Column(nullable = false)
+    private String contact;
 
     @Column(name = "date_recrutement", nullable = false)
-    private LocalDate dateRecrutement;
+    private Date dateRecrutement;
 
-    @Column(name = "date_demission")
-    private LocalDate dateDemission;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_candidat", referencedColumnName = "id")
+    private Candidat candidat;
 
-    @Column(name = "reference_cv")
+    @Column
+    private String image;
+
+    @Column(name = "reference_cv", columnDefinition = "TEXT")
     private String referenceCv;
 
-
-    public LocalDate getDateNaissance() {
-        return dateNaissance;
+    public Long getId() {
+        return this.id;
     }
 
-    public void setDateNaissance(LocalDate dateNaissance) {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNom() {
+        return this.nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public Genre getGenre() {
+        return this.genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public Date getDateNaissance() {
+        return this.dateNaissance;
+    }
+
+    public void setDateNaissance(Date dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 
-    public LocalDate getDateRecrutement() {
-        return dateRecrutement;
+    public String getContact() {
+        return this.contact;
     }
 
-    public void setDateRecrutement(LocalDate dateRecrutement) {
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public Date getDateRecrutement() {
+        return this.dateRecrutement;
+    }
+
+    public void setDateRecrutement(Date dateRecrutement) {
         this.dateRecrutement = dateRecrutement;
     }
 
-    public LocalDate getDateDemission() {
-        return dateDemission;
+    public Candidat getCandidat() {
+        return this.candidat;
     }
 
-    public void setDateDemission(LocalDate dateDemission) {
-        this.dateDemission = dateDemission;
+    public void setCandidat(Candidat candidat) {
+        this.candidat = candidat;
+    }
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getReferenceCv() {
-        return referenceCv;
+        return this.referenceCv;
     }
 
     public void setReferenceCv(String referenceCv) {
         this.referenceCv = referenceCv;
     }
+
+    // Getters & Setters
 }

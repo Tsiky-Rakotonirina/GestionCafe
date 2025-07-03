@@ -2,8 +2,8 @@
 Theme : Cafeteria
 Application : GestionCafe
 Description : Application Web de Gestion quotidienne et adminsitratif d'un cafeteria 
-DEADLINE : Jeudi 3 juillet 2025 a 6h
-Mini-soutennace : Jeudi 3 juillet a partie de 8h
+DEADLINE : Jeudi 10 juillet 2025 a 6h
+Mini-soutennace : Jeudi 10 juillet a partie de 8h
 
 ---
 
@@ -23,7 +23,6 @@ Voir /docs/Technologies.md
 - model : les classes sont liees aux tables des bases via Hibernate
 - repository : gere l interaction avec la base, fournit les methodes
 - service : pont entre repository et controller
-- serviceImpl: implemente service selon les regles metiers
 - controller : gere les requetes http, appelle service, prepare les donnees des 
 
 + Voir /docs/Architecture.md
@@ -42,7 +41,7 @@ Voir /docs/Technologies.md
 - changer de branche a votre nom
 - ouvrir le code dans vscode
 - aller dans /src/main/resources/application.properties :  changer les parametres de la base
-- aller dans deploy.bat et changer TOMCAT_WEBAPPS_DI
+- aller dans deploy.bat et changer TOMCAT_WEBAPPS_DIR
 
 ---
 
