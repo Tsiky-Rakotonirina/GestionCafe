@@ -370,12 +370,14 @@ class CafeManager {
     }
 
     setupFormHandlers() {
+
         // Gestionnaires de formulaires
         const forms = document.querySelectorAll('form');
         forms.forEach(form => {
             // Ne pas intercepter les formulaires de stats et stats-filtre
             const action = form.getAttribute('action') || '';
-            if (action.includes('/administratif/production/stats')) {
+            // Désactiver l'interception pour les formulaires d'unité (CRUD)
+            if (action.includes('/administratif/production/stats') || action.includes('/administratif/production/unite')) {
                 return;
             }
             form.addEventListener('submit', (e) => {
