@@ -161,7 +161,6 @@ INSERT INTO jour_ferie (nom, date_ferie) VALUES
 ('Noël', '2025-12-25');
 
 INSERT INTO conge (id_type_conge, date_debut, date_fin, duree, id_employe) VALUES
-(1, '2025-07-15', '2025-08-14', 15, 1),
 (2, '2025-06-12', '2025-06-12', 2, 1);
 
 INSERT INTO avance (id_raison_avance, id_employe, date_avance, montant) VALUES
