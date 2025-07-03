@@ -127,5 +127,4 @@ public class RhCongeService {
         return liste;
     }
 
-
 }

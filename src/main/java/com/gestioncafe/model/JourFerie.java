@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.sql.*;
 
 @Entity
-@Table(name = "avance") 
+@Table(name = "jour_ferie") 
 public class JourFerie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

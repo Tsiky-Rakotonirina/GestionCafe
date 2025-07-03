@@ -31,6 +31,10 @@
             <h1>Calendrier : 2025</h1>
             <div class="calendar-container" id="calendar"></div>
     </main>
+    <script th:inline="javascript">
+        let jours = /*[[${jours}]]*/ [];
+    </script>
     <script th:src="@{/js/rh/calendrier.js}"></script> 
+
 </body>
 </html>

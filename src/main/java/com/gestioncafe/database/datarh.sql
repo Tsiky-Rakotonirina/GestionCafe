@@ -151,18 +151,18 @@ INSERT INTO presence (id_employe, date_presence, date_arrivee, est_present) VALU
 (1, '2023-06-30', '2023-06-30 08:10:22', true);
 
 INSERT INTO jour_ferie (nom, date_ferie) VALUES
-('Nouvel An', '2023-01-01'),
-('Martyrs', '2023-03-29'),
-('Pâques', '2023-04-09'),
-('Fête du Travail', '2023-05-01'),
-('Independance', '2023-06-26'),
-('Assomption', '2023-08-15'),
-('Toussaint', '2023-11-01'),
-('Noël', '2023-12-25');
+('Nouvel An', '2025-01-01'),
+('Martyrs', '2025-03-29'),
+('Pâques', '2025-04-09'),
+('Fête du Travail', '2025-05-01'),
+('Independance', '2025-06-26'),
+('Assomption', '2025-08-15'),
+('Toussaint', '2025-11-01'),
+('Noël', '2025-12-25');
 
 INSERT INTO conge (id_type_conge, date_debut, date_fin, duree, id_employe) VALUES
-(1, '2023-07-15', '2023-08-14', 30, 1),
-(2, '2023-06-12', '2023-06-12', 1, 1);
+(1, '2025-07-15', '2025-08-14', 15, 1),
+(2, '2025-06-12', '2025-06-12', 2, 1);
 
 INSERT INTO avance (id_raison_avance, id_employe, date_avance, montant) VALUES
 (1, 1, '2023-03-15', 100000);
