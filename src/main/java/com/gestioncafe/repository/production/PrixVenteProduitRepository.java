@@ -1,6 +1,6 @@
 package com.gestioncafe.repository.production;
 
-import com.gestioncafe.model.production.PrixVenteProduit;
+import com.gestioncafe.model.PrixVenteProduit;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

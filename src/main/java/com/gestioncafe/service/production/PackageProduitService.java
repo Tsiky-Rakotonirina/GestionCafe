@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.autre.PackageProduit;
+import com.gestioncafe.model.PackageProduit;
 import com.gestioncafe.repository.production.PackageProduitRepository;
 
 @Service

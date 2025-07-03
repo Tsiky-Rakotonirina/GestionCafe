@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.gestioncafe.model.production.DetailFournisseur;
-import com.gestioncafe.model.production.HistoriqueEstimation;
-import com.gestioncafe.model.production.MatierePremiere;
-import com.gestioncafe.model.production.SeuilMatierePremiere;
+import com.gestioncafe.model.DetailFournisseur;
+import com.gestioncafe.model.HistoriqueEstimation;
+import com.gestioncafe.model.MatierePremiere;
+import com.gestioncafe.model.SeuilMatierePremiere;
 import com.gestioncafe.repository.production.CategorieUniteRepository;
 import com.gestioncafe.repository.production.UniteRepository;
 import com.gestioncafe.service.production.DetailFournisseurService;

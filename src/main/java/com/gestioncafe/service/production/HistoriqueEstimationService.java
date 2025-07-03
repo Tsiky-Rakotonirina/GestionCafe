@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.production.HistoriqueEstimation;
-import com.gestioncafe.model.production.MatierePremiere;
+import com.gestioncafe.model.HistoriqueEstimation;
+import com.gestioncafe.model.MatierePremiere;
 import com.gestioncafe.repository.production.HistoriqueEstimationRepository;
 
 @Service

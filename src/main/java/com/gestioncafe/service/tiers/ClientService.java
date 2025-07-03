@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.tiers.Client;
+import com.gestioncafe.model.Client;
 import com.gestioncafe.repository.tiers.ClientRepository;
 
 @Service

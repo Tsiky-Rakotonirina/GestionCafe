@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.gestioncafe.model.production.Machine;
-import com.gestioncafe.model.production.Produit;
-import com.gestioncafe.model.production.Unite;
-import com.gestioncafe.model.production.UtilisationMachine;
+import com.gestioncafe.model.Machine;
+import com.gestioncafe.model.Produit;
+import com.gestioncafe.model.Unite;
+import com.gestioncafe.model.UtilisationMachine;
 import com.gestioncafe.repository.production.UniteRepository;
 import com.gestioncafe.repository.production.UtilisationMachineRepository;
 import com.gestioncafe.service.production.MachineService;

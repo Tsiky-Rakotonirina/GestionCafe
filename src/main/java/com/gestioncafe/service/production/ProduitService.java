@@ -6,12 +6,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.production.DetailRecette;
-import com.gestioncafe.model.production.HistoriqueEstimation;
-import com.gestioncafe.model.production.MatierePremiere;
-import com.gestioncafe.model.production.Produit;
-import com.gestioncafe.model.production.Recette;
-import com.gestioncafe.model.production.Unite;
+import com.gestioncafe.model.DetailRecette;
+import com.gestioncafe.model.HistoriqueEstimation;
+import com.gestioncafe.model.MatierePremiere;
+import com.gestioncafe.model.Produit;
+import com.gestioncafe.model.Recette;
+import com.gestioncafe.model.Unite;
 import com.gestioncafe.repository.production.DetailsVenteRepository;
 import com.gestioncafe.repository.production.ProduitRepository;
 import com.gestioncafe.repository.production.RecetteRepository;

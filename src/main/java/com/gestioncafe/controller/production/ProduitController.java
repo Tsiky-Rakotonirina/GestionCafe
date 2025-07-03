@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.gestioncafe.model.HistoriqueEstimation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +19,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestioncafe.dto.IngredientFormDTO;
 import com.gestioncafe.dto.IngredientsFormWrapper;
-import com.gestioncafe.model.production.DetailRecette;
-import com.gestioncafe.model.production.MatierePremiere;
-import com.gestioncafe.model.production.PrixVenteProduit;
-import com.gestioncafe.model.production.Produit;
-import com.gestioncafe.model.production.Recette;
-import com.gestioncafe.model.production.Unite;
+import com.gestioncafe.model.DetailRecette;
+import com.gestioncafe.model.MatierePremiere;
+import com.gestioncafe.model.PrixVenteProduit;
+import com.gestioncafe.model.Produit;
+import com.gestioncafe.model.Recette;
+import com.gestioncafe.model.Unite;
 import com.gestioncafe.service.production.DetailRecetteService;
 import com.gestioncafe.service.production.MatierePremiereService;
 import com.gestioncafe.service.production.PackageProduitService;
@@ -185,9 +186,9 @@ public class ProduitController {
             model.addAttribute("matieresPremieres", matierePremiereService.findAll());
 
             // Pré-remplissage de la recette et des ingrédients
-            List<com.gestioncafe.model.production.Recette> recettes = recetteService.findByProduitId(produit.getId());
+            List<Recette> recettes = recetteService.findByProduitId(produit.getId());
             if (recettes != null && !recettes.isEmpty()) {
-                com.gestioncafe.model.production.Recette recette = recettes.get(0); // On prend la première recette trouvée
+                Recette recette = recettes.get(0); // On prend la première recette trouvée
                 model.addAttribute("quantiteProduiteRecette", recette.getQuantiteProduite());
                 model.addAttribute("tempsFabricationRecette", recette.getTempsFabrication());
                 // Préparer la liste des ingrédients
@@ -201,9 +202,9 @@ public class ProduitController {
                     dto.setIdUnite(detail.getUnite().getId());
                     ingredientDTOs.add(dto);
                     // Calcul du coût à partir de l'historique d'estimation, conversion à la norme
-                    java.util.List<com.gestioncafe.model.production.HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
-                    com.gestioncafe.model.production.HistoriqueEstimation estimationRecente = historiques.stream()
-                        .max(java.util.Comparator.comparing(com.gestioncafe.model.production.HistoriqueEstimation::getDateApplication))
+                    java.util.List<HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
+                    HistoriqueEstimation estimationRecente = historiques.stream()
+                        .max(java.util.Comparator.comparing(HistoriqueEstimation::getDateApplication))
                         .orElse(null);
                     if (estimationRecente != null && estimationRecente.getPrix() != null) {
                         // Conversion des quantités à la norme
@@ -224,7 +225,7 @@ public class ProduitController {
                 model.addAttribute("ingredientsWrapper", wrapper);
 
                 // Pré-remplissage du coefficient si possible
-                com.gestioncafe.model.production.PrixVenteProduit prixVente = prixVenteProduitService.findLastByProduitId(produit.getId());
+                PrixVenteProduit prixVente = prixVenteProduitService.findLastByProduitId(produit.getId());
                 java.math.BigDecimal coefficient = null;
                 if (prixVente != null && coutTotal != null && coutTotal.compareTo(java.math.BigDecimal.ZERO) > 0) {
                     coefficient = prixVente.getPrixVente().divide(coutTotal, 2, java.math.RoundingMode.HALF_UP);
@@ -280,10 +281,10 @@ public class ProduitController {
                 // Calcul du prix unitaire (converti à la norme) et unité d'estimation
                 java.math.BigDecimal prixUnitaire = java.math.BigDecimal.ZERO;
                 String uniteEstimation = "";
-                java.util.List<com.gestioncafe.model.production.HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
-                com.gestioncafe.model.production.HistoriqueEstimation estimationRecente = historiques.stream()
+                java.util.List<HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
+                HistoriqueEstimation estimationRecente = historiques.stream()
                         .filter(h -> h.getPrix() != null)
-                        .max(java.util.Comparator.comparing(com.gestioncafe.model.production.HistoriqueEstimation::getDateApplication))
+                        .max(java.util.Comparator.comparing(HistoriqueEstimation::getDateApplication))
                         .orElse(null);
                 if (estimationRecente != null && estimationRecente.getPrix() != null) {
                     java.math.BigDecimal prixEstime = java.math.BigDecimal.valueOf(estimationRecente.getPrix());
@@ -312,7 +313,7 @@ public class ProduitController {
         model.addAttribute("coutFabrication", coutFabrication);
 
         // Prix de vente actuel
-        com.gestioncafe.model.production.PrixVenteProduit prixVente = prixVenteProduitService.findLastByProduitId(id);
+        PrixVenteProduit prixVente = prixVenteProduitService.findLastByProduitId(id);
         model.addAttribute("prixVente", prixVente != null ? prixVente.getPrixVente() : java.math.BigDecimal.ZERO);
 
         return "administratif/production/produit/fiche";
