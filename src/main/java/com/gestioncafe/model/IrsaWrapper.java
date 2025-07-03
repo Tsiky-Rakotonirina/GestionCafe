@@ -1,7 +1,9 @@
-package com.gestioncafe.model.rh;
+package com.gestioncafe.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.gestioncafe.model.Irsa;
 
 public class IrsaWrapper {
     private List<Irsa> irsas = new ArrayList<>();

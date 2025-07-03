@@ -2,11 +2,6 @@ package com.gestioncafe.controller.rh;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -22,16 +17,15 @@ import java.time.Period;
 
 import com.gestioncafe.service.rh.*;
 import com.gestioncafe.service.*;
-import com.gestioncafe.service.rh.JourFerieService;
 import com.gestioncafe.repository.*;
 import com.gestioncafe.model.*;
-import com.gestioncafe.model.rh.JourFerie;
 
 @Controller
 @RequestMapping("/administratif/rh")
 public class RhController {
+
     @Autowired
-    private JourFerieService jourFerieService;
+    private RhParametreService rhParametreService;
 
     @Autowired
     private RhService rhService;
@@ -64,6 +58,7 @@ public class RhController {
     @GetMapping
     public String accueil() {
         return "redirect:/administratif/rh/gestion-employes";
+    }
 
     @GetMapping("/gestion-employes")
     public String gestiontEmployes() {
@@ -123,21 +118,41 @@ public class RhController {
     }
 
     @GetMapping("/parametre")
-    public String parametre() {
-        return "administratif/rh/parametre";
-    }
-
-    public String index(Model model) {
+    public String parametre(Model model) {
+        List<Irsa> irsas = rhParametreService.getIrsaService().findAll();
         if (!model.containsAttribute("jourFerie")) {
+            model.addAttribute("jourFerie", new JourFerie());
         }
-        model.addAttribute("listeJoursFeries", jourFerieService.findAll());
-        return "administratif/rh/parametre";
-    }
+        if (!model.containsAttribute("grade")) {
+            model.addAttribute("grade", new Grade());
+        }
+        if (!model.containsAttribute("irsa")) {
+            model.addAttribute("irsa", new Irsa());
+        }
+        if (model.containsAttribute("irsaWrapper")) {
+            IrsaWrapper irsaWrapper = (IrsaWrapper) model.getAttribute("irsaWrapper");
 
-    @PostMapping("/ajout-jour-ferie")
-    public String ajoutJourFerie(@ModelAttribute("jourFerie") JourFerie jourFerie) {
-        jourFerieService.save(jourFerie);
-        return "redirect:/administratif/rh";
+            // Fusionner ou synchroniser avec les données réelles
+            for (Irsa dbIrsa : irsas) {
+                boolean existe = irsaWrapper.getIrsas().stream()
+                        .anyMatch(i -> i.getId() != null && i.getId().equals(dbIrsa.getId()));
+                if (!existe) {
+                    irsaWrapper.addIrsa(dbIrsa);
+                }
+            }
+
+            model.addAttribute("irsaWrapper", irsaWrapper);
+        } else {
+            IrsaWrapper irsaWrapper = new IrsaWrapper();
+            irsaWrapper.setIrsas(rhParametreService.getIrsaService().findAll());
+            model.addAttribute("irsaWrapper", irsaWrapper);
+        }
+
+        model.addAttribute("listeJoursFeries", rhParametreService.getJourFerieService().findAll());
+        model.addAttribute("listeGrades", rhParametreService.getGradeService().findAll());
+        model.addAttribute("listeIrsas", irsas);
+
+        return "administratif/rh/parametrage";
     }
 
 }

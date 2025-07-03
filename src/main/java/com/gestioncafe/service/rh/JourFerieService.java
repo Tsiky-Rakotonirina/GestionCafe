@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.rh.JourFerie;
-import com.gestioncafe.repository.rh.JourFerieRepository;
+import com.gestioncafe.model.*;
+import com.gestioncafe.repository.*;
 
 @Service
 public class JourFerieService {
