@@ -149,7 +149,7 @@
                         <tbody>
                             <tr th:each="jour : ${listeJoursFeries}">
                                 <td><strong th:text="${jour.nom}">Nom</strong></td>
-                                <td th:text="${#temporals.format(jour.dateFerie, 'dd-MM-yyyy')}">01-05-2026</td>
+                                <td th:text="${jour.dateFerie}">01-05-2026</td>
                             </tr>
                         </tbody>
                     </table>

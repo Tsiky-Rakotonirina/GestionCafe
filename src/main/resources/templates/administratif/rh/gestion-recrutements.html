@@ -130,8 +130,8 @@
                 <div class="cv-main">
                     <h3 th:text="${candidat.nom}">Nom</h3>
                     <p><strong>Genre:</strong> <span th:text="${candidat.genre?.valeur}">Genre</span></p>
-                    <p><strong>Date de naissance:</strong> <span th:text="${candidat.dateNaissance, 'dd/MM/yyyy'}">Date naissance</span></p>
-                    <p><strong>Date candidature:</strong> <span th:text="${candidat.dateCandidature, 'dd/MM/yyyy'}">Date candidature</span></p>
+                    <p><strong>Date de naissance:</strong> <span th:text="${candidat.dateNaissance}">Date naissance</span></p>
+                    <p><strong>Date candidature:</strong> <span th:text="${candidat.dateCandidature}">Date candidature</span></p>
                     <p><strong>Contact:</strong> <span th:text="${candidat.contact}">Contact</span></p>
                     <p><strong>Poste:</strong> <span th:text="${candidat.grade?.nom}">Poste</span></p>
                     <p th:if="${candidat.grade?.salaire != null}">
