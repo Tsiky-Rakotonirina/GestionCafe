@@ -8,6 +8,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
+        
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <link rel="stylesheet" th:href="@{/css/rh/styles.css}">
     <link rel="stylesheet" th:href="@{/css/rh/recrutement.css}">
 </head>
@@ -19,7 +21,7 @@
         <div th:replace="~{administratif/rh/layout/header :: header('Gestion des recrutements')}"></div>
         <main class="content">
             <h2>Filtrer par detail</h2>
-            <form class="form-recrutement" method="post" th:action="@{/administratif/rh/recrutement/recrutement}"
+            <form class="form-recrutement" method="post" th:action="@{/administratif/rh/recrutement}"
                 style="margin-bottom: 1em;">
                 <!-- Genre -->
                 <div style="margin-bottom: 1em;">
@@ -59,6 +61,35 @@
                         <input type="checkbox" name="serieBacIds" th:value="${s.id}"
                             th:checked="${param.serieBacIds != null} ? ${#lists.contains(param.serieBacIds, s.id.toString())} : false" />
                         <span th:text="${s.valeur}"></span>
+                    </label>
+                </div>
+
+                <div style="margin-bottom: 1em;">
+                    <label><strong>Formations :</strong></label>
+                    <label th:each="f : ${formations}" style="margin-right: 1em;">
+                        <input type="checkbox" name="formationIds" th:value="${f.id}"
+                            th:checked="${param.formationIds != null} ? ${#lists.contains(param.formationIds, f.id.toString())} : false" />
+                        <span th:text="${f.valeur}"></span>
+                    </label>
+                </div>
+
+                <!-- Langues -->
+                <div style="margin-bottom: 1em;">
+                    <label><strong>Langues :</strong></label>
+                    <label th:each="l : ${langues}" style="margin-right: 1em;">
+                        <input type="checkbox" name="langueIds" th:value="${l.id}"
+                            th:checked="${param.langueIds != null} ? ${#lists.contains(param.langueIds, l.id.toString())} : false" />
+                        <span th:text="${l.valeur}"></span>
+                    </label>
+                </div>
+
+                <!-- Expériences -->
+                <div style="margin-bottom: 1em;">
+                    <label><strong>Expérience :</strong></label>
+                    <label th:each="e : ${experiences}" style="margin-right: 1em;">
+                        <input type="radio" name="experienceId" th:value="${e.id}"
+                            th:checked="${param.experienceId == e.id.toString()}" />
+                        <span th:text="${e.valeur}"></span>
                     </label>
                 </div>
 

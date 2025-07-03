@@ -60,6 +60,7 @@ public class RhRecrutementController {
     // private PdfService pdfService;
 
     
+    
     @PostMapping("/recrutement")
     public String filtreCandidats(
         @RequestParam(value = "genreId", required = false) Long genreId,
