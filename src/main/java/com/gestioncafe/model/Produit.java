@@ -1,8 +1,6 @@
-package com.gestioncafe.model.production;
+package com.gestioncafe.model;
 
 import java.math.BigDecimal;
-
-import com.gestioncafe.model.autre.PackageProduit;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

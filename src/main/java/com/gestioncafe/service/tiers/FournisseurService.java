@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.tiers.Fournisseur;
+import com.gestioncafe.model.Fournisseur;
 import com.gestioncafe.repository.tiers.FournisseurRepository;
 
 @Service

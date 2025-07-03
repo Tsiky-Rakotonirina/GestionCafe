@@ -1,4 +1,4 @@
-package com.gestioncafe.model.production;
+package com.gestioncafe.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

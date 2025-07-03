@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.production.MatierePremiere;
-import com.gestioncafe.model.production.SeuilMatierePremiere;
+import com.gestioncafe.model.MatierePremiere;
+import com.gestioncafe.model.SeuilMatierePremiere;
 import com.gestioncafe.repository.production.SeuilMatierePremiereRepository;
 
 @Service

@@ -1,4 +1,4 @@
-package com.gestioncafe.model.production;
+package com.gestioncafe.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;

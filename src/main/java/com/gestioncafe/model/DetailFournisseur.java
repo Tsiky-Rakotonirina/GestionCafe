@@ -1,6 +1,5 @@
-package com.gestioncafe.model.production;
+package com.gestioncafe.model;
 
-import com.gestioncafe.model.tiers.Fournisseur;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

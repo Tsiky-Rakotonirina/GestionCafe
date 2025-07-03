@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.gestioncafe.model.production.MatierePremiere;
+import com.gestioncafe.model.MatierePremiere;
 import com.gestioncafe.repository.production.MatierePremiereRepository;
 
 @Service

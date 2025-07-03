@@ -1,4 +1,4 @@
-package com.gestioncafe.model.tiers;
+package com.gestioncafe.model;
 
 import java.util.Objects;
 

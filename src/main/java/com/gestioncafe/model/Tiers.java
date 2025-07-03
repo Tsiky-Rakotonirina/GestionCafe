@@ -1,6 +1,5 @@
-package com.gestioncafe.model.tiers;
+package com.gestioncafe.model;
 
-import com.gestioncafe.model.autre.Genre;
 import jakarta.persistence.*;
 
 @Entity
