@@ -48,9 +48,9 @@
 </head>
 
 <body>
-<div th:replace="~{administratif/layout/sidebar :: sidebar}"></div>
+<div th:replace="~{administratif/production/layout/sidebar :: sidebar}"></div>
 <div class="main-content" id="mainContent">
-    <div th:replace="~{administratif/layout/header :: header('Produits')}"></div>
+    <div th:replace="~{administratif/production/layout/header :: header('Produits')}"></div>
     <main class="content">
         <!-- Modern Header -->
         <div class="page-header modern-header">
@@ -87,7 +87,7 @@
             <form th:action="@{/produits/save}" th:object="${produit}" method="post" enctype="multipart/form-data"
                   style="padding: 2rem;">
                 <!-- Champ caché pour l'ID du produit (important pour l'édition) -->
-                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:field="*{id}"/>
                 <div class="form-flex-container">
                     <!-- Left: Main fields -->
                     <div class="form-main-fields">
@@ -206,8 +206,7 @@
                     </div>
                     <!-- Right: Ingrédients et infos recette -->
                     <div class="form-ingredients-box">
-                        <input type="hidden" name="ingredientsWrapper.ingredients" value="" />
-
+                        <input type="hidden" name="ingredientsWrapper.ingredients" value=""/>
 
 
                         <label class="form-label" style="font-weight: bold; font-size: 1.1rem;">
@@ -271,7 +270,7 @@
         togglePrixFields();
         // Si édition et ingrédients existants, pré-remplir
         if (ingredientsData && ingredientsData.length > 0) {
-            ingredientsData.forEach(function(ing) {
+            ingredientsData.forEach(function (ing) {
                 addIngredientRow(ing.idMatierePremiere, ing.quantite, ing.idUnite);
             });
         }
@@ -403,7 +402,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         togglePrixFields();
         // Ajoute une ligne d'ingrédient par défaut pour garantir le binding Spring
-       // addIngredientRow();
+        // addIngredientRow();
     });
 
     window.addIngredientRow = addIngredientRow;

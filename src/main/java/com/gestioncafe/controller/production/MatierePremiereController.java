@@ -88,6 +88,7 @@ public class MatierePremiereController {
             matierePremiere.setImage("/" + uploadDir + fileName);
         }
         service.save(matierePremiere);
+
         return "redirect:/administratif/production/matiere-premiere";
     }
 
