@@ -12,19 +12,7 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-             <div class="product-info">
-                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
-                </a>
-            </div>
-        </div>
-        <div class="header-right">
-            <h1 class="page-title" id="pageTitle">Gestion de ressources humaines</h1>
-        </div>
-    </header>
+    <div th:replace="~{administratif/rh/layout/header :: header('Gestion des avances')}"></div>
     <main class="content">
         <!-- Sidebar  -->
         <div class="sidebar" id="sidebar">    
@@ -147,6 +135,7 @@
             </div>
 
         </div>
-    </main>
+</main>
+<script th:src="@{/templates/script.js}"></script>
 </body>
 </html>

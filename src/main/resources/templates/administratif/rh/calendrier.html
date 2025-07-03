@@ -11,30 +11,19 @@
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="product-info">
-                <!-- Lien vers la page administratif -->
-                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    <!-- Image de logo -->
-                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
-                </a>
-            </div>
-        </div>
-    </header>
-    <main class="content">
+    <div th:replace="~{administratif/rh/layout/sidebar :: sidebar}"></div>
+    <div class="main-content" id="mainContent">
+        <div th:replace="~{administratif/rh/layout/header :: header('Calendrier RH')}"></div>
+        <main class="content">
             <h1>Calendrier : 2025</h1>
             <div class="calendar-container" id="calendar"></div>
-    </main>
+        </main>
+    </div>
     <script th:inline="javascript">
         let jours = /*[[${jours}]]*/ [];
     </script>
     <script th:src="@{/js/rh/calendrier.js}"></script> 
 
 </body>
+<script th:src="@{/templates/script.js}"></script>
 </html>
