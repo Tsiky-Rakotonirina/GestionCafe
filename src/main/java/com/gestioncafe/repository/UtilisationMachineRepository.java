@@ -1,4 +1,4 @@
-package com.gestioncafe.repository.production;
+package com.gestioncafe.repository;
 
 import com.gestioncafe.model.UtilisationMachine;
 import org.springframework.data.jpa.repository.JpaRepository;

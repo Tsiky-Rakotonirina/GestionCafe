@@ -1,4 +1,4 @@
-package com.gestioncafe.repository.production;
+package com.gestioncafe.repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

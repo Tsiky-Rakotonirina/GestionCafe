@@ -16,8 +16,8 @@ import com.gestioncafe.model.Machine;
 import com.gestioncafe.model.Produit;
 import com.gestioncafe.model.Unite;
 import com.gestioncafe.model.UtilisationMachine;
-import com.gestioncafe.repository.production.UniteRepository;
-import com.gestioncafe.repository.production.UtilisationMachineRepository;
+import com.gestioncafe.repository.UniteRepository;
+import com.gestioncafe.repository.UtilisationMachineRepository;
 import com.gestioncafe.service.production.MachineService;
 import com.gestioncafe.service.production.ProduitService;
 
@@ -43,6 +43,7 @@ public class MachineController {
         model.addAttribute("machine", machine);
         List<UtilisationMachine> utilisations = utilisationMachineRepository.findByMachineId(id);
         model.addAttribute("utilisations", utilisations);
+
         return "administratif/production/machine/details";
     }
 
@@ -60,6 +61,7 @@ public class MachineController {
         model.addAttribute("machine", new Machine());
         model.addAttribute("produits", produitService.findAll());
         model.addAttribute("unites", uniteRepository.findAll());
+
         return "administratif/production/machine/form";
     }
 
@@ -141,12 +143,14 @@ public class MachineController {
         // Charge les utilisations existantes de la machine
         List<UtilisationMachine> utilisations = utilisationMachineRepository.findByMachineId(id);
         model.addAttribute("utilisationsExistantes", utilisations);
+
         return "administratif/production/machine/form";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         machineService.deleteById(id);
+
         return "redirect:/machines";
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.gestioncafe.model.HistoriqueEstimation;
 import com.gestioncafe.model.MatierePremiere;
-import com.gestioncafe.repository.production.HistoriqueEstimationRepository;
+import com.gestioncafe.repository.HistoriqueEstimationRepository;
 
 @Service
 public class HistoriqueEstimationService {

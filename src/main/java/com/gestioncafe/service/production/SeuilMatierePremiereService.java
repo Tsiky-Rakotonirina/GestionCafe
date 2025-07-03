@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.gestioncafe.model.MatierePremiere;
 import com.gestioncafe.model.SeuilMatierePremiere;
-import com.gestioncafe.repository.production.SeuilMatierePremiereRepository;
+import com.gestioncafe.repository.SeuilMatierePremiereRepository;
 
 @Service
 public class SeuilMatierePremiereService {

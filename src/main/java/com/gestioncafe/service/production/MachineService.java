@@ -1,7 +1,7 @@
 package com.gestioncafe.service.production;
 
 import com.gestioncafe.model.Machine;
-import com.gestioncafe.repository.production.MachineRepository;
+import com.gestioncafe.repository.MachineRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

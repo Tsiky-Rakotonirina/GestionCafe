@@ -28,12 +28,20 @@ class CafeManager {
         */
 
         // Sidebar toggle
+
         const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarShowBtn = document.getElementById('sidebarShowBtn');
         const mobileToggle = document.getElementById('mobileToggle');
-        
+
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', () => {
                 this.toggleSidebar();
+            });
+        }
+
+        if (sidebarShowBtn) {
+            sidebarShowBtn.addEventListener('click', () => {
+                this.toggleSidebar(true);
             });
         }
 
@@ -116,19 +124,26 @@ class CafeManager {
         this.loadPageData(page);
     }
 
-    toggleSidebar() {
+    toggleSidebar(forceShow = false) {
         const sidebar = document.getElementById('sidebar');
+        const sidebarShowBtn = document.getElementById('sidebarShowBtn');
         const mainContent = document.getElementById('mainContent');
-        
+
         if (sidebar && mainContent) {
-            this.sidebarCollapsed = !this.sidebarCollapsed;
-            
+            if (forceShow) {
+                this.sidebarCollapsed = false;
+            } else {
+                this.sidebarCollapsed = !this.sidebarCollapsed;
+            }
+
             if (this.sidebarCollapsed) {
                 sidebar.classList.add('collapsed');
                 mainContent.classList.add('expanded');
+                if (sidebarShowBtn) sidebarShowBtn.style.display = 'flex';
             } else {
                 sidebar.classList.remove('collapsed');
                 mainContent.classList.remove('expanded');
+                if (sidebarShowBtn) sidebarShowBtn.style.display = 'none';
             }
         }
     }

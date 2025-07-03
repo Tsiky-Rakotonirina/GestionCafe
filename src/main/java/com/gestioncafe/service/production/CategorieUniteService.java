@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gestioncafe.model.CategorieUnite;
-import com.gestioncafe.repository.production.CategorieUniteRepository;
+import com.gestioncafe.repository.CategorieUniteRepository;
 
 @Service
 public class CategorieUniteService {

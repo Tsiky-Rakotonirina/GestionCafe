@@ -13,7 +13,7 @@ import com.gestioncafe.dto.BeneficePeriodeStatDTO;
 import com.gestioncafe.dto.VentePeriodeStatDTO;
 import com.gestioncafe.dto.VenteProduitStatDTO;
 import com.gestioncafe.model.DetailsVente;
-import com.gestioncafe.repository.production.DetailsVenteRepository;
+import com.gestioncafe.repository.DetailsVenteRepository;
 
 @Service
 public class DetailsVenteService {

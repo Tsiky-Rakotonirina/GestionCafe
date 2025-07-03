@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.gestioncafe.model.Recette;
-import com.gestioncafe.repository.production.RecetteRepository;
+import com.gestioncafe.repository.RecetteRepository;
 
 @Service
 public class RecetteService {

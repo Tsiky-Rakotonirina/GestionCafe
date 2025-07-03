@@ -1,24 +1,22 @@
 package com.gestioncafe.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gestioncafe.service.LoginService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
-
-import com.gestioncafe.service.*;
-import com.gestioncafe.repository.*;
-import com.gestioncafe.model.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/")
 public class LoginController {
 
-    @Autowired
-    private LoginService loginService;
+    private final LoginService loginService;
+
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     @GetMapping
     public String login() {
@@ -35,9 +33,9 @@ public class LoginController {
         } else {
             model.addAttribute("erreurAdministratif", "Nom ou mot de passe incorrect");
             // retour vers PAGE
-            return "login"; 
+            return "login";
         }
-        
+
     }
 
     // sinon recuperer un par un avec requestParam
@@ -48,9 +46,9 @@ public class LoginController {
             return "redirect:/quotidien";
         } else {
             model.addAttribute("erreurQuotidien", "Nom ou mot de passe incorrect");
-            return "login"; 
+            return "login";
         }
-        
+
     }
 
     @GetMapping("/deconnexion-administratif")
@@ -62,5 +60,5 @@ public class LoginController {
     @GetMapping("/deconnexion-quotidien")
     public String deconnexionQuotidien() {
         return "login";
-    }    
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.gestioncafe.model.DetailFournisseur;
 import com.gestioncafe.model.MatierePremiere;
-import com.gestioncafe.repository.production.DetailFournisseurRepository;
+import com.gestioncafe.repository.DetailFournisseurRepository;
 
 @Service
 public class DetailFournisseurService {

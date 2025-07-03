@@ -131,16 +131,19 @@ CREATE TABLE detail_candidat
 );
 
 -- Table employe
+
 CREATE TABLE employe
 (
     id               SERIAL PRIMARY KEY,
     id_tiers         INTEGER NOT NULL,
+    id_genre         INTEGER NOT NULL,
     date_naissance   DATE    NOT NULL,
     date_recrutement DATE    NOT NULL,
     date_demission   DATE,
     reference_cv     TEXT    NULL,
 
-    FOREIGN KEY (id_tiers) REFERENCES tiers (id)
+    FOREIGN KEY (id_tiers) REFERENCES tiers (id),
+    FOREIGN KEY (id_genre) REFERENCES genre (id)
 );
 
 CREATE TABLE statut

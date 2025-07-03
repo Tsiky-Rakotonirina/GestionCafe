@@ -12,9 +12,9 @@ import com.gestioncafe.model.MatierePremiere;
 import com.gestioncafe.model.Produit;
 import com.gestioncafe.model.Recette;
 import com.gestioncafe.model.Unite;
-import com.gestioncafe.repository.production.DetailsVenteRepository;
-import com.gestioncafe.repository.production.ProduitRepository;
-import com.gestioncafe.repository.production.RecetteRepository;
+import com.gestioncafe.repository.DetailsVenteRepository;
+import com.gestioncafe.repository.ProduitRepository;
+import com.gestioncafe.repository.RecetteRepository;
 
 @Service
 public class ProduitService {
