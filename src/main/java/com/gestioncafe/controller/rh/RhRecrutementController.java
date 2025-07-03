@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -56,8 +58,8 @@ public class RhRecrutementController {
     @Autowired
     private EmployeService employeService;
 
-    // @Autowired
-    // private PdfService pdfService;
+    @Autowired
+    private PdfService pdfService;
 
     
     
@@ -170,30 +172,30 @@ public class RhRecrutementController {
         return "redirect:/administratif/rh/gestion-recrutements";
     }
     
-    // @PostMapping("/pdf")
-    // public void exportPdf(@RequestParam("candidatId") Long candidatId, HttpServletResponse response) throws Exception {
-    //     Candidat candidat = candidatService.getCandidatById(candidatId);
-    //     if (candidat == null) {
-    //         response.sendError(HttpServletResponse.SC_NOT_FOUND, "Candidat non trouvé");
-    //         return;
-    //     }
+    @PostMapping("/pdf")
+    public void exportPdf(@RequestParam("candidatId") Long candidatId, HttpServletResponse response) throws Exception {
+        Candidat candidat = candidatService.getCandidatById(candidatId);
+        if (candidat == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Candidat non trouvé");
+            return;
+        }
 
-    //     List<DetailCandidat> details = detailCandidatService.getDetailsByCandidatId(candidatId);
+        List<DetailCandidat> details = detailCandidatService.getDetailsByCandidatId(candidatId);
 
-    //     List<SerieBac> series = new ArrayList<>();
-    //     List<Formation> formations = new ArrayList<>();
-    //     List<Langue> langues = new ArrayList<>();
-    //     List<Experience> experiences = new ArrayList<>();
-    //     Genre genre = candidat.getGenre();
+        List<SerieBac> series = new ArrayList<>();
+        List<Formation> formations = new ArrayList<>();
+        List<Langue> langues = new ArrayList<>();
+        List<Experience> experiences = new ArrayList<>();
+        Genre genre = candidat.getGenre();
 
-    //     for (DetailCandidat detail : details) {
-    //         if (detail.getSerieBac() != null) series.add(detail.getSerieBac());
-    //         if (detail.getFormation() != null) formations.add(detail.getFormation());
-    //         if (detail.getLangue() != null) langues.add(detail.getLangue());
-    //         if (detail.getExperience() != null) experiences.add(detail.getExperience());
-    //     }
+        for (DetailCandidat detail : details) {
+            if (detail.getSerieBac() != null) series.add(detail.getSerieBac());
+            if (detail.getFormation() != null) formations.add(detail.getFormation());
+            if (detail.getLangue() != null) langues.add(detail.getLangue());
+            if (detail.getExperience() != null) experiences.add(detail.getExperience());
+        }
 
-    //     pdfService.generateCandidatPdf(candidat, series, formations, langues, experiences, genre, response);
-    // }
+        pdfService.generateCandidatPdf(candidat, series, formations, langues, experiences, genre, response);
+    }
  
 }
