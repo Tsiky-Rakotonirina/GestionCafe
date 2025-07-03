@@ -1,5 +1,3 @@
-console.log("Jours injectés depuis Thymeleaf :", jours);
-
 const months = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
   "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
@@ -12,24 +10,26 @@ const year = 2025;
 
 // === Prétraitement des jours reçus ===
 const couleurEmployes = {};
-const employeLegende = new Set();
+const employeLegende = new Map();
+
 function randomColor() {
   const letters = '456789ABCD';
   return '#' + Array.from({ length: 6 }, () => letters[Math.floor(Math.random() * letters.length)]).join('');
 }
 
-const joursMap = {}; // format : 'yyyy-mm-dd' => {type: 'ferie' | 'employe', info: ...}
+const joursMap = {}; // yyyy-mm-dd -> {type: 'ferie' | 'employe', info: ...}
 jours.forEach(j => {
-  const date = new Date(j.date);
-  const key = date.toISOString().split("T")[0]; // yyyy-mm-dd
+  const date = new Date(j.jour); // <-- CORRECTION : utiliser j.jour
+  const key = date.toISOString().split("T")[0];
 
   if (j.jourFerie) {
     joursMap[key] = { type: "ferie", nom: j.jourFerie.name || "Jour férié" };
   } else if (j.employe) {
     const nom = j.employe.nom || `Employé ${j.employe.id}`;
     if (!couleurEmployes[j.employe.id]) {
-      couleurEmployes[j.employe.id] = randomColor();
-      employeLegende.add({ nom, couleur: couleurEmployes[j.employe.id] });
+      const color = randomColor();
+      couleurEmployes[j.employe.id] = color;
+      employeLegende.set(j.employe.id, { nom, couleur: color });
     }
     joursMap[key] = { type: "employe", employeId: j.employe.id, nom };
   }
@@ -74,10 +74,9 @@ function generateCalendar(year) {
       btn.className = 'day-button';
 
       const fullDate = new Date(year, m, d);
-      const iso = fullDate.toISOString().split("T")[0]; // yyyy-mm-dd
+      const iso = fullDate.toISOString().split("T")[0];
       btn.dataset.date = iso;
 
-      // Appliquer la couleur en fonction du type
       if (joursMap[iso]) {
         if (joursMap[iso].type === 'ferie') {
           btn.style.backgroundColor = 'black';
@@ -122,22 +121,19 @@ function generateLegend() {
     legend.style.padding = '10px';
     legend.style.border = '1px solid #ccc';
     legend.style.backgroundColor = '#f9f9f9';
-    legend.style.maxWidth = '200px';
+    legend.style.maxWidth = '250px';
     document.querySelector('main').appendChild(legend);
   }
 
   legend.innerHTML = "<h4>Légende</h4>";
 
-  // Jours fériés
   const ferie = document.createElement('div');
   ferie.innerHTML = `<span style="display:inline-block;width:15px;height:15px;background:black;margin-right:10px;"></span> Jour férié`;
   legend.appendChild(ferie);
 
-  // Employés
-  for (const [id, color] of Object.entries(couleurEmployes)) {
-    const nom = Array.from(employeLegende).find(e => e.couleur === color)?.nom || `Employé ${id}`;
+  for (const [id, info] of employeLegende.entries()) {
     const line = document.createElement('div');
-    line.innerHTML = `<span style="display:inline-block;width:15px;height:15px;background:${color};margin-right:10px;"></span> ${nom}`;
+    line.innerHTML = `<span style="display:inline-block;width:15px;height:15px;background:${info.couleur};margin-right:10px;"></span> ${info.nom}`;
     legend.appendChild(line);
   }
 }
