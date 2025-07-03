@@ -192,17 +192,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function filterTable() {
         const nomVal = normalize(searchNom.value);
         const categorieVal = normalize(searchCategorie.value);
+        
+        console.log('Recherche:', nomVal, 'Catégorie:', categorieVal);
 
         Array.from(tableBody.querySelectorAll('tr')).forEach(tr => {
-            // Récupère le nom (span dans le 2e td)
-            const nomSpan = tr.querySelector('td:nth-child(2) span:last-child');
-            const nom = nomSpan ? normalize(nomSpan.textContent) : '';
+            // Méthode plus simple : récupérer tout le texte de la cellule du nom
+            const nomCell = tr.querySelector('td:nth-child(2)');
+            const nom = nomCell ? normalize(nomCell.textContent.trim()) : '';
+            
             // Récupère la catégorie (span dans le 3e td)
             const categorieSpan = tr.querySelector('td:nth-child(3) span');
-            const categorie = categorieSpan ? normalize(categorieSpan.textContent) : '';
+            const categorie = categorieSpan ? normalize(categorieSpan.textContent.trim()) : '';
 
-            const matchNom = nom.includes(nomVal);
-            const matchCategorie = !categorieVal || categorie === categorieVal;
+            console.log('Ligne - Nom trouvé:', nom, 'Catégorie trouvée:', categorie);
+
+            const matchNom = !nomVal || nom.includes(nomVal);
+            const matchCategorie = !categorieVal || categorie.includes(categorieVal);
+
+            console.log('Match nom:', matchNom, 'Match catégorie:', matchCategorie);
 
             tr.style.display = (matchNom && matchCategorie) ? '' : 'none';
         });
