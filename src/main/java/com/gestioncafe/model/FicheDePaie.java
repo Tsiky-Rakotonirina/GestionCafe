@@ -27,10 +27,10 @@ public class FicheDePaie {
         this.salaireNet = this.salaireNetImposable - this.impots;
         this.netAPayer = this.salaireNet - this.retenueAvance;
     }
-    public Date getmoisReference() {
+    public Date getMoisReference() {
         return moisReference;
     }
-    public void setmoisReference(Date moisReference) {
+    public void setMoisReference(Date moisReference) {
         this.moisReference = moisReference;
     }
     public double getSalaireDeBase() {
