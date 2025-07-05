@@ -83,7 +83,7 @@
                                                 th:text="${employe.contact != null ? employe.contact : '-'}">-</span></span>
                                     </div>
                                     <br>
-                                    <a href="@{/administratif/rh/salaire/fiche-de-paie(idEmploye=${employe.id})}"
+                                    <a th:href="@{/administratif/rh/salaire/fiche-de-paie(idEmploye=${employe.id})}"
                                         class="btn secondary">Voir la fiche de l'employe</a><br>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                     <h3>Liste des fiches de paies impayées</h3>
 
                                     <div th:each="ficheDePaie : ${ficheDePaies.content}">
-                                        <form action="@{/administratif/rh/salaire/payer-fiche-de-paie}" method="post">
+                                        <form th:action="@{/administratif/rh/salaire/payer-fiche-de-paie}" method="post">
                                             <input type="hidden" name="idEmploye" th:value="${employe.id}">
                                             <div class="order-card priority">
                                                 <div class="order-header">
@@ -214,7 +214,7 @@
                                                     th:text="${payement.montant != null ? payement.montant : '-'}">-</span></strong>
                                         </td>
                                         <td>
-                                            <a href="@{/administratif/rh/salaire/importer-fiche-de-paie(idPayement=${payement.id})}"
+                                            <a th:href="@{/administratif/rh/salaire/importer-fiche-de-paie(idPayement=${payement.id})}"
                                                 class="btn secondary">Importer la fiche de paie</a>
                                         </td>
                                     </tr>
@@ -226,7 +226,7 @@
 
             </div>
     </main>
-    <script th:src="@{/templates/script.js}"></script>
+    <!-- <script th:src="@{/templates/script.js}"></script> -->
 </body>
 
 </html>
