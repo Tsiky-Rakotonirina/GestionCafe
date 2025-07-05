@@ -1,0 +1,32 @@
+<form th:action="@{/tiers/save}" th:object="${tiers}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <label>Nom :</label>
+    <input type="text" th:field="*{nom}" required /><br/>
+
+    <label>Prénom :</label>
+    <input type="text" th:field="*{prenom}" required /><br/>
+
+    <label>Genre :</label>
+    <select th:field="*{genre.id}" required>
+        <option th:each="g : ${genres}" th:value="${g.id}" th:text="${g.nom}"></option>
+    </select><br/>
+
+    <label>Contact :</label>
+    <input type="text" th:field="*{contact}" /><br/>
+
+    <label>Email :</label>
+    <input type="email" th:field="*{email}" /><br/>
+
+    <label>Image :</label>
+    <input type="text" th:field="*{image}" /><br/>
+
+    <label>Date de naissance :</label>
+    <input type="date" th:field="*{dateNaissance}" /><br/>
+
+    <label>Date d'adhésion :</label>
+    <input type="date" th:field="*{dateAdhesion}" /><br/>
+
+    <button type="submit">Valider</button>
+    <a th:href="@{/tiers}">Annuler</a>
+</form>
