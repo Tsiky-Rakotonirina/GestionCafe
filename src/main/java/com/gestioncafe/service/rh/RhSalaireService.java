@@ -107,6 +107,8 @@ public class RhSalaireService {
                 for (Commission commission : commissions) {
                     totalCommission += commission.getMontant();
                 }
+
+                System.out.println(totalCommission);
                 salaire += totalCommission;
                 double retenuesSociales = salaire * tauxCotisationSociale;
                 salaire -= (salaire * tauxCotisationSociale);
