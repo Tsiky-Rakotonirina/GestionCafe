@@ -23,7 +23,6 @@ import com.gestioncafe.service.rh.*;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.gestioncafe.repository.*;
 import com.gestioncafe.model.*;
 
 @Controller
@@ -195,12 +194,14 @@ public class RhSalaireController {
     public String ajoutAvance(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant,
             @RequestParam("idRaison") String idRaison, Model model, RedirectAttributes ra) {
         String erreur = "";
+                System.out.println(erreur);
         try {
             double montantDouble = Double.parseDouble(montant);
             try {
                 Long raison = Long.parseLong(idRaison);
                 Long id = Long.parseLong(idEmploye);
                 try {
+
                     rhSalaireService.ajoutAvance(id, raison, montantDouble);
                     model.addAttribute("succesAjoutAvance", "Avance de " + montant + " accorde a l'employe");
                     return "redirect:/administratif/rh/salaire/avance?idEmploye=" + idEmploye;
@@ -213,6 +214,7 @@ public class RhSalaireController {
         } catch (NumberFormatException e) {
             erreur = "Erreur dans l'ajout :  Le montant doit être un nombre valide.";
         }
+
         ra.addFlashAttribute("erreurAjoutAvance", erreur);
         return "redirect:/administratif/rh/salaire/avance?idEmploye=" + idEmploye;
     }

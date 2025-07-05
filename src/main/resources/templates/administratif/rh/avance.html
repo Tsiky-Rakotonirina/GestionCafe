@@ -149,10 +149,12 @@
                         </div>
                     </div>
                 </div>
-
+                <div th:if="${erreurAjoutAvance}">
+                    <p th:text="${erreurAjoutAvance}"></p>
+                </div>
             </div>
     </main>
-    <script th:src="@{/templates/script.js}"></script>
+    <!-- <script th:src="@{/templates/script.js}"></script> -->
 </body>
 
 </html>

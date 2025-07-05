@@ -183,6 +183,9 @@
                             </div>
 
                         </div>
+                    <div th:if="${erreurPayement}">
+                    <p th:text="${erreurPayement}"></p>
+                </div>
                     </div>
 
                     <div class="expense-breakdown-card">
@@ -212,7 +215,7 @@
                                         </td>
                                         <td>
                                             <a href="@{/administratif/rh/salaire/importer-fiche-de-paie(idPayement=${payement.id})}"
-                                                class="btn secondary">Importer la ficeh de paie</a>
+                                                class="btn secondary">Importer la fiche de paie</a>
                                         </td>
                                     </tr>
                                 </tbody>

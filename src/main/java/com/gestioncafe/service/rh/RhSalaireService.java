@@ -267,7 +267,8 @@ public class RhSalaireService {
         if (statutEmploye.getIdStatut() != 1) {
             throw new Exception("Erreur dans l'ajout : employe inactif");
         }
-        double prochainSalaire = this.prochainSalaire(idEmploye);
+        Double prochainSalaire = this.prochainSalaire(idEmploye);
+        System.out.println("prochainSalaire:"+ prochainSalaire);
         if (montant > prochainSalaire) {
             throw new Exception("Erreur dans l'ajout : le montant doit etre inferieur au disponible");
         }
