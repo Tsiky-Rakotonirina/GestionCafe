@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import java.io.IOException;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -173,29 +174,21 @@ public class RhRecrutementController {
     }
     
     @PostMapping("/pdf")
-    public void exportPdf(@RequestParam("candidatId") Long candidatId, HttpServletResponse response) throws Exception {
-        Candidat candidat = candidatService.getCandidatById(candidatId);
-        if (candidat == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Candidat non trouvé");
+    public void downloadPdf(@RequestParam("candidatId") Long candidatId, HttpServletResponse response) throws IOException {
+        if (candidatId == null) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT); // Pas de message
             return;
         }
 
-        List<DetailCandidat> details = detailCandidatService.getDetailsByCandidatId(candidatId);
-
-        List<SerieBac> series = new ArrayList<>();
-        List<Formation> formations = new ArrayList<>();
-        List<Langue> langues = new ArrayList<>();
-        List<Experience> experiences = new ArrayList<>();
-        Genre genre = candidat.getGenre();
-
-        for (DetailCandidat detail : details) {
-            if (detail.getSerieBac() != null) series.add(detail.getSerieBac());
-            if (detail.getFormation() != null) formations.add(detail.getFormation());
-            if (detail.getLangue() != null) langues.add(detail.getLangue());
-            if (detail.getExperience() != null) experiences.add(detail.getExperience());
+        Candidat candidat = candidatService.getCandidatById(candidatId);
+        if (candidat == null) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT); // Ne rien renvoyer non plus
+            return;
         }
 
-        pdfService.generateCandidatPdf(candidat, series, formations, langues, experiences, genre, response);
+        pdfService.downloadCandidatPdf(candidatId, response);
     }
- 
+
+
+
 }
