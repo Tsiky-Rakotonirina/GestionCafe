@@ -141,10 +141,7 @@
                                 <tr>
                                     <th><a th:href="@{/administratif/stock/matiere-premiere(sort='nom')}">Nom</a></th>
                                     <th>Stock</th>
-                                    <th><a th:href="@{/administratif/stock/matiere-premiere(sort='seuil_min')}">Seuil Min</a></th>
-                                    <th><a th:href="@{/administratif/stock/matiere-premiere(sort='seuil_max')}">Seuil Max</a></th>
                                     <th>Unité</th>
-                                    <th><a th:href="@{/administratif/stock/matiere-premiere(sort='delai_peremption')}">Délai Péremption</a></th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -152,10 +149,8 @@
                                 <tr th:each="matiere : ${matieresPremieres}">
                                     <td th:text="${matiere.nom}"></td>
                                     <td th:text="${matiere.stock} + ' ' + ${matiere.unite.valeur}"></td>
-                                    <td th:text="${matiere.seuilMin}"></td>
-                                    <td th:text="${matiere.seuilMax}"></td>
+
                                     <td th:text="${matiere.unite.valeur}"></td>
-                                    <td th:text="${matiere.delaiPeremption} + ' jours'"></td>
                                     <td>
                                         <a th:href="@{/administratif/stock/matiere-premiere/edit/} + ${matiere.id}" class="btn btn-sm btn-primary">
                                             <i class="fas fa-edit"></i>
@@ -192,18 +187,6 @@
                         <select class="form-control" id="idUnite" name="idUnite" required>
                             <option th:each="unite : ${unites}" th:value="${unite.id}" th:text="${unite.valeur}"></option>
                         </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="seuilMin" class="form-label">Seuil Minimum</label>
-                        <input type="number" step="0.01" class="form-control" id="seuilMin" name="seuilMin" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="seuilMax" class="form-label">Seuil Maximum</label>
-                        <input type="number" step="0.01" class="form-control" id="seuilMax" name="seuilMax" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="delaiPeremption" class="form-label">Délai de Péremption (jours)</label>
-                        <input type="number" class="form-control" id="delaiPeremption" name="delaiPeremption">
                     </div>
                     <div class="mb-3">
                         <label for="image" class="form-label">Image</label>

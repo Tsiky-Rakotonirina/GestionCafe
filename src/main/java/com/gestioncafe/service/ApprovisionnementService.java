@@ -40,7 +40,7 @@ public class ApprovisionnementService {
         
         // Créer l'approvisionnement
         Approvisionnement approvisionnement = new Approvisionnement();
-        approvisionnement.setDetailFournisseur(detailFournisseur);
+        approvisionnement.setDetailFournisseur(detailFournisseur); 
         approvisionnement.setMatierePremiere(matiere);
         approvisionnement.setQuantite(quantite);
         approvisionnement.setTotal(total);

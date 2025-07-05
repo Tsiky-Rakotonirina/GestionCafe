@@ -2,7 +2,6 @@ package com.gestioncafe.repository;
 
 import com.gestioncafe.model.DetailFournisseur;
 import com.gestioncafe.model.Fournisseur;
-import com.gestioncafe.model.MatierePremiere;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -17,7 +16,7 @@ public interface DetailFournisseurRepository extends JpaRepository<DetailFournis
     List<DetailFournisseur> findByFournisseur(Fournisseur fournisseur);
     
     List<DetailFournisseur> findByFournisseurOrderByMatierePremiereNomAsc(Fournisseur fournisseur);
-    List<DetailFournisseur> findByFournisseurOrderByPrixUnitaireAsc(Fournisseur fournisseur);
+    List<DetailFournisseur> findByFournisseurOrderByPrixAsc(Fournisseur fournisseur);
     List<DetailFournisseur> findByFournisseurOrderByDateModificationDesc(Fournisseur fournisseur);
 
     // Nouvelle méthode pour trouver par ID de fournisseur et ID de matière première
@@ -30,16 +29,16 @@ public interface DetailFournisseurRepository extends JpaRepository<DetailFournis
     List<DetailFournisseur> findByMatierePremiereId(Long matierePremiereId);
 
     // Version avec tri par prix croissant
-    List<DetailFournisseur> findByMatierePremiereIdOrderByPrixUnitaireAsc(Long matierePremiereId);
+    List<DetailFournisseur> findByMatierePremiereIdOrderByPrixAsc(Long matierePremiereId);
 
     // Version avec projection personnalisée
-    @Query("SELECT df FROM DetailFournisseur df WHERE df.matierePremiere.id = ?1 ORDER BY df.prixUnitaire ASC")
+    @Query("SELECT df FROM DetailFournisseur df WHERE df.matierePremiere.id = ?1 ")
     List<DetailFournisseur> findFournisseursByMatierePremiereId(Long matierePremiereId);
 
     @Query("SELECT NEW com.gestioncafe.controller.stock.ApprovisionnementController$FournisseurPrix(" +
-        "df.fournisseur.id, df.fournisseur.nom, df.prixUnitaire, df.fournisseur.frais) " +
-        "FROM DetailFournisseur df WHERE df.matierePremiere.id = ?1 " +
-        "ORDER BY df.prixUnitaire ASC")
+        "df.fournisseur.id, df.fournisseur.nom, df.prix, df.fournisseur.frais) " +
+        "FROM DetailFournisseur df WHERE df.matierePremiere.id = ?1 " + 
+        "ORDER BY df.prix ASC")
     List<ApprovisionnementController.FournisseurPrix> findFournisseurPrixByMatierePremiereId(Long matierePremiereId);
 
 }

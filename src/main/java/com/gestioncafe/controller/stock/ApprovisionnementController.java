@@ -1,8 +1,11 @@
 package com.gestioncafe.controller.stock;
 
+import java.math.BigDecimal;
+
 import com.gestioncafe.model.*;
 import com.gestioncafe.repository.*;
 import com.gestioncafe.service.*;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +70,7 @@ public class ApprovisionnementController {
                         df.getFournisseur().getFrais()
                 ))
                 .toList();
-        
+         
         model.addAttribute("matiere", matiere);
         model.addAttribute("fournisseurs", fournisseurs);
         
@@ -105,10 +108,10 @@ public class ApprovisionnementController {
     public static class FournisseurPrix {
         private Long id;
         private String nom;
-        private double prixUnitaire;
+        private BigDecimal prixUnitaire;
         private double frais;
 
-        public FournisseurPrix(Long id, String nom, double prixUnitaire, double frais) {
+        public FournisseurPrix(Long id, String nom, BigDecimal prixUnitaire, double frais) {
             this.id = id;
             this.nom = nom;
             this.prixUnitaire = prixUnitaire;
@@ -118,7 +121,9 @@ public class ApprovisionnementController {
         // Getters
         public Long getId() { return id; }
         public String getNom() { return nom; }
-        public double getPrixUnitaire() { return prixUnitaire; }
+        public BigDecimal getPrixUnitaire() { return prixUnitaire; }
         public double getFrais() { return frais; }
+
+        
     }
 }

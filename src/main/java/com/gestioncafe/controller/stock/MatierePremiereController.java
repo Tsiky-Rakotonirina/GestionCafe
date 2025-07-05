@@ -58,18 +58,6 @@ public class MatierePremiereController {
                     break;
                 case "stock":
                     matieresPremieres.sort((a, b) -> a.getStock().compareTo(b.getStock()));
-                case "seuil_min":
-                    matieresPremieres.sort((a, b) -> a.getSeuilMin().compareTo(b.getSeuilMin()));
-                    break;
-                case "seuil_max":
-                    matieresPremieres.sort((a, b) -> a.getSeuilMax().compareTo(b.getSeuilMax()));
-                    break;
-                case "delai_peremption":
-                    matieresPremieres.sort((a, b) -> {
-                        if (a.getDelaiPeremption() == null) return 1;
-                        if (b.getDelaiPeremption() == null) return -1;
-                        return a.getDelaiPeremption().compareTo(b.getDelaiPeremption());
-                    });
                     break;
             }
         }
@@ -150,27 +138,13 @@ public class MatierePremiereController {
     public String updateMatierePremiere(@ModelAttribute MatierePremiere matierePremiere, 
                                        @RequestParam("image") MultipartFile file,
                                        RedirectAttributes redirectAttributes) {
-        try {
-            MatierePremiere existing = matierePremiereRepository.findById(matierePremiere.getId()).orElse(null);
-            if (existing != null) {
-                existing.setNom(matierePremiere.getNom());
-                existing.setUnite(matierePremiere.getUnite());
-                existing.setSeuilMin(matierePremiere.getSeuilMin());
-                existing.setSeuilMax(matierePremiere.getSeuilMax());
-                existing.setDelaiPeremption(matierePremiere.getDelaiPeremption());
-                
-                if (!file.isEmpty()) {
-                    byte[] bytes = file.getBytes();
-                    Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-                    Files.write(path, bytes);
-                    // existing.setImage(file.getOriginalFilename());
-                }
-                
-                matierePremiereRepository.save(existing);
-                redirectAttributes.addFlashAttribute("success", "Matière première mise à jour avec succès");
-            }
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la mise à jour de la matière première");
+        MatierePremiere existing = matierePremiereRepository.findById(matierePremiere.getId()).orElse(null);
+        if (existing != null) {
+            existing.setNom(matierePremiere.getNom());
+            existing.setUnite(matierePremiere.getUnite());
+            
+            matierePremiereRepository.save(existing);
+            redirectAttributes.addFlashAttribute("success", "Matière première mise à jour avec succès");
         }
         return "redirect:/administratif/stock/matiere-premiere";
     }

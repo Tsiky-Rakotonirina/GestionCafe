@@ -21,7 +21,7 @@ public class DetailFournisseurService {
     }
     
     public List<DetailFournisseur> getDetailsByFournisseurOrderByPrix(Fournisseur fournisseur) {
-        return detailFournisseurRepository.findByFournisseurOrderByPrixUnitaireAsc(fournisseur);
+        return detailFournisseurRepository.findByFournisseurOrderByPrixAsc(fournisseur);
     }
     
     public List<DetailFournisseur> getDetailsByFournisseurOrderByDate(Fournisseur fournisseur) {

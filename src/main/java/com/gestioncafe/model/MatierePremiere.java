@@ -1,9 +1,20 @@
 package com.gestioncafe.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "matiere_premiere")
@@ -19,19 +30,13 @@ public class MatierePremiere {
     @JoinColumn(name = "id_unite", nullable = false)
     private Unite unite;
     
-    @Column(nullable = false)
-    private Double seuilMin;
-    
-    @Column(nullable = false)
-    private Double seuilMax;
+
     
     @Column(nullable = false)
     private Double stock;
     
-    // private String image;
-    
-    @Column(name = "delai_peremption")
-    private Integer delaiPeremption;
+    private String image;
+
 
     // Getters and Setters
     public Long getId() {
@@ -58,22 +63,6 @@ public class MatierePremiere {
         this.unite = unite;
     }
 
-    public Double getSeuilMin() {
-        return seuilMin;
-    }
-
-    public void setSeuilMin(Double seuilMin) {
-        this.seuilMin = seuilMin;
-    }
-
-    public Double getSeuilMax() {
-        return seuilMax;
-    }
-
-    public void setSeuilMax(Double seuilMax) {
-        this.seuilMax = seuilMax;
-    }
-
     public Double getStock() {
         return stock;
     }
@@ -82,33 +71,35 @@ public class MatierePremiere {
         this.stock = stock;
     }
 
-    // public String getImage() {
-    //     return image;
-    // }
-
-    // public void setImage(String image) {
-    //     this.image = image;
-    // }
-
-    public Integer getDelaiPeremption() {
-        return delaiPeremption;
+    public String getImage() {
+        return image;
     }
 
-    public void setDelaiPeremption(Integer delaiPeremption) {
-        this.delaiPeremption = delaiPeremption;
+    public void setImage(String image) {
+        this.image = image;
     }
+
 
     @OneToMany(mappedBy = "matierePremiere")
     private List<DetailFournisseur> detailFournisseurs;
     
     @Transient
-    public Double getDernierPrixUnitaire() {
+    public BigDecimal getPrixUnitaire() {
         if (detailFournisseurs == null || detailFournisseurs.isEmpty()) {
             return null;
         }
-        return detailFournisseurs.stream()
+        
+        // Trouver le détail fournisseur le plus récent
+        DetailFournisseur dernierDetail = detailFournisseurs.stream()
             .max(Comparator.comparing(DetailFournisseur::getDateModification))
-            .map(DetailFournisseur::getPrixUnitaire)
             .orElse(null);
+        
+        if (dernierDetail == null || dernierDetail.getPrix() == null || dernierDetail.getQuantite() == null 
+                || dernierDetail.getQuantite().compareTo(BigDecimal.ZERO) == 0) {
+            return null;
+        }
+        
+        // Calculer le prix unitaire: prix / quantité
+        return dernierDetail.getPrix().divide(dernierDetail.getQuantite(), 2, RoundingMode.HALF_UP);
     }
 }

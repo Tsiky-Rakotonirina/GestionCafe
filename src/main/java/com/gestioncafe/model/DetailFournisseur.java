@@ -1,7 +1,20 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "detail_fournisseur")
@@ -10,18 +23,25 @@ public class DetailFournisseur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "id_fournisseur", nullable = false)
     private Fournisseur fournisseur;
     
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "id_matiere_premiere", nullable = false)
     private MatierePremiere matierePremiere;
     
-    @Column(nullable = false)
-    private Double prixUnitaire;
+    @Column(name = "quantite", nullable = false, precision = 10)
+    private BigDecimal quantite;
     
-    @Column(nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_unite", nullable = false)
+    private Unite unite;
+    
+    @Column(name = "prix", nullable = false, precision = 10)
+    private BigDecimal prix;
+    
+    @Column(name = "date_modification", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateModification;
 
@@ -50,12 +70,28 @@ public class DetailFournisseur {
         this.matierePremiere = matierePremiere;
     }
 
-    public Double getPrixUnitaire() {
-        return prixUnitaire;
+    public BigDecimal getQuantite() {
+        return quantite;
     }
 
-    public void setPrixUnitaire(Double prixUnitaire) {
-        this.prixUnitaire = prixUnitaire;
+    public void setQuantite(BigDecimal quantite) {
+        this.quantite = quantite;
+    }
+
+    public Unite getUnite() {
+        return unite;
+    }
+
+    public void setUnite(Unite unite) {
+        this.unite = unite;
+    }
+
+    public BigDecimal getPrix() {
+        return prix;
+    }
+
+    public void setPrix(BigDecimal prix) {
+        this.prix = prix;
     }
 
     public Date getDateModification() {
@@ -64,5 +100,15 @@ public class DetailFournisseur {
 
     public void setDateModification(Date dateModification) {
         this.dateModification = dateModification;
+    }
+
+    @Transient
+    public BigDecimal getPrixUnitaire() {
+        if (prix == null || quantite == null || quantite.compareTo(BigDecimal.ZERO) == 0) {
+            return null;
+        }
+        
+        // Calcul du prix unitaire avec arrondi à 2 décimales
+        return prix.divide(quantite, 2, RoundingMode.HALF_UP);
     }
 }

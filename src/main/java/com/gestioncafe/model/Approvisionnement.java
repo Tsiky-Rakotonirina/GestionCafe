@@ -1,8 +1,15 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "approvisionnement")
@@ -27,6 +34,9 @@ public class Approvisionnement {
 
     @Column(name = "date_approvisionnement", nullable = false)
     private LocalDate dateApprovisionnement;
+
+    @Column(name = "date_peremption", nullable = false)
+    private LocalDate datePeremption;
 
     @Column(name = "reference_facture", nullable = false, length = 255)
     private String referenceFacture;
@@ -95,6 +105,14 @@ public class Approvisionnement {
         this.dateApprovisionnement = dateApprovisionnement;
     }
 
+    public LocalDate getDatePeremption() {
+        return datePeremption;
+    }
+
+    public void setDatePeremption(LocalDate datePeremption) {
+        this.datePeremption = datePeremption;
+    }
+
     public String getReferenceFacture() {
         return referenceFacture;
     }
@@ -103,7 +121,6 @@ public class Approvisionnement {
         this.referenceFacture = referenceFacture;
     }
 
-    // Méthode toString pour le débogage
     @Override
     public String toString() {
         return "Approvisionnement{" +
@@ -113,6 +130,7 @@ public class Approvisionnement {
                 ", quantite=" + quantite +
                 ", total=" + total +
                 ", dateApprovisionnement=" + dateApprovisionnement +
+                ", datePeremption=" + datePeremption +
                 ", referenceFacture='" + referenceFacture + '\'' +
                 '}';
     }

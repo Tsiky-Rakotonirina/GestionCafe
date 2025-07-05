@@ -1,6 +1,13 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "unite")
@@ -9,10 +16,15 @@ public class Unite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(nullable = false)
-    private String valeur;
+    @Column(name = "nom", length = 50)
+    private String nom; // kg, g, l, cl, ...
     
-    private String description;
+    @ManyToOne
+    @JoinColumn(name = "categorie_unite_id")
+    private CategorieUnite categorieUnite;
+    
+    @Column(name = "valeur_pr_norme", precision = 10)
+    private Double valeurPrNorme; // valeur par rapport au norme
 
     // Getters and Setters
     public Long getId() {
@@ -23,19 +35,27 @@ public class Unite {
         this.id = id;
     }
 
-    public String getValeur() {
-        return valeur;
+    public String getNom() {
+        return nom;
     }
 
-    public void setValeur(String valeur) {
-        this.valeur = valeur;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public String getDescription() {
-        return description;
+    public CategorieUnite getCategorieUnite() {
+        return categorieUnite;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCategorieUnite(CategorieUnite categorieUnite) {
+        this.categorieUnite = categorieUnite;
+    }
+
+    public Double getValeurPrNorme() {
+        return valeurPrNorme;
+    }
+
+    public void setValeurPrNorme(Double valeurPrNorme) {
+        this.valeurPrNorme = valeurPrNorme;
     }
 }
