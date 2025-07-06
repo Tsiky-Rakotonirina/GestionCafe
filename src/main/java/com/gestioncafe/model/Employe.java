@@ -6,6 +6,7 @@ import com.gestioncafe.model.Genre;
 import com.gestioncafe.model.Candidat;
 
 
+
 @Entity
 @Table(name = "employe")
 public class Employe {

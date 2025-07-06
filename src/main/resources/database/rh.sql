@@ -154,7 +154,7 @@ CREATE TABLE presence (
     id_employe    INTEGER     NOT NULL,
     date_presence DATE        NOT NULL,
     date_arrivee  TIMESTAMP   NULL,
-    est_present   BOOLEAN     NULL
+    est_present   BOOLEAN     NULL,
 
     CONSTRAINT fk_presence_employe_employe
         FOREIGN KEY (id_employe)
@@ -255,6 +255,9 @@ CREATE TABLE payement (
     montant            DECIMAL(10,2) NOT NULL,
     reference_payement VARCHAR(255)  NULL,
     mois_reference     DATE          NOT NULL,
+    irsa DECIMAL(10,2) ,
+    cotisation_sociale DECIMAL(10,2),
+    
 
     CONSTRAINT fk_payement_employe_employe
         FOREIGN KEY (id_employe)

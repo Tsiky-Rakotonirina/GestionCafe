@@ -245,7 +245,8 @@ public class RhSalaireService {
             Date datePayement = Date.valueOf(LocalDate.now());
             String pdfNom = (datePayement.getTime() / 1000) + ".pdf";
             String referencePayement = "/uploads/ficheDePaie/" + pdfNom;
-            payementRepository.save(new Payement(idEmploye, netAPayer, moisReference, datePayement, referencePayement));
+            payementRepository.save(new Payement(idEmploye, netAPayer, moisReference, datePayement, referencePayement,
+                    impots, retenuesSociales));
             Employe employe = employeRepository.findById(idEmploye)
                     .orElseThrow(() -> new RuntimeException("Employé introuvable"));
 
