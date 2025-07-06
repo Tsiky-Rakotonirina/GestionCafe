@@ -38,7 +38,7 @@ public class RhController {
 
     @Autowired
     private GenreService genreService;
-    
+
     @Autowired
     private GradeService gradeService;
 
@@ -54,7 +54,6 @@ public class RhController {
     @Autowired
     private FormationService formationService;
 
-
     @GetMapping
     public String accueil() {
         return "redirect:/administratif/rh/gestion-employes";
@@ -69,12 +68,27 @@ public class RhController {
     public String gestionSalaires(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-            .map(StatutEmploye::getEmploye)
-            .collect(Collectors.toList());
-        model.addAttribute("variationSalaireNet", rhService.variationSalaireNet());
-        model.addAttribute("variationCommission", rhService.variationCommission());
-        model.addAttribute("variationAvance", rhService.variationAvance());
+                .map(StatutEmploye::getEmploye)
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> varSN = rhService.variationSalaireNet();
+        List<Map<String, Object>> varCOMM = rhService.variationCommission();
+        List<Map<String, Object>> varAVC = rhService.variationAvance();
+
+        System.out.println("== Variation Salaire Net ==");
+        varSN.forEach(map -> System.out.println(map));
+
+        System.out.println("== Variation Commission ==");
+        varCOMM.forEach(map -> System.out.println(map));
+
+        System.out.println("== Variation Avance ==");
+        varAVC.forEach(map -> System.out.println(map));
+
+        model.addAttribute("variationSalaireNet", varSN);
+        model.addAttribute("variationCommission", varCOMM);
+        model.addAttribute("variationAvance", varAVC);
         model.addAttribute("employes", employes);
+
         return "administratif/rh/gestion-salaires";
     }
 
@@ -83,10 +97,9 @@ public class RhController {
         List<Candidat> candidats = candidatService.getAllCandidats();
 
         Map<Long, List<DetailCandidat>> detailsMap = candidats.stream()
-            .collect(Collectors.toMap(
-                Candidat::getId,
-                candidat -> detailCandidatService.getDetailsByCandidatId(candidat.getId())
-            ));
+                .collect(Collectors.toMap(
+                        Candidat::getId,
+                        candidat -> detailCandidatService.getDetailsByCandidatId(candidat.getId())));
 
         model.addAttribute("genres", genreService.getAllGenres());
         model.addAttribute("grades", gradeService.getAllGrades());
@@ -107,8 +120,8 @@ public class RhController {
     public String gestionConges(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-                    .map(StatutEmploye::getEmploye)
-                    .collect(Collectors.toList());
+                .map(StatutEmploye::getEmploye)
+                .collect(Collectors.toList());
         model.addAttribute("employes", employes);
         model.addAttribute("nbjCongeUtilise", rhService.nbjCongeUtilise(employes));
         model.addAttribute("nbjCongeReserve", rhService.nbjCongeReserve(employes));
