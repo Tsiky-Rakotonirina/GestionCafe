@@ -247,12 +247,86 @@ CREATE TABLE avance
             REFERENCES raison_avance (id)
 );
 
--- Table raison_commission
+-- Table raison_commission 
 CREATE TABLE raison_commission
 (
     id          SERIAL PRIMARY KEY,
     valeur      VARCHAR(255) NOT NULL,
     description VARCHAR(500) NULL
+);
+
+
+-- Table client
+CREATE TABLE client (
+    id           SERIAL         PRIMARY KEY,
+    nom          VARCHAR(255)   NOT NULL,
+    prenom       VARCHAR(255)   NOT NULL,
+    id_genre     INTEGER        NOT NULL,
+    contact      VARCHAR(255)   NULL,
+    email        VARCHAR(255)   NULL,
+    date_adhesion DATE          NOT NULL,
+
+    CONSTRAINT fk_client_genre
+        FOREIGN KEY (id_genre)
+        REFERENCES genre(id)
+);
+
+
+-- Table vente
+CREATE TABLE vente (
+    id          SERIAL       PRIMARY KEY,
+    date_vente  TIMESTAMP         NOT NULL,
+    id_client   INTEGER      NOT NULL,
+    id_employe  INTEGER      NOT NULL,
+
+    CONSTRAINT fk_vente_client
+        FOREIGN KEY (id_client)
+        REFERENCES client(id),
+
+    CONSTRAINT fk_vente_employe
+        FOREIGN KEY (id_employe)
+        REFERENCES employe(id)
+);
+
+-- Table details_vente
+CREATE TABLE details_vente (
+    id               SERIAL        PRIMARY KEY,
+    id_vente         INTEGER       NOT NULL,
+    id_produit       INTEGER       NOT NULL,
+    quantite         DECIMAL(10,2) NOT NULL,
+    prix_unitaire    DECIMAL(10,2) NOT NULL,
+    montant          DECIMAL(10,2) NOT NULL,
+
+    CONSTRAINT fk_details_vente_vente
+        FOREIGN KEY (id_vente)
+        REFERENCES vente(id),
+
+    CONSTRAINT fk_details_vente_produit
+        FOREIGN KEY (id_produit)
+        REFERENCES produit(id)
+);
+
+-- Table commande
+CREATE TABLE commande (
+    id          SERIAL      PRIMARY KEY,
+    id_vente    INTEGER     NOT NULL,
+    date_fin    TIMESTAMP        NOT NULL,
+
+    CONSTRAINT fk_commande_vente
+        FOREIGN KEY (id_vente)
+        REFERENCES vente(id)
+);
+
+
+-- Table commande
+CREATE TABLE commande (
+    id          SERIAL      PRIMARY KEY,
+    id_vente    INTEGER     NOT NULL,
+    date_fin    TIMESTAMP        NOT NULL,
+
+    CONSTRAINT fk_commande_vente
+        FOREIGN KEY (id_vente)
+        REFERENCES vente(id)
 );
 
 -- Table commission

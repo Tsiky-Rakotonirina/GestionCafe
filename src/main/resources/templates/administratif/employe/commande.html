@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Commandes</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                <img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">
+                <span>Cafe</span>
+            </a>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item active">
+                <a th:href="@{/administratif/employe/presence}" data-page="presence" class="nav-link">
+                    <i class="fas fa-user-check"></i>   
+                    <span>Présence</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/employe/commande}" data-page="commande" class="nav-link">
+                    <i class="fas fa-clipboard-list"></i> 
+                    <span>Commandes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/employe/vente}" data-page="vente" class="nav-link">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Ventes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/employe/client}" data-page="client" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+        <div class="user-profile">
+            <div class="user-info">
+                <span class="user-name">Admin</span>
+                <span class="user-role">Employé</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="page-title" id="pageTitle">Gestion des Commandes</h1>
+        </div>
+        <div class="header-right">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h2 th:text="${titre}">Commandes</h2>
+                    <h4 th:text="${dateAujourdhui}"></h4>
+                    <h5>Recette du jour: <span th:text="${#numbers.formatDecimal(recetteDuJour, 1, 2, 'COMMA')} + ' Ar'" class="text-success">0,00 Ar</span></h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID Commande</th>
+                                    <th>Date</th>
+                                    <th>Client</th>
+                                    <th>Montant</th>
+                                    <th>Statut</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="commande : ${commandes}">
+                                    <td th:text="${commande.id}"></td>
+                                    <td th:text="${#temporals.format(commande.vente.dateVente, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td th:text="${commande.vente.client.nom + ' ' + commande.vente.client.prenom}"></td>
+                                    <td th:text="${#numbers.formatDecimal(commande.vente.detailsVentes.![montant].stream().reduce(0.0, (a, b) -> a + b), 1, 2, 'COMMA')} + ' Ar'"></td>
+                                    <td>
+                                        <span th:if="${commande.estTerminee}" class="badge bg-success">Terminée</span>
+                                        <span th:if="${!commande.estTerminee}" class="badge bg-warning">En cours</span>
+                                    </td>
+                                    <td>
+                                        <form th:if="${!commande.estTerminee}" th:action="@{/administratif/employe/commande/terminer/} + ${commande.id}" method="post">
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="fas fa-check"></i> Terminer
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/bootstrap5/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/stock/script.js}"></script>
+</body>
+</html>
