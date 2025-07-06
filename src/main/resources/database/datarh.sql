@@ -1,6 +1,7 @@
-INSERT INTO genre (valeur, description) VALUES
-('Homme', 'Genre masculin'),
-('Femme', 'Genre feminin');
+-- Genres
+INSERT INTO genre(id, nom)
+VALUES (1, 'Homme'),
+       (2, 'Femme');
 
 INSERT INTO grade (salaire, nom) VALUES
 (800000, 'Stagiaire'),
@@ -78,8 +79,9 @@ INSERT INTO raison_commission (valeur, description) VALUES
 ('Projet', 'Commission pour reussite de projet'),
 ('Prime', 'Prime exceptionnelle');
 
-INSERT INTO candidat (date_candidature, nom, id_genre, date_naissance, contact, image, reference_cv, id_grade) VALUES
-('2023-01-15', 'Rakoto Jean', 1, '1990-05-20', '0341234567', 'rakoto_jean.jpg', 'CV_Rakoto_Jean_2023.pdf', 3);
+-- Insérer un tiers pour l'employé Rakoto Jean
+INSERT INTO tiers (nom, prenom, id_genre, contact, email, image) VALUES
+('Rakoto', 'Jean', 1, '0341234567', NULL, 'rakoto_jean.jpg');
 
 -- Insérer des candidats
 INSERT INTO candidat (nom, id_genre, date_naissance, date_candidature, contact, image, reference_cv, id_grade) VALUES
@@ -102,8 +104,9 @@ INSERT INTO detail_candidat (id_candidat, id_serie_bac, id_formation, id_langue,
 (1, NULL, 5, 2, NULL),
 (1, NULL, NULL, 3, NULL);
 
-INSERT INTO employe (id_candidat, date_recrutement, nom, id_genre, date_naissance, contact, image, reference_cv) VALUES
-(1, '2023-02-01', 'Rakoto Jean', 1, '1990-05-20', '0341234567', 'rakoto_jean.jpg', 'CV_Rakoto_Jean_2023.pdf');
+-- Correction : Insérer l'employé avec id_tiers (ici 1), contact et nom non NULL
+INSERT INTO employe (id_tiers, id_genre, date_naissance, date_recrutement, date_demission, reference_cv, contact, nom, id_candidat)
+VALUES (1, 1, '1990-05-20', '2023-02-01', NULL, 'CV_Rakoto_Jean_2023.pdf', '0341234567', 'Rakoto Jean', 1);
 
 INSERT INTO statut_employe (id_employe, date_statut, id_statut) VALUES
 (1, '2023-02-01 08:00:00', 1);

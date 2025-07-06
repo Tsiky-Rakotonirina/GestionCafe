@@ -1,115 +1,87 @@
 package com.gestioncafe.service.rh;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gestioncafe.dto.EmployeInfosDTO;
+import com.gestioncafe.model.Employe;
+import com.gestioncafe.repository.*;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
-
-import com.gestioncafe.model.*;
-import com.gestioncafe.repository.*;
-
-import java.time.LocalDate;
-import java.sql.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.*;
-import com.gestioncafe.repository.*;
 
 @Service
 public class EmployeService {
 
-    @Autowired
-    private EmployeRepository employeRepository;
+    private final EmployeRepository employeRepository;
 
-    @Autowired
-    private CandidatRepository candidatRepository;
+    private final CandidatRepository candidatRepository;
 
-    @Autowired
-    private StatutEmployeService statutEmployeService;
+    private final VenteRepository venteRepository;
 
-    @Autowired
-    private DetailCandidatService detailCandidatService;
+    private final PresenceRepository presenceRepository;
 
-    @Autowired
-    private CandidatService candidatService;
-
-    @Autowired
-    private GradeEmployeService gradeEmployeService;
+    private final StatutEmployeRepository statutEmployeRepository;
 
 
+    public EmployeService(EmployeRepository employeRepository,
+                          CandidatRepository candidatRepository,
+                          VenteRepository venteRepository,
+                          PresenceRepository presenceRepository,
+                          StatutEmployeRepository statutEmployeRepository) {
+        this.employeRepository = employeRepository;
+        this.candidatRepository = candidatRepository;
+        this.venteRepository = venteRepository;
+        this.presenceRepository = presenceRepository;
+        this.statutEmployeRepository = statutEmployeRepository;
+    }
 
+    /**
+     * Retourne la liste des employés avec indicateurs RH avancés
+     */
+    public List<EmployeInfosDTO> getEmployeInfos() {
+        List<Employe> employes = employeRepository.findAll();
+        List<EmployeInfosDTO> infos = new ArrayList<>();
+        for (Employe employe : employes) {
+            int nombreClients = 0;
+            try {
+                nombreClients = venteRepository.countDistinctClientsByEmploye(employe);
+            } catch (Exception e) {
+                // log or ignore
+            }
+            int nombrePresences = 0;
+            try {
+                nombrePresences = presenceRepository.countByIdEmployeAndEstPresent(employe.getId(), true);
+            } catch (Exception e) {
+                // log or ignore
+            }
+            double efficacite = (nombrePresences > 0) ? ((double) nombreClients / nombrePresences) : 0.0;
+            String statut = "-";
+            try {
+                statut = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(employe.getId())
+                    .map(se -> se.getIdStatut() != null ? se.getIdStatut().toString() : "-")
+                    .orElse("-");
+            } catch (Exception e) {
+                // log or ignore
+            }
+            infos.add(new EmployeInfosDTO(employe, nombreClients, nombrePresences, efficacite, statut));
+        }
+        return infos;
+    }
+
+    /**
+     * Recrute un candidat en tant qu'employé (copie les infos principales du candidat)
+     */
     public void recruterCandidat(Long candidatId) {
-        Candidat candidat = candidatRepository.findById(candidatId)
-            .orElseThrow(() -> new RuntimeException("Candidat non trouvé"));
-
+        var candidatOpt = candidatRepository.findById(candidatId);
+        if (candidatOpt.isEmpty()) throw new RuntimeException("Candidat non trouvé");
+        var candidat = candidatOpt.get();
         Employe employe = new Employe();
         employe.setNom(candidat.getNom());
         employe.setDateNaissance(candidat.getDateNaissance());
         employe.setContact(candidat.getContact());
-        employe.setDateRecrutement(Date.valueOf(LocalDate.now()));
-
-        // Liaison avec entités
+        employe.setDateRecrutement(new java.sql.Date(System.currentTimeMillis()));
         employe.setGenre(candidat.getGenre());
         employe.setCandidat(candidat);
-
-        employe = employeRepository.save(employe);
-
-        // Création statut employé avec statut id = 1
-        StatutEmploye statutEmploye = new StatutEmploye();
-        statutEmploye.setEmploye(employe);
-        statutEmploye.setDateStatut(Date.valueOf(LocalDate.now()));
-
-        Statut statut = new Statut();
-        statut.setId(1L);
-        statutEmploye.setIdStatut(statut.getId());
-
-        statutEmployeService.saveStatutEmploye(statutEmploye);
-
-        // Récupérer idGrade du candidat directement
-        Long idGrade = null;
-
-        if (candidat.getGrade() != null) {
-            idGrade = candidat.getGrade().getId();
-        }
-
-        if (idGrade != null) {
-            GradeEmploye gradeEmploye = new GradeEmploye();
-            gradeEmploye.setIdEmploye(employe.getId());
-            gradeEmploye.setDateGrade(Date.valueOf(LocalDate.now()));
-
-            Grade grade = new Grade();
-            grade.setId(idGrade);
-            gradeEmploye.setGrade(grade);
-
-            gradeEmployeService.saveGradeEmploye(gradeEmploye);
-        } else {
-            throw new RuntimeException("Grade du candidat non trouvé");
-        }
+        employeRepository.save(employe);
+        // Statut et grade peuvent être ajoutés ici si besoin
     }
-
-    public List<Employe> findAll() {
-        return employeRepository.findAll();
-    }
-
-    public Employe findById(Long id) {
-        return employeRepository.findById(id).orElseThrow();
-    }
-
-    public Employe save(Employe Employe) {
-        return employeRepository.save(Employe);
-    }
-
-    public void delete(Employe Employe) {
-        employeRepository.delete(Employe);
-    }
-
-    public void deleteById(Long id) {
-        employeRepository.deleteById(id);
-    }
-
 }

@@ -1,65 +1,64 @@
 package com.gestioncafe.controller.rh;
 
+import com.gestioncafe.model.Candidat;
+import com.gestioncafe.model.DetailCandidat;
+import com.gestioncafe.service.rh.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.Period;
-
-import com.gestioncafe.service.rh.*;
-import com.gestioncafe.repository.*;
-import com.gestioncafe.model.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/administratif/rh/recrutement")
 public class RhRecrutementController {
 
-    @Autowired
-    private CandidatService candidatService;
+    private final CandidatService candidatService;
 
-    @Autowired
-    private DetailCandidatService detailCandidatService;
+    private final DetailCandidatService detailCandidatService;
 
-    @Autowired
-    private GenreService genreService;
-    
-    @Autowired
-    private GradeService gradeService;
+    private final GenreService genreService;
 
-    @Autowired
-    private SerieBacService serieBacService;
+    private final GradeService gradeService;
 
-    @Autowired
-    private LangueService langueService;
+    private final SerieBacService serieBacService;
 
-    @Autowired
-    private FormationService formationService;
+    private final LangueService langueService;
 
-    @Autowired
-    private ExperienceService experienceService;
+    private final FormationService formationService;
 
-    @Autowired
-    private EmployeService employeService;
+    private final ExperienceService experienceService;
 
-    // @Autowired
-    // private PdfService pdfService;
+    private final EmployeService employeService;
 
-    
+
+    public RhRecrutementController(CandidatService candidatService,
+                                   DetailCandidatService detailCandidatService,
+                                   GenreService genreService,
+                                   GradeService gradeService,
+                                   SerieBacService serieBacService,
+                                   LangueService langueService,
+                                   FormationService formationService,
+                                   ExperienceService experienceService,
+                                   EmployeService employeService) {
+        this.candidatService = candidatService;
+        this.detailCandidatService = detailCandidatService;
+        this.genreService = genreService;
+        this.gradeService = gradeService;
+        this.serieBacService = serieBacService;
+        this.langueService = langueService;
+        this.formationService = formationService;
+        this.experienceService = experienceService;
+        this.employeService = employeService;
+    }
+
+
     @PostMapping("/recrutement")
     public String filtreCandidats(
         @RequestParam(value = "genreId", required = false) Long genreId,
@@ -168,7 +167,7 @@ public class RhRecrutementController {
         employeService.recruterCandidat(candidatId);
         return "redirect:/administratif/rh/gestion-recrutements";
     }
-    
+
     // @PostMapping("/pdf")
     // public void exportPdf(@RequestParam("candidatId") Long candidatId, HttpServletResponse response) throws Exception {
     //     Candidat candidat = candidatService.getCandidatById(candidatId);
@@ -194,5 +193,5 @@ public class RhRecrutementController {
 
     //     pdfService.generateCandidatPdf(candidat, series, formations, langues, experiences, genre, response);
     // }
- 
+
 }

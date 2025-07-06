@@ -20,10 +20,7 @@ VALUES ('gobelet', 1, '1'),
        ('cl', 4, 0.01),
        ('unite', 2, 1);
 
--- Genres
-INSERT INTO genre(id, nom)
-VALUES (1, 'Homme'),
-       (2, 'Femme');
+
 
 -- Tiers (clients et employé)
 INSERT INTO tiers(nom, prenom, id_genre, contact, email, image)
@@ -35,10 +32,6 @@ VALUES ('Client', 'Un', 1, '0123456789', 'client1@mail.com', NULL),
 INSERT INTO client(id, id_tiers, date_adhesion, date_naissance)
 VALUES (1, 1, '2024-01-01', '2000-01-01'),
        (2, 2, '2024-01-02', '2001-02-02');
-
--- Employé
-INSERT INTO employe(id, id_tiers, date_naissance, date_recrutement, date_demission, reference_cv)
-VALUES (1, 3, '1990-01-01', '2023-01-01', NULL, NULL);
 
 -- Package (obligatoire pour produit)
 INSERT INTO package(id, nom, cout)

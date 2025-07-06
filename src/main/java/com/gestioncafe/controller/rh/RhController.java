@@ -1,58 +1,64 @@
 package com.gestioncafe.controller.rh;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.ui.Model;
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import java.time.LocalDate;
-import java.time.Period;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.gestioncafe.service.rh.*;
-import com.gestioncafe.service.*;
-import com.gestioncafe.repository.*;
-import com.gestioncafe.model.*;
+import com.gestioncafe.model.Candidat;
+import com.gestioncafe.model.DetailCandidat;
+import com.gestioncafe.model.Employe;
+import com.gestioncafe.model.Grade;
+import com.gestioncafe.model.Irsa;
+import com.gestioncafe.model.IrsaWrapper;
+import com.gestioncafe.model.JourFerie;
+import com.gestioncafe.model.StatutEmploye;
+import com.gestioncafe.service.rh.CandidatService;
+import com.gestioncafe.service.rh.DetailCandidatService;
+import com.gestioncafe.service.rh.EmployeService;
+import com.gestioncafe.service.rh.ExperienceService;
+import com.gestioncafe.service.rh.FormationService;
+import com.gestioncafe.service.rh.GenreService;
+import com.gestioncafe.service.rh.GradeService;
+import com.gestioncafe.service.rh.LangueService;
+import com.gestioncafe.service.rh.RhParametreService;
+import com.gestioncafe.service.rh.RhService;
+import com.gestioncafe.service.rh.SerieBacService;
 
 @Controller
 @RequestMapping("/administratif/rh")
+
 public class RhController {
 
-    @Autowired
-    private RhParametreService rhParametreService;
+    private final RhParametreService rhParametreService;
+    private final RhService rhService;
+    private final CandidatService candidatService;
+    private final DetailCandidatService detailCandidatService;
+    private final GenreService genreService;
+    private final GradeService gradeService;
+    private final SerieBacService serieBacService;
+    private final LangueService langueService;
+    private final ExperienceService experienceService;
+    private final FormationService formationService;
 
-    @Autowired
-    private RhService rhService;
 
-    @Autowired
-    private CandidatService candidatService;
-
-    @Autowired
-    private DetailCandidatService detailCandidatService;
-
-    @Autowired
-    private GenreService genreService;
-    
-    @Autowired
-    private GradeService gradeService;
-
-    @Autowired
-    private SerieBacService serieBacService;
-
-    @Autowired
-    private LangueService langueService;
-
-    @Autowired
-    private ExperienceService experienceService;
-
-    @Autowired
-    private FormationService formationService;
+    public RhController(RhParametreService rhParametreService, RhService rhService, CandidatService candidatService, DetailCandidatService detailCandidatService, GenreService genreService, GradeService gradeService, SerieBacService serieBacService, LangueService langueService, ExperienceService experienceService, FormationService formationService, EmployeService employeService) {
+        this.rhParametreService = rhParametreService;
+        this.rhService = rhService;
+        this.candidatService = candidatService;
+        this.detailCandidatService = detailCandidatService;
+        this.genreService = genreService;
+        this.gradeService = gradeService;
+        this.serieBacService = serieBacService;
+        this.langueService = langueService;
+        this.experienceService = experienceService;
+        this.formationService = formationService;
+        this.employeService = employeService;
+    }
 
 
     @GetMapping
@@ -60,8 +66,11 @@ public class RhController {
         return "redirect:/administratif/rh/gestion-employes";
     }
 
+    private final EmployeService employeService;
+
     @GetMapping("/gestion-employes")
-    public String gestiontEmployes() {
+    public String gestiontEmployes(Model model) {
+        model.addAttribute("employesInfos", employeService.getEmployeInfos());
         return "administratif/rh/gestion-employes";
     }
 
@@ -75,6 +84,7 @@ public class RhController {
         model.addAttribute("variationCommission", rhService.variationCommission());
         model.addAttribute("variationAvance", rhService.variationAvance());
         model.addAttribute("employes", employes);
+
         return "administratif/rh/gestion-salaires";
     }
 
@@ -107,8 +117,8 @@ public class RhController {
     public String gestionConges(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-                    .map(StatutEmploye::getEmploye)
-                    .collect(Collectors.toList());
+            .map(StatutEmploye::getEmploye)
+            .collect(Collectors.toList());
         model.addAttribute("employes", employes);
         model.addAttribute("nbjCongeUtilise", rhService.nbjCongeUtilise(employes));
         model.addAttribute("nbjCongeReserve", rhService.nbjCongeReserve(employes));
@@ -135,7 +145,7 @@ public class RhController {
             // Fusionner ou synchroniser avec les données réelles
             for (Irsa dbIrsa : irsas) {
                 boolean existe = irsaWrapper.getIrsas().stream()
-                        .anyMatch(i -> i.getId() != null && i.getId().equals(dbIrsa.getId()));
+                    .anyMatch(i -> i.getId() != null && i.getId().equals(dbIrsa.getId()));
                 if (!existe) {
                     irsaWrapper.addIrsa(dbIrsa);
                 }
