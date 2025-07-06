@@ -8,9 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.gestioncafe.model.Produit;
+import com.gestioncafe.repository.*;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -21,6 +25,10 @@ public class EmployeController {
     private PresenceService presenceService;
     @Autowired
     private CommandeService commandeService;
+    @Autowired
+    private ClientRepository clientRepository;
+        @Autowired
+    private EmployeRepository employeRepository;
 
 
     public EmployeController(PresenceService presenceService) {
@@ -71,6 +79,12 @@ public class EmployeController {
         @RequestParam(required = false) Long clientId,
         Model model) {
         
+        List<Produit> produits = commandeService.getAllProduits();
+        // Ajouter la liste au modèle
+        model.addAttribute("produits", produits);
+        model.addAttribute("commandeService", commandeService);
+        model.addAttribute("clientRepository", clientRepository);
+        model.addAttribute("employeRepository", employeRepository);
         model.addAttribute("titre", "Nouvelle Commande");
         if (clientId != null) {
             model.addAttribute("clientId", clientId);

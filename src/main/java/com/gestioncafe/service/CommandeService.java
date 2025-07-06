@@ -74,6 +74,7 @@ public class CommandeService {
     public List<Produit> getAllProduits() {
         return produitRepository.findAll();
     }
+    
     @Transactional
     public void creerVente(Long clientId, Long employeId, String produitsJson) {
         try {
@@ -125,7 +126,7 @@ public class CommandeService {
             // Créer la commande associée
             Commande commande = new Commande();
             commande.setVente(savedVente);
-            commande.setDateFin(LocalDateTime.now().plusHours(1));
+            commande.setDateFin(LocalDate.now().plusDays(1));
             commande.setEstTerminee(false);
             commandeRepository.save(commande);
 

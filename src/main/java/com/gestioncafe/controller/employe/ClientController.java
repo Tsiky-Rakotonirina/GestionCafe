@@ -25,7 +25,9 @@ public class ClientController {
     @GetMapping
     public String clientPage(Model model) {
         model.addAttribute("titre", "Gestion Clients");
-        return "employe/client";
+        model.addAttribute("clientRepository", clientRepository);
+
+        return "administratif/employe/client";
     }
 
     @GetMapping("/search")
@@ -42,6 +44,6 @@ public class ClientController {
         
         model.addAttribute("client", client);
         model.addAttribute("ventes", ventes);
-        return "employe/ficheClient";
+        return "administratif/employe/ficheClient";
     }
 }

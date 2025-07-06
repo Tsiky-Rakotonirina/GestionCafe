@@ -2,7 +2,7 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "commande")
@@ -15,7 +15,7 @@ public class Commande {
     @JoinColumn(name = "id_vente")
     private Vente vente;
     
-    private LocalDateTime dateFin;
+    private LocalDate dateFin;
     private boolean estTerminee;
     
     // Getters et setters
@@ -23,8 +23,8 @@ public class Commande {
     public void setId(Long id) { this.id = id; }
     public Vente getVente() { return vente; }
     public void setVente(Vente vente) { this.vente = vente; }
-    public LocalDateTime getDateFin() { return dateFin; }
-    public void setDateFin(LocalDateTime dateFin) { this.dateFin = dateFin; }
+    public LocalDate getDateFin() { return dateFin; }
+    public void setDateFin(LocalDate dateFin) { this.dateFin = dateFin; }
     public boolean isEstTerminee() { return estTerminee; }
     public void setEstTerminee(boolean estTerminee) { this.estTerminee = estTerminee; }
 }
