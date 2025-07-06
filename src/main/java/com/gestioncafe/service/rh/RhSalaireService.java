@@ -183,13 +183,13 @@ public class RhSalaireService {
             for (CotisationSociale cotisationSociale : cotisationSociales) {
                 tauxCotisationSociale += cotisationSociale.getTaux();
             }
-            prochainSalaire -= (prochainSalaire * tauxCotisationSociale);
+            prochainSalaire -= (prochainSalaire * (tauxCotisationSociale / 100));
             List<Irsa> irsas = irsaRepository.findAll();
             double impots = 0;
             for (Irsa irsa : irsas) {
                 if (prochainSalaire >= irsa.getSalaireMin()
                         && (irsa.getSalaireMax() == 0 || prochainSalaire <= irsa.getSalaireMax())) {
-                    impots = (prochainSalaire - irsa.getSalaireMin()) * irsa.getTaux();
+                    impots = (prochainSalaire - irsa.getSalaireMin()) * (irsa.getTaux() / 100);
                     break;
                 }
             }
