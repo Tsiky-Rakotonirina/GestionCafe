@@ -65,73 +65,96 @@ public class RhSalaireService {
     public List<FicheDePaie> getFicheDePaiesByEmployeId(Long idEmploye) {
         List<FicheDePaie> ficheDePaies = new ArrayList<>();
         try {
-
             Payement dernierPayement = payementRepository.findTopByIdEmployeOrderByMoisReferenceDesc(idEmploye);
             LocalDate dateApaye = dernierPayement.getMoisReference().toLocalDate().plusMonths(1);
             LocalDate dateRepere = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+
             List<Date> dates = new ArrayList<>();
             while (!dateApaye.isAfter(dateRepere)) {
                 dates.add(Date.valueOf(dateApaye));
                 dateApaye = dateApaye.plusMonths(1);
             }
+
             List<CotisationSociale> cotisationSociales = cotisationSocialeRepository.findAll();
-            double tauxCotisationSociale = 0;
-            for (CotisationSociale cotisationSociale : cotisationSociales) {
-                tauxCotisationSociale += cotisationSociale.getTaux();
-            }
+            double tauxCotisationSociale = cotisationSociales.stream()
+                    .mapToDouble(CotisationSociale::getTaux)
+                    .sum();
+
             List<Irsa> irsas = irsaRepository.findAll();
+
             for (Date date : dates) {
                 StatutEmploye statutEmploye = statutEmployeRepository
                         .findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(idEmploye, date)
                         .orElse(null);
+
                 if (statutEmploye == null || statutEmploye.getIdStatut() != 1) {
                     break;
                 }
+
                 LocalDate localDateDebut = date.toLocalDate().withDayOfMonth(1);
                 Date dateDebut = Date.valueOf(localDateDebut);
-                Double salaire = 0.0;
+
                 Double salaireDeBase = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, date);
-                if (salaireDeBase != null) {
-                    salaire = salaireDeBase;
-                } else {
+                if (salaireDeBase == null) {
                     continue;
                 }
 
+                double salaire = salaireDeBase;
+
+                // Absences
                 List<Presence> abscence = presenceRepository
                         .findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(idEmploye, dateDebut, date);
                 double abscences = abscence.size() * salaire / 22;
                 salaire -= abscences;
-                double totalCommission = 0;
-                List<Commission> commissions = commissionRepository.findByIdEmployeAndDateCommissionBetween(idEmploye,
-                        dateDebut, date);
-                for (Commission commission : commissions) {
-                    totalCommission += commission.getMontant();
-                }
 
-                System.out.println(totalCommission);
+                // Commissions
+                double totalCommission = commissionRepository
+                        .findByIdEmployeAndDateCommissionBetween(idEmploye, dateDebut, date)
+                        .stream()
+                        .mapToDouble(Commission::getMontant)
+                        .sum();
                 salaire += totalCommission;
-                double retenuesSociales = salaire * tauxCotisationSociale;
-                salaire -= (salaire * tauxCotisationSociale);
+
+                // Retenues sociales
+                double retenuesSociales = salaire * (tauxCotisationSociale / 100);
+                salaire -= retenuesSociales;
+
+                // IRSA
                 double impots = 0;
                 for (Irsa irsa : irsas) {
                     if (salaire >= irsa.getSalaireMin()
                             && (irsa.getSalaireMax() == 0 || salaire <= irsa.getSalaireMax())) {
-                        impots = (salaire - irsa.getSalaireMin()) * irsa.getTaux();
+                        impots = (salaire - irsa.getSalaireMin()) * (irsa.getTaux() / 100);
                         break;
                     }
                 }
                 salaire -= impots;
+
+                // Retenue avance
                 double retenuPourAvance = this.retenuPourAvance(idEmploye);
                 salaire -= retenuPourAvance;
-                ficheDePaies.add(new FicheDePaie(dateDebut, salaireDeBase, abscences, totalCommission, retenuesSociales,
-                        impots, retenuPourAvance));
+
+                // Empêche salaire négatif
+
+                // DEBUG : Affichage des détails
+                System.out.println("---- Fiche de paie pour le mois de " + dateDebut + " ----");
+                System.out.println("Salaire de base       : " + salaireDeBase);
+                System.out.println("Absences (jours)      : " + abscence.size() + ", Montant = " + abscences);
+                System.out.println("Commissions           : " + totalCommission);
+                System.out.println("Retenues sociales     : " + retenuesSociales);
+                System.out.println("Impôts IRSA           : " + impots);
+                System.out.println("Retenue avance        : " + retenuPourAvance);
+                System.out.println("=> Salaire net final  : " + salaire);
+                System.out.println("--------------------------------------------");
+
+                ficheDePaies.add(new FicheDePaie(dateDebut, salaireDeBase, abscences, totalCommission,
+                        retenuesSociales, impots, retenuPourAvance));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ficheDePaies;
-
     }
 
     public Page<FicheDePaie> getFicheDePaiesByEmployeId(Long idEmploye, Pageable pageable) {
