@@ -1,37 +1,43 @@
 package com.gestioncafe.service.rh;
 
-import com.gestioncafe.dto.EmployeInfosDTO;
-import com.gestioncafe.model.Employe;
-import com.gestioncafe.repository.*;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.gestioncafe.dto.EmployeDetailDTO;
+import com.gestioncafe.dto.EmployeInfosDTO;
+import com.gestioncafe.model.Employe;
+import com.gestioncafe.model.Statut;
+import com.gestioncafe.repository.CandidatRepository;
+import com.gestioncafe.repository.EmployeRepository;
+import com.gestioncafe.repository.PresenceRepository;
+import com.gestioncafe.repository.StatutEmployeRepository;
+import com.gestioncafe.repository.StatutRepository;
+import com.gestioncafe.repository.VenteRepository;
 
 @Service
 public class EmployeService {
 
     private final EmployeRepository employeRepository;
-
     private final CandidatRepository candidatRepository;
-
     private final VenteRepository venteRepository;
-
     private final PresenceRepository presenceRepository;
-
     private final StatutEmployeRepository statutEmployeRepository;
-
+    private final StatutRepository statutRepository;
 
     public EmployeService(EmployeRepository employeRepository,
                           CandidatRepository candidatRepository,
                           VenteRepository venteRepository,
                           PresenceRepository presenceRepository,
-                          StatutEmployeRepository statutEmployeRepository) {
+                          StatutEmployeRepository statutEmployeRepository,
+                          StatutRepository statutRepository) {
         this.employeRepository = employeRepository;
         this.candidatRepository = candidatRepository;
         this.venteRepository = venteRepository;
         this.presenceRepository = presenceRepository;
         this.statutEmployeRepository = statutEmployeRepository;
+        this.statutRepository = statutRepository;
     }
 
     /**
@@ -57,7 +63,13 @@ public class EmployeService {
             String statut = "-";
             try {
                 statut = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(employe.getId())
-                    .map(se -> se.getIdStatut() != null ? se.getIdStatut().toString() : "-")
+                    .map(se -> {
+                        if (se.getIdStatut() != null) {
+                            Statut statutObj = statutRepository.findById(se.getIdStatut()).orElse(null);
+                            return (statutObj != null && statutObj.getValeur() != null) ? statutObj.getValeur() : "-";
+                        }
+                        return "-";
+                    })
                     .orElse("-");
             } catch (Exception e) {
                 // log or ignore
@@ -65,6 +77,47 @@ public class EmployeService {
             infos.add(new EmployeInfosDTO(employe, nombreClients, nombrePresences, efficacite, statut));
         }
         return infos;
+    }
+
+    /**
+     * Retourne les détails d'un employé pour l'affichage RH
+     */
+    public EmployeDetailDTO getEmployeDetail(Long id) {
+        Employe employe = employeRepository.findById(id).orElse(null);
+        if (employe == null) return null;
+        EmployeDetailDTO dto = new EmployeDetailDTO();
+        dto.id = employe.getId();
+        dto.nom = employe.getNom();
+        // dto.prenom = employe.getPrenom(); // décommente si tu ajoutes ce champ
+        dto.prenom = ""; // à adapter si tu ajoutes le champ
+        // dto.genre = employe.getGenre() != null ? employe.getGenre().getNom() : "-";
+        dto.genre = ""; // à adapter si tu ajoutes le champ
+        dto.dateNaissance = employe.getDateNaissance();
+        dto.dateRecrutement = employe.getDateRecrutement();
+        // dto.gradeActuel = employe.getGradeActuel() != null ? employe.getGradeActuel().getNom() : "-";
+        dto.gradeActuel = ""; // à adapter si tu ajoutes le champ
+        dto.contact = employe.getContact();
+        // dto.email = employe.getEmail();
+        dto.email = ""; // à adapter si tu ajoutes le champ
+        // Statut
+        dto.statut = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(id)
+            .map(se -> {
+                if (se.getIdStatut() != null) {
+                    Statut statutObj = statutRepository.findById(se.getIdStatut()).orElse(null);
+                    return (statutObj != null && statutObj.getValeur() != null) ? statutObj.getValeur() : "-";
+                }
+                return "-";
+            })
+            .orElse("-");
+        // Statistiques
+        dto.nombrePresences = presenceRepository.countByIdEmployeAndEstPresent(id, true);
+        int nombreClients = 0;
+        try {
+            nombreClients = venteRepository.countDistinctClientsByEmploye(employe);
+        } catch (Exception e) {}
+        dto.nombreClients = nombreClients;
+        dto.efficacite = (dto.nombrePresences > 0) ? ((double) dto.nombreClients / dto.nombrePresences) : 0.0;
+        return dto;
     }
 
     /**

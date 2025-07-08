@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CafeManager Pro - Gestion de Café</title>
+    <title>Gestion des recrutements - CafeManager Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/css/rh/styles.css}">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <link rel="stylesheet" th:href="@{/css/rh/recrutement.css}">
 </head>
 
@@ -17,128 +17,230 @@
 
     <div class="main-content" id="mainContent">
         <div th:replace="~{administratif/rh/layout/header :: header('Gestion des recrutements')}"></div>
+        
         <main class="content">
-            <h2>Filtrer par detail</h2>
-            <form class="form-recrutement" method="post" th:action="@{/administratif/rh/recrutement/recrutement}"
-                style="margin-bottom: 1em;">
-                <!-- Genre -->
-                <div style="margin-bottom: 1em;">
-                    <label><strong>Genre :</strong></label>
-                    <label style="margin-left: 1em;">
-                        <input type="radio" name="genreId" value="1" th:checked="${param.genreId == '1'}" /> Homme
-                    </label>
-                    <label style="margin-left: 1em;">
-                        <input type="radio" name="genreId" value="2" th:checked="${param.genreId == '2'}" /> Femme
-                    </label>
+            <!-- Section des filtres -->
+            <div class="filter-section">
+                <h2><i class="fas fa-filter"></i> Filtrer les candidats</h2>
+                <form class="form-recrutement" method="post" th:action="@{/administratif/rh/recrutement/recrutement}">
+                    <!-- Genre -->
+                    <div class="filter-group">
+                        <label><i class="fas fa-venus-mars"></i> Genre</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="genreId" value="1" th:checked="${param.genreId == '1'}" />
+                                <span>Homme</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="genreId" value="2" th:checked="${param.genreId == '2'}" />
+                                <span>Femme</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Âge -->
+                    <div class="filter-group">
+                        <label><i class="fas fa-birthday-cake"></i> Âge</label>
+                        <div class="age-inputs">
+                            <input type="number" name="minAge" min="0" placeholder="Min" th:value="${param.minAge}" />
+                            <span>à</span>
+                            <input type="number" name="maxAge" min="0" placeholder="Max" th:value="${param.maxAge}" />
+                            <span>ans</span>
+                        </div>
+                    </div>
+
+                    <!-- Grade -->
+                    <div class="filter-group">
+                        <label><i class="fas fa-briefcase"></i> Poste recherché</label>
+                        <select name="gradeId" class="select-input">
+                            <option value="" th:selected="${param.gradeId == null or param.gradeId == ''}">Tous les postes</option>
+                            <option th:each="g : ${grades}" th:value="${g.id}" th:text="${g.nom}"
+                                th:selected="${param.gradeId == g.id.toString()}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Série Bac -->
+                    <div class="filter-group">
+                        <label><i class="fas fa-graduation-cap"></i> Série du Bac</label>
+                        <div class="checkbox-group">
+                            <label th:each="s : ${seriesBac}" class="checkbox-item">
+                                <input type="checkbox" name="serieBacIds" th:value="${s.id}"
+                                    th:checked="${param.serieBacIds != null} ? ${#lists.contains(param.serieBacIds, s.id.toString())} : false" />
+                                <span th:text="${s.valeur}"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Bouton de filtrage -->
+                    <div class="filter-submit">
+                        <button type="submit" class="btn-filter">
+                            <i class="fas fa-search"></i>
+                            Filtrer les candidats
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Section des candidats -->
+            <div class="candidates-section">
+                <div class="candidates-header">
+                    <h1>
+                        <i class="fas fa-users"></i> 
+                        Candidats
+                        <span class="candidates-count" th:text="${#lists.size(candidats ?: {})}">0</span>
+                    </h1>
                 </div>
 
-                <!-- Âge -->
-                <div style="margin-bottom: 1em;">
-                    <label><strong>Âge entre :</strong></label>
-                    <input type="number" name="minAge" min="0" placeholder="Min" th:value="${param.minAge}"
-                        style="width: 60px; margin-left: 1em;" />
-                    -
-                    <input type="number" name="maxAge" min="0" placeholder="Max" th:value="${param.maxAge}"
-                        style="width: 60px; margin-left: 0.5em;" />
-                </div>
-
-                <!-- Grade -->
-                <div style="margin-bottom: 1em;">
-                    <label><strong>Poste :</strong></label>
-                    <select name="gradeId" style="margin-left: 1em;">
-                        <option value="" th:selected="${param.gradeId == null or param.gradeId == ''}">Tous</option>
-                        <option th:each="g : ${grades}" th:value="${g.id}" th:text="${g.nom}"
-                            th:selected="${param.gradeId == g.id.toString()}"></option>
-                    </select>
-                </div>
-
-                <!-- Série Bac -->
-                <div style="margin-bottom: 1em;">
-                    <label><strong>Bac :</strong></label>
-                    <label th:each="s : ${seriesBac}" style="margin-right: 1em;">
-                        <input type="checkbox" name="serieBacIds" th:value="${s.id}"
-                            th:checked="${param.serieBacIds != null} ? ${#lists.contains(param.serieBacIds, s.id.toString())} : false" />
-                        <span th:text="${s.valeur}"></span>
-                    </label>
-                </div>
-
-                <!-- Bouton -->
-                <div>
-                    <button type="submit">Filtrer</button>
-                </div>
-            </form>
-
-            <h1>Recrutement</h1>
-            <div class="cv-container">
-                <div class="cv-card" th:each="candidat : ${candidats}">
-                    <div class="cv-header">
-                        <img th:if="${candidat.image != null}" th:src="@{'/uploads/employe/' + ${candidat.image}}"
-                            alt="Photo" class="cv-photo" />
-                        <div class="cv-actions">
-                            <form class="form-recruter" th:action="@{/administratif/rh/recrutement/pdf}" method="post"
-                                style="display:inline-block;">
-                                <input type="hidden" name="candidatId" th:value="${candidat.id}" />
-                                <button type="submit" class="btn-pdf">PDF</button>
-                            </form>
+                <div th:if="${candidats != null and !#lists.isEmpty(candidats)}" class="cv-container">
+                    <div class="cv-card" th:each="candidat : ${candidats}">
+                        <!-- En-tête de la carte -->
+                        <div class="cv-header">
+                            <div th:if="${candidat.image != null}">
+                                <img th:src="@{'/uploads/employe/' + ${candidat.image}}" alt="Photo" class="cv-photo" />
+                            </div>
+                            <div th:unless="${candidat.image != null}" class="cv-photo-placeholder" 
+                                 th:text="${#strings.substring(candidat.nom,0,1)}">C</div>
+                            
+                            <div class="cv-actions">
+                                <form class="form-recruter" th:action="@{/administratif/rh/recrutement/pdf}" method="post">
+                                    <input type="hidden" name="candidatId" th:value="${candidat.id}" />
+                                    <button type="submit" class="btn-pdf">
+                                        <i class="fas fa-file-pdf"></i>
+                                        PDF
+                                    </button>
+                                </form>
+                            </div>
                         </div>
 
+                        <!-- Informations principales -->
+                        <div class="cv-main">
+                            <h3 th:text="${candidat.nom}">Nom du candidat</h3>
+                            
+                            <div class="cv-info-grid">
+                                <div class="cv-info-item">
+                                    <span class="cv-info-label"><i class="fas fa-venus-mars"></i> Genre:</span>
+                                    <span class="cv-info-value" th:text="${candidat.genre?.valeur ?: '-'}">-</span>
+                                </div>
+                                
+                                <div class="cv-info-item">
+                                    <span class="cv-info-label"><i class="fas fa-birthday-cake"></i> Naissance:</span>
+                                    <span class="cv-info-value" th:text="${candidat.dateNaissance != null ? #dates.format(candidat.dateNaissance, 'dd/MM/yyyy') : '-'}">-</span>
+                                </div>
+                                
+                                <div class="cv-info-item">
+                                    <span class="cv-info-label"><i class="fas fa-calendar-plus"></i> Candidature:</span>
+                                    <span class="cv-info-value" th:text="${candidat.dateCandidature != null ? #dates.format(candidat.dateCandidature, 'dd/MM/yyyy') : '-'}">-</span>
+                                </div>
+                                
+                                <div class="cv-info-item">
+                                    <span class="cv-info-label"><i class="fas fa-phone"></i> Contact:</span>
+                                    <span class="cv-info-value" th:text="${candidat.contact ?: '-'}">-</span>
+                                </div>
+                                
+                                <div class="cv-info-item">
+                                    <span class="cv-info-label"><i class="fas fa-briefcase"></i> Poste:</span>
+                                    <span class="cv-info-value" th:text="${candidat.grade?.nom ?: '-'}">-</span>
+                                </div>
+                                
+                                <div th:if="${candidat.grade?.salaire != null}" class="cv-info-item">
+                                    <span class="cv-info-label"><i class="fas fa-money-bill-wave"></i> Salaire:</span>
+                                    <span class="cv-info-value salary-highlight" 
+                                          th:text="${#numbers.formatDecimal(candidat.grade.salaire, 1, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Détails complémentaires -->
+                        <div class="cv-details">
+                            <h4><i class="fas fa-info-circle"></i> Qualifications</h4>
+                            
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-graduation-cap"></i> Bac:</span>
+                                    <div class="detail-value">
+                                        <div class="tags">
+                                            <span th:each="d : ${detailsMap[candidat.id]}" th:if="${d.serieBac != null}" 
+                                                  class="tag" th:text="${d.serieBac.valeur}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-university"></i> Formation:</span>
+                                    <div class="detail-value">
+                                        <div class="tags">
+                                            <span th:each="d : ${detailsMap[candidat.id]}" th:if="${d.formation != null}" 
+                                                  class="tag" th:text="${d.formation.valeur}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-language"></i> Langues:</span>
+                                    <div class="detail-value">
+                                        <div class="tags">
+                                            <span th:each="d : ${detailsMap[candidat.id]}" th:if="${d.langue != null}" 
+                                                  class="tag" th:text="${d.langue.valeur}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-chart-line"></i> Expérience:</span>
+                                    <div class="detail-value">
+                                        <div class="tags">
+                                            <span th:each="d : ${detailsMap[candidat.id]}" th:if="${d.experience != null}" 
+                                                  class="tag" th:text="${d.experience.valeur}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pied de carte avec action -->
+                        <div class="cv-footer">
+                            <form th:action="@{/administratif/rh/recrutement/recruter}" method="post"
+                                onsubmit="return confirmRecruter(this);">
+                                <input type="hidden" name="candidatId" th:value="${candidat.id}" />
+                                <button type="submit" class="btn-recruter">
+                                    <i class="fas fa-user-plus"></i>
+                                    Recruter ce candidat
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="cv-main">
-                        <h3 th:text="${candidat.nom}">Nom</h3>
-                        <p><strong>Genre:</strong> <span th:text="${candidat.genre?.valeur}">Genre</span></p>
-                        <p><strong>Date de naissance:</strong> <span th:text="${candidat.dateNaissance}">Date
-                                naissance</span></p>
-                        <p><strong>Date candidature:</strong> <span th:text="${candidat.dateCandidature}">Date
-                                candidature</span></p>
-                        <p><strong>Contact:</strong> <span th:text="${candidat.contact}">Contact</span></p>
-                        <p><strong>Poste:</strong> <span th:text="${candidat.grade?.nom}">Poste</span></p>
-                        <p th:if="${candidat.grade?.salaire != null}">
-                            <strong>Salaire:</strong>
-                            <span
-                                th:text="${#numbers.formatDecimal(candidat.grade.salaire, 1, 'COMMA', 2, 'POINT')} + ' Ar'">0
-                                Ar</span>
-                        </p>
-                    </div>
-                    <div class="cv-details">
-                        <p><strong>Série Bac:</strong>
-                            <span th:each="d, iterStat : ${detailsMap[candidat.id]}" th:if="${d.serieBac != null}">
-                                <span th:text="${d.serieBac.valeur}"></span><span th:if="${!iterStat.last}">, </span>
-                            </span>
-                        </p>
-                        <p><strong>Formation:</strong>
-                            <span th:each="d, iterStat : ${detailsMap[candidat.id]}" th:if="${d.formation != null}">
-                                <span th:text="${d.formation.valeur}"></span><span th:if="${!iterStat.last}">, </span>
-                            </span>
-                        </p>
-                        <p><strong>Langue:</strong>
-                            <span th:each="d, iterStat : ${detailsMap[candidat.id]}" th:if="${d.langue != null}">
-                                <span th:text="${d.langue.valeur}"></span><span th:if="${!iterStat.last}">, </span>
-                            </span>
-                        </p>
-                        <p><strong>Expérience:</strong>
-                            <span th:each="d, iterStat : ${detailsMap[candidat.id]}" th:if="${d.experience != null}">
-                                <span th:text="${d.experience.valeur}"></span><span th:if="${!iterStat.last}">, </span>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="cv-footer">
-                        <form th:action="@{/administratif/rh/recrutement/recruter}" method="post"
-                            onsubmit="return confirmRecruter(this);">
-                            <input type="hidden" name="candidatId" th:value="${candidat.id}" />
-                            <button type="submit" class="btn-recruter">Recruter</button>
-                        </form>
-                    </div>
+                </div>
+
+                <!-- État vide -->
+                <div th:if="${candidats == null or #lists.isEmpty(candidats)}" class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <h3>Aucun candidat trouvé</h3>
+                    <p>Essayez de modifier vos critères de recherche</p>
                 </div>
             </div>
         </main>
     </div>
+    
     <script th:src="@{/templates/script.js}"></script>
-
     <script>
         function confirmRecruter(form) {
             const candidatNom = form.closest('.cv-card').querySelector('h3').innerText.trim();
-            return confirm(`Cela signifie que le contrat avec ${candidatNom} est signe`);
+            return confirm(`Êtes-vous sûr de vouloir recruter ${candidatNom} ?\n\nCela signifie que le contrat sera signé.`);
         }
+
+        // Animation d'entrée pour les cartes
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.cv-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
     </script>
 </body>
 

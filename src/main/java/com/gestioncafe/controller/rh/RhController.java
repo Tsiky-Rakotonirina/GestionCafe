@@ -25,7 +25,9 @@ import com.gestioncafe.service.rh.FormationService;
 import com.gestioncafe.service.rh.GenreService;
 import com.gestioncafe.service.rh.GradeService;
 import com.gestioncafe.service.rh.LangueService;
+import com.gestioncafe.service.rh.RhCongeService;
 import com.gestioncafe.service.rh.RhParametreService;
+import com.gestioncafe.service.rh.RhSalaireService;
 import com.gestioncafe.service.rh.RhService;
 import com.gestioncafe.service.rh.SerieBacService;
 
@@ -36,6 +38,8 @@ public class RhController {
 
     private final RhParametreService rhParametreService;
     private final RhService rhService;
+    private final RhSalaireService rhSalaireService;
+    private final RhCongeService rhCongeService;
     private final CandidatService candidatService;
     private final DetailCandidatService detailCandidatService;
     private final GenreService genreService;
@@ -44,11 +48,17 @@ public class RhController {
     private final LangueService langueService;
     private final ExperienceService experienceService;
     private final FormationService formationService;
+    private final EmployeService employeService;
 
-
-    public RhController(RhParametreService rhParametreService, RhService rhService, CandidatService candidatService, DetailCandidatService detailCandidatService, GenreService genreService, GradeService gradeService, SerieBacService serieBacService, LangueService langueService, ExperienceService experienceService, FormationService formationService, EmployeService employeService) {
+    public RhController(RhParametreService rhParametreService, RhService rhService, RhSalaireService rhSalaireService, 
+            RhCongeService rhCongeService, CandidatService candidatService,
+            DetailCandidatService detailCandidatService, GenreService genreService, GradeService gradeService,
+            SerieBacService serieBacService, LangueService langueService, ExperienceService experienceService,
+            FormationService formationService, EmployeService employeService) {
         this.rhParametreService = rhParametreService;
         this.rhService = rhService;
+        this.rhSalaireService = rhSalaireService;
+        this.rhCongeService = rhCongeService;
         this.candidatService = candidatService;
         this.detailCandidatService = detailCandidatService;
         this.genreService = genreService;
@@ -60,13 +70,10 @@ public class RhController {
         this.employeService = employeService;
     }
 
-
     @GetMapping
     public String accueil() {
         return "redirect:/administratif/rh/gestion-employes";
     }
-
-    private final EmployeService employeService;
 
     @GetMapping("/gestion-employes")
     public String gestiontEmployes(Model model) {
@@ -74,12 +81,21 @@ public class RhController {
         return "administratif/rh/gestion-employes";
     }
 
+    @GetMapping("/gestion-employes/{id}")
+    public String detailsEmploye(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+        model.addAttribute("employesInfos", employeService.getEmployeInfos());
+        // Récupérer les détails de l'employé (à adapter selon ta structure de service)
+        var detail = employeService.getEmployeDetail(id);
+        model.addAttribute("employeDetail", detail);
+        return "administratif/rh/gestion-employes";
+    }
+
     @GetMapping("/gestion-salaires")
     public String gestionSalaires(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-            .map(StatutEmploye::getEmploye)
-            .collect(Collectors.toList());
+                .map(StatutEmploye::getEmploye)
+                .collect(Collectors.toList());
         model.addAttribute("variationSalaireNet", rhService.variationSalaireNet());
         model.addAttribute("variationCommission", rhService.variationCommission());
         model.addAttribute("variationAvance", rhService.variationAvance());
@@ -93,10 +109,9 @@ public class RhController {
         List<Candidat> candidats = candidatService.getAllCandidats();
 
         Map<Long, List<DetailCandidat>> detailsMap = candidats.stream()
-            .collect(Collectors.toMap(
-                Candidat::getId,
-                candidat -> detailCandidatService.getDetailsByCandidatId(candidat.getId())
-            ));
+                .collect(Collectors.toMap(
+                        Candidat::getId,
+                        candidat -> detailCandidatService.getDetailsByCandidatId(candidat.getId())));
 
         model.addAttribute("genres", genreService.getAllGenres());
         model.addAttribute("grades", gradeService.getAllGrades());
@@ -117,13 +132,14 @@ public class RhController {
     public String gestionConges(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-            .map(StatutEmploye::getEmploye)
-            .collect(Collectors.toList());
+                .map(StatutEmploye::getEmploye)
+                .collect(Collectors.toList());
         model.addAttribute("employes", employes);
         model.addAttribute("nbjCongeUtilise", rhService.nbjCongeUtilise(employes));
         model.addAttribute("nbjCongeReserve", rhService.nbjCongeReserve(employes));
         model.addAttribute("nbjCongeNonUtilise", rhService.nbjCongeNonUtilise(employes));
         model.addAttribute("typeConges", rhService.getAllTypeConges());
+
         return "administratif/rh/gestion-conges";
     }
 
@@ -145,7 +161,7 @@ public class RhController {
             // Fusionner ou synchroniser avec les données réelles
             for (Irsa dbIrsa : irsas) {
                 boolean existe = irsaWrapper.getIrsas().stream()
-                    .anyMatch(i -> i.getId() != null && i.getId().equals(dbIrsa.getId()));
+                        .anyMatch(i -> i.getId() != null && i.getId().equals(dbIrsa.getId()));
                 if (!existe) {
                     irsaWrapper.addIrsa(dbIrsa);
                 }
@@ -165,4 +181,116 @@ public class RhController {
         return "administratif/rh/parametrage";
     }
 
+    @GetMapping("/commission/{id}")
+    public String voirCommission(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+        try {
+            // Charger les informations de l'employé
+            var employe = rhSalaireService.getEmployeById(id);
+            model.addAttribute("employe", employe);
+            
+            // Charger les commissions de l'employé
+            var commissions = rhSalaireService.getCommissionsByEmployeId(id);
+            model.addAttribute("commissions", commissions);
+            
+            // Charger les raisons de commission pour le formulaire d'ajout
+            var raisonCommissions = rhSalaireService.getAllRaisonCommissions();
+            model.addAttribute("raisonCommissions", raisonCommissions);
+            
+            return "administratif/rh/commission";
+        } catch (RuntimeException e) {
+            model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
+            return "redirect:/administratif/rh/gestion-employes";
+        }
+    }
+
+    @GetMapping("/fiche-de-paie/{id}")
+    public String voirFicheDePaie(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+        try {
+            // Charger les informations de l'employé
+            var employe = rhSalaireService.getEmployeById(id);
+            model.addAttribute("employe", employe);
+            
+            // Charger les fiches de paie de l'employé
+            var ficheDePaies = rhSalaireService.getFicheDePaiesByEmployeId(id);
+            model.addAttribute("ficheDePaies", ficheDePaies);
+            
+            // Charger les paiements effectués pour l'employé
+            var payements = rhSalaireService.getPayementsByEmployeId(id);
+            model.addAttribute("payements", payements);
+            
+            return "administratif/rh/fiche-de-paie";
+        } catch (RuntimeException e) {
+            model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
+            return "redirect:/administratif/rh/gestion-employes";
+        }
+    }
+
+    @GetMapping("/avance/{id}")
+    public String voirAvance(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+        try {
+            // Charger les informations de l'employé
+            var employe = rhSalaireService.getEmployeById(id);
+            model.addAttribute("employe", employe);
+            
+            // Charger les avances de l'employé
+            var avances = rhSalaireService.getAvancesByEmployeId(id);
+            model.addAttribute("avances", avances);
+            
+            // Charger le prochain salaire disponible
+            double prochainSalaire = rhSalaireService.prochainSalaire(id);
+            model.addAttribute("prochainSalaire", prochainSalaire);
+            
+            // Charger le montant retenu pour avances
+            double retenuPourAvance = rhSalaireService.retenuPourAvance(id);
+            model.addAttribute("retenuPourAvance", retenuPourAvance);
+            
+            // Charger les raisons d'avance pour le formulaire d'ajout
+            var raisonAvances = rhSalaireService.getAllRaisonAvances();
+            model.addAttribute("raisonAvances", raisonAvances);
+            
+            return "administratif/rh/avance";
+        } catch (RuntimeException e) {
+            model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
+            return "redirect:/administratif/rh/gestion-employes";
+        }
+    }
+
+    @GetMapping("/conge/{id}")
+    public String voirConge(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+        try {
+            // Charger l'employé sélectionné
+            var selectedEmploye = rhSalaireService.getEmployeById(id);
+            model.addAttribute("employe", selectedEmploye);
+            model.addAttribute("selectedEmploye", selectedEmploye);
+            
+            // Charger tous les employés pour la sidebar
+            List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
+            List<Employe> tousLesEmployes = statutEmployes.stream()
+                    .map(StatutEmploye::getEmploye)
+                    .collect(Collectors.toList());
+            model.addAttribute("employes", tousLesEmployes);
+            
+            // Charger les congés de l'employé sélectionné
+            var conges = rhCongeService.getCongesByEmployeId(id);
+            model.addAttribute("conges", conges);
+            
+            // Charger les types de congé pour le formulaire d'ajout
+            var typeConges = rhService.getAllTypeConges();
+            model.addAttribute("typeConges", typeConges);
+            
+            // Charger les statistiques pour tous les employés (pour l'affichage dans la sidebar et le détail)
+            var nbjCongeUtilise = rhService.nbjCongeUtilise(tousLesEmployes);
+            var nbjCongeReserve = rhService.nbjCongeReserve(tousLesEmployes);
+            var nbjCongeNonUtilise = rhService.nbjCongeNonUtilise(tousLesEmployes);
+            
+            model.addAttribute("nbjCongeUtilise", nbjCongeUtilise);
+            model.addAttribute("nbjCongeReserve", nbjCongeReserve);
+            model.addAttribute("nbjCongeNonUtilise", nbjCongeNonUtilise);
+            
+            return "administratif/rh/gestion-conges";
+        } catch (RuntimeException e) {
+            model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
+            return "redirect:/administratif/rh/gestion-employes";
+        }
+    }
 }

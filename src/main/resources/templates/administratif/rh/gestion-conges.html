@@ -3,109 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafeManager Pro - Gestion de Café</title>
+    <title>Gestion des congés</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <script th:src="@{/js/rh/annee.js}"></script>
+    <style>
+        .conges-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .conges-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            height: fit-content;
+        }
+        
+        .conges-sidebar .card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+            background: rgba(139, 69, 19, 0.05);
+        }
+        
+        .conges-sidebar .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 0;
+        }
+        
+        .employes-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .employe-item {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .employe-item:hover {
+            background: rgba(139, 69, 19, 0.05);
+            transform: translateX(4px);
+        }
+        
+        .employe-item.active {
+            background: rgba(139, 69, 19, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .employe-name {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .employe-info {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+        
+        .conges-main {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+        
+        .conges-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding: 2rem;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(139, 69, 19, 0.05);
+            border-radius: var(--border-radius);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-top: 0.5rem;
+        }
+        
+        .conge-form {
+            padding: 2rem;
+        }
+        
+        .form-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 1024px) {
+            .conges-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .conges-sidebar {
+                order: 2;
+            }
+            
+            .conges-main {
+                order: 1;
+            }
+        }
+        
+        .welcome-message {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--gray-600);
+        }
+        
+        .welcome-message i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
-<div th:replace="~{administratif/rh/layout/sidebar :: sidebar}"></div>
-
-<div class="main-content" id="mainContent">
-    <div th:replace="~{administratif/rh/layout/header :: header('Gestion des congés')}"></div>
-    <main class="content">
-        <div>
-            <h1 id="annee"></h1>
-        </div>
-
-        <div>
-            <a th:href="@{/administratif/rh/conge/calendrier}" class="btn primary">
-                Voir le calendrier du cafeteria
-            </a><br><br>
-        </div>
-
-        <div class="production-dashboard">
-            <div class="production-main-card">
-                <div class="card-header">
-                    <h3>Details sur les conges des employes actifs</h3>
+    <div th:replace="~{administratif/rh/layout/sidebar :: sidebar}"></div>
+    <div class="main-content" id="mainContent">
+        <div th:replace="~{administratif/rh/layout/header :: header('Gestion des congés')}"></div>
+        <main class="content">
+            <div class="page-header">
+                <h1 id="annee">Gestion des congés</h1>
+                <div class="header-actions">
+                    <a th:href="@{/administratif/rh/conge/calendrier}" class="btn primary">
+                        <i class="fas fa-calendar-alt"></i>
+                        Voir le calendrier du cafeteria
+                    </a>
                 </div>
-                <div class="production-chart-container">
-                    <div class="production-items-grid">
+            </div>
 
+            <div class="conges-layout">
+                <!-- Sidebar avec liste des employés -->
+                <div class="conges-sidebar">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> Employés actifs</h3>
+                    </div>
+                    <div class="employes-list">
                         <div th:if="${employes != null and !#lists.isEmpty(employes)}">
-                            <div th:each="employe : ${employes}" class="production-item-card">
-                                <div class="item-details">
-                                    <h4>Employé : <span th:text="${employe.nom != null ? employe.nom : '-'}">-</span>
-                                    </h4>
-                                    <div class="item-stats">
-                                            <span class="quantity">
-                                                Date Recrutement :
-                                                <span th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">-</span>
-                                            </span><br>
-                                        <span class="quantity">
-                                                Genre :
-                                                <span th:text="${employe.genre != null ? employe.genre.valeur : '-'}">-</span>
-                                            </span><br>
-                                        <span class="quantity">
-                                                Nombre de jours de conges utilises :
-                                                <span th:text="${nbjCongeUtilise.get(employe.id)}">-</span>
-                                            </span><br>
-                                        <span class="quantity">
-                                                Nombre de jours de conges reserves :
-                                                <span th:text="${nbjCongeReserve.get(employe.id)}">-</span>
-                                            </span><br>
-                                        <span class="quantity">
-                                                Nombre de jours de conges non utilises :
-                                                <span th:text="${nbjCongeNonUtilise.get(employe.id)}">-</span>
-                                            </span><br>
-                                    </div>
-                                    <br>
-                                    <div class="form-showcase">
-                                        <h5>Formulaire pour reserver un conge</h5>
-                                        <form th:action="@{/administratif/rh/conge/ajout-conge}" method="post"
-                                              class="form-example">
-                                            <div class="form-group">
-                                                <label class="form-label">Type de conge:</label>
-                                                <select class="form-select" name="typeConge">
-                                                    <option value="">Choisir un type</option>
-                                                    <option th:each="typeConge : ${typeConges}"
-                                                            th:value="${typeConge.id}">
-                                                        <span th:text="${typeConge != null ? typeConge.nom : '-'}">-</span>
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Date debut :</label>
-                                                <input type="date" class="form-input" name="dateDebut">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Date fin :</label>
-                                                <input type="date" class="form-input" name="dateFin">
-                                            </div>
-                                            <input type="hidden" name="idEmploye" th:value="${employe.id}">
-                                            <button type="submit" class="btn primary">Reserver le conge</button>
-                                            <br><br>
-                                        </form>
-                                    </div>
+                            <a th:each="employe : ${employes}" 
+                               th:href="@{'/administratif/rh/conge/' + ${employe.id}}"
+                               class="employe-item"
+                               th:classappend="${employe.id == selectedEmploye?.id} ? 'active' : ''">
+                                <div class="employe-name" th:text="${employe.nom ?: '-'}">Nom employé</div>
+                                <div class="employe-info">
+                                    <span th:text="${employe.genre?.valeur ?: '-'}">Genre</span> • 
+                                    <span th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">Date recrutement</span>
+                                </div>
+                                <div class="employe-info" th:if="${nbjCongeUtilise != null}">
+                                    <small>
+                                        <span th:text="${nbjCongeUtilise.get(employe.id) ?: 0}">0</span> jours utilisés • 
+                                        <span th:text="${nbjCongeReserve.get(employe.id) ?: 0}">0</span> réservés
+                                    </small>
+                                </div>
+                            </a>
+                        </div>
+                        <div th:if="${employes == null or #lists.isEmpty(employes)}" class="employe-item">
+                            <div class="employe-name">Aucun employé</div>
+                            <div class="employe-info">Aucun employé actif trouvé</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone principale pour les détails des congés -->
+                <div class="conges-main">
+                    <!-- Si un employé est sélectionné -->
+                    <div th:if="${employe != null}">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-calendar-check"></i>
+                                Congés de <span th:text="${employe.nom}">Nom employé</span>
+                            </h3>
+                        </div>
+                        
+                        <!-- Statistiques des congés -->
+                        <div class="conges-stats">
+                            <div class="stat-card">
+                                <span class="stat-value" th:text="${nbjCongeUtilise?.get(employe.id) ?: 0}">0</span>
+                                <div class="stat-label">Jours utilisés</div>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" th:text="${nbjCongeReserve?.get(employe.id) ?: 0}">0</span>
+                                <div class="stat-label">Jours réservés</div>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" th:text="${nbjCongeNonUtilise?.get(employe.id) ?: 0}">0</span>
+                                <div class="stat-label">Jours disponibles</div>
+                            </div>
+                        </div>
+
+                        <!-- Liste des congés (si disponible) -->
+                        <div th:if="${conges != null and !#lists.isEmpty(conges)}" class="conges-list" style="padding: 2rem;">
+                            <h4 style="margin-bottom: 1rem; color: var(--dark-color);">
+                                <i class="fas fa-list"></i> Historique des congés
+                            </h4>
+                            <div th:each="conge : ${conges}" class="conge-item" style="padding: 1rem; margin-bottom: 1rem; background: rgba(139, 69, 19, 0.05); border-radius: var(--border-radius);">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <div>
-                                        <h1 th:text="${erreurAjoutConge != null ? erreurAjoutConge : ''}"></h1>
+                                        <strong th:text="${conge.typeConge?.nom ?: 'Type non défini'}">Type de congé</strong>
+                                        <br>
+                                        <small th:text="${conge.dateDebut != null and conge.dateFin != null ? #dates.format(conge.dateDebut, 'dd/MM/yyyy') + ' - ' + #dates.format(conge.dateFin, 'dd/MM/yyyy') : 'Dates non définies'}">Période</small>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span class="badge" th:text="${conge.statut ?: 'En attente'}" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border-radius: 12px; font-size: 0.8rem;">Statut</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div th:if="${employes == null or #lists.isEmpty(employes)}">
-                            <h4>Aucun employé</h4>
-                        </div>
+                        <!-- Formulaire pour réserver un congé -->
+                        <div class="conge-form">
+                            <h4 class="form-title">
+                                <i class="fas fa-plus-circle"></i>
+                                Réserver un nouveau congé
+                            </h4>
+                            
+                            <div th:if="${erreurAjoutConge}" class="alert alert-error" style="margin-bottom: 1rem; padding: 1rem; background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.3); border-radius: var(--border-radius); color: var(--danger-color);">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span th:text="${erreurAjoutConge}">Erreur</span>
+                            </div>
 
+                            <form th:action="@{/administratif/rh/conge/ajout-conge}" method="post">
+                                <div class="form-grid">
+                                    <div class="form-group full-width">
+                                        <label class="form-label">Type de congé:</label>
+                                        <select class="form-select" name="typeConge" required>
+                                            <option value="">Choisir un type</option>
+                                            <option th:each="typeConge : ${typeConges}"
+                                                    th:value="${typeConge.id}"
+                                                    th:text="${typeConge.nom ?: '-'}">Type</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Date début:</label>
+                                        <input type="date" class="form-input" name="dateDebut" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Date fin:</label>
+                                        <input type="date" class="form-input" name="dateFin" required>
+                                    </div>
+                                </div>
+                                
+                                <input type="hidden" name="idEmploye" th:value="${employe.id}">
+                                <button type="submit" class="btn primary">
+                                    <i class="fas fa-save"></i>
+                                    Réserver le congé
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Message d'accueil si aucun employé sélectionné -->
+                    <div th:if="${employe == null}" class="welcome-message">
+                        <i class="fas fa-hand-point-left"></i>
+                        <h3>Sélectionnez un employé</h3>
+                        <p>Choisissez un employé dans la liste de gauche pour voir ses congés et en gérer de nouveaux.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
-</div>
-<script th:src="@{/templates/script.js}"></script>
+        </main>
+    </div>
+    <script th:src="@{/templates/script.js}"></script>
 </body>
 </html>

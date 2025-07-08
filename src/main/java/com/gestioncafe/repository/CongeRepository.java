@@ -1,13 +1,14 @@
 package com.gestioncafe.repository;
 
+import java.sql.Date;
 import java.util.List;
-import java.sql.*;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.gestioncafe.model.*;
+
+import com.gestioncafe.model.Conge;
 
 @Repository
 public interface CongeRepository extends JpaRepository<Conge, Long>{
@@ -24,4 +25,6 @@ public interface CongeRepository extends JpaRepository<Conge, Long>{
     public List<Object[]> getDureeCongeReserveParEmploye(@Param("annee") int annee);
     @Query("SELECT COUNT(c) > 0 FROM Conge c " + "WHERE c.dateDebut <= :dateFin " + "AND c.dateFin >= :dateDebut")
     public boolean existeChevauchementGlobal(@Param("dateDebut") Date dateDebut, @Param("dateFin") Date dateFin);
+    
+    public List<Conge> findByIdEmployeOrderByDateDebutDesc(Long idEmploye);
 }

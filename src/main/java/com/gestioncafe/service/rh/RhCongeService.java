@@ -9,14 +9,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gestioncafe.model.*;
-import com.gestioncafe.repository.*;
+import com.gestioncafe.model.Conge;
+import com.gestioncafe.model.Employe;
+import com.gestioncafe.model.JourCongeFerie;
+import com.gestioncafe.model.JourFerie;
+import com.gestioncafe.model.TypeConge;
+import com.gestioncafe.repository.CongeRepository;
+import com.gestioncafe.repository.EmployeRepository;
+import com.gestioncafe.repository.JourFerieRepository;
+import com.gestioncafe.repository.TypeCongeRepository;
 
 @Service
 public class RhCongeService {
@@ -125,6 +131,10 @@ public class RhCongeService {
         }
 
         return liste;
+    }
+
+    public List<Conge> getCongesByEmployeId(Long idEmploye) {
+        return congeRepository.findByIdEmployeOrderByDateDebutDesc(idEmploye);
     }
 
 }
