@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Solde de Départ</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .form-container {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        input {
+            padding: 8px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Juillet 2025</h2>
+<p>Solde de départ actuel : 5 250 000 Ar</p>
+
+<div id="previsionForm" class="form-container">
+    <h3>Prévisions pour Juillet 2025</h3>
+    <div>
+        <label>Approvisionnement:</label>
+        <input type="number" id="approvisionnement" placeholder="Montant en Ar">
+    </div>
+    <div>
+        <label>Vente:</label>
+        <input type="number" id="vente" placeholder="Montant en Ar">
+    </div>
+    <div>
+        <label>Paie de salaire:</label>
+        <input type="number" id="salaire" placeholder="Montant en Ar">
+    </div>
+    <button onclick="validerPrevisions()">Valider</button>
+</div>
+
+<h2>Juin 2025</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Prévision</th>
+            <th>Réalité</th>
+            <th>Écart</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Solde de départ</td>
+            <td>4 800 000 Ar</td>
+            <td>4 800 000 Ar</td>
+            <td>0 Ar</td>
+        </tr>
+        <tr>
+            <td>Approvisionnement</td>
+            <td>2 500 000 Ar</td>
+            <td>2 350 000 Ar</td>
+            <td>-150 000 Ar</td>
+        </tr>
+        <tr>
+            <td>Vente</td>
+            <td>3 200 000 Ar</td>
+            <td>3 450 000 Ar</td>
+            <td>+250 000 Ar</td>
+        </tr>
+        <tr>
+            <td>Paie de salaire</td>
+            <td>1 800 000 Ar</td>
+            <td>1 750 000 Ar</td>
+            <td>-50 000 Ar</td>
+        </tr>
+        <tr>
+            <td><strong>Solde fin</strong></td>
+            <td colspan="3"><strong>5 250 000 Ar</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+<div id="juilletTable" style="display: none;">
+    <h2>Juillet 2025</h2>
+    <table id="juilletData">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Prévision</th>
+                <th>Réalité</th>
+                <th>Écart</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Solde de départ</td>
+                <td>5 250 000 Ar</td>
+                <td>5 250 000 Ar</td>
+                <td>0 Ar</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function validerPrevisions() {
+        // Récupérer les valeurs saisies
+        const approvisionnement = document.getElementById('approvisionnement').value;
+        const vente = document.getElementById('vente').value;
+        const salaire = document.getElementById('salaire').value;
+        
+        // Ajouter les nouvelles lignes au tableau de juillet
+        const tableBody = document.querySelector('#juilletData tbody');
+        
+        // Ajouter approvisionnement
+        const row1 = document.createElement('tr');
+        row1.innerHTML = `
+            <td>Approvisionnement</td>
+            <td>${approvisionnement} Ar</td>
+            <td>-</td>
+            <td>-</td>
+        `;
+        tableBody.appendChild(row1);
+        
+        // Ajouter vente
+        const row2 = document.createElement('tr');
+        row2.innerHTML = `
+            <td>Vente</td>
+            <td>${vente} Ar</td>
+            <td>-</td>
+            <td>-</td>
+        `;
+        tableBody.appendChild(row2);
+        
+        // Ajouter paie de salaire
+        const row3 = document.createElement('tr');
+        row3.innerHTML = `
+            <td>Paie de salaire</td>
+            <td>${salaire} Ar</td>
+            <td>-</td>
+            <td>-</td>
+        `;
+        tableBody.appendChild(row3);
+        
+        // Ajouter solde fin (calcul simplifié)
+        const soldeDepart = 5250000;
+        const total = soldeDepart + parseInt(vente || 0) - parseInt(approvisionnement || 0) - parseInt(salaire || 0);
+        
+        const row4 = document.createElement('tr');
+        row4.innerHTML = `
+            <td><strong>Solde fin</strong></td>
+            <td colspan="3"><strong>${total.toLocaleString()} Ar</strong></td>
+        `;
+        tableBody.appendChild(row4);
+        
+        // Masquer le formulaire
+        document.getElementById('previsionForm').style.display = 'none';
+        
+        // Afficher le tableau de juillet
+        document.getElementById('juilletTable').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

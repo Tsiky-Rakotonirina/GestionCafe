@@ -1,70 +1,98 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charges et Produits</title>
+    <title>Bilan Comptable Simplifié</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .bilan-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #f5f5f5;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .account-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #eee;
+        }
+        .total {
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .grand-total {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+    </style>
 </head>
 <body>
-    <table border="1" width="100%">
-        <tr>
-            <td colspan="3" align="center">
-                <div th:text="${titre ?: 'Titre du document'}">Titre du document</div>
-            </td>
-        </tr>
-        <tr>
-            <td width="40%">
-                <strong>Charges</strong>
-                <hr>
-                <div id="charges-numero">
-                    <span th:text="${'• numéro compte : ' + (chargeNumero ?: '')}">• numéro compte :</span>
+    <h1 style="text-align: center;">BILAN AU 31 DECEMBRE 2024</h1>
+    <p style="text-align: center;">Entreprise: CAF-E</p>
+
+    <div class="bilan-container">
+        <!-- ACTIF -->
+        <div class="card">
+            <div class="card-header">ACTIF</div>
+            <div class="card-body">
+                <div class="account-line">
+                    <span>59 - Caisse (tout l'argent)</span>
+                    <span>17 450 000 Ar</span>
                 </div>
-                <div id="charges-description">
-                    <span th:text="${'• description : ' + (chargeDescription ?: '')}">• description :</span>
+                
+                <div class="total">
+                    <span>TOTAL ACTIF</span>
+                    <span>17 450 000 Ar</span>
                 </div>
-                <div id="charges-montant">
-                    <span th:text="${'• montant : ' + (chargeMontant ?: '')}">• montant :</span>
+            </div>
+        </div>
+
+        <!-- PASSIF -->
+        <div class="card">
+            <div class="card-header">PASSIF</div>
+            <div class="card-body">
+                <div class="account-line">
+                    <span>12 - Résultat de l'exercice</span>
+                    <span>17 450 000 Ar</span>
                 </div>
-                <br>
-                <div id="total-charges">
-                    <strong th:text="${'Total Charges : ' + (totalCharges ?: '')}">Total Charges :</strong>
+                
+                <div class="total">
+                    <span>TOTAL PASSIF</span>
+                    <span>17 450 000 Ar</span>
                 </div>
-            </td>
-            <td width="40%">
-                <strong>Produits</strong>
-                <hr>
-                <div id="produits-numero">
-                    <span th:text="${'• numéro compte : ' + (produitNumero ?: '')}">• numéro compte :</span>
-                </div>
-                <div id="produits-description">
-                    <span th:text="${'• description : ' + (produitDescription ?: '')}">• description :</span>
-                </div>
-                <div id="produits-montant">
-                    <span th:text="${'• montant : ' + (produitMontant ?: '')}">• montant :</span>
-                </div>
-                <br><br><br><br>
-                <div id="total-produits">
-                    <strong th:text="${'Total produits : ' + (totalProduits ?: '')}">Total produits :</strong>
-                </div>
-            </td>
-            <td width="20%">
-                <div style="border: 1px solid black; padding: 10px;">
-                    <strong>Résultat</strong>
-                    <br><br>
-                    <div id="details-montant">
-                        <span th:text="${'→ montant : ' + (detailsMontant ?: '')}">→ montant :</span>
-                    </div>
-                    <br>
-                    <div id="details-resultat">
-                        <span th:text="${'→ résultat : ' + (detailsResultat ?: '')}">→ résultat :</span>
-                    </div>
-                    <br>
-                    <div id="details-rentabilite">
-                        <span th:text="${'→ rentabilité : ' + (detailsRentabilite ?: '')}">→ rentabilité :</span>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+
+        <div class="grand-total">
+            <div>TOTAL GENERAL: 17 450 000 Ar</div>
+        </div>
+    </div>
 </body>
 </html>
