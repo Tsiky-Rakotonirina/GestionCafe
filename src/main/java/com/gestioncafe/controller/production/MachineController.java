@@ -1,17 +1,6 @@
 
 package com.gestioncafe.controller.production;
 
-import java.util.List;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.gestioncafe.model.Machine;
 import com.gestioncafe.model.Produit;
 import com.gestioncafe.model.Unite;
@@ -20,6 +9,11 @@ import com.gestioncafe.repository.UniteRepository;
 import com.gestioncafe.repository.UtilisationMachineRepository;
 import com.gestioncafe.service.production.MachineService;
 import com.gestioncafe.service.production.ProduitService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/machines")
@@ -35,7 +29,6 @@ public class MachineController {
         this.uniteRepository = uniteRepository;
         this.utilisationMachineRepository = utilisationMachineRepository;
     }
-
 
     @GetMapping("/details/{id}")
     public String details(@PathVariable Integer id, Model model) {
@@ -86,11 +79,11 @@ public class MachineController {
                 UtilisationMachine utilisation = new UtilisationMachine();
                 utilisation.setMachine(savedMachine);
                 Produit produit = new Produit();
-                produit.setId(idProduits.get(i));
+                produit.setId(Long.valueOf(idProduits.get(i)));
                 utilisation.setProduit(produit);
                 utilisation.setDuree(durees.get(i));
                 Unite unite = new Unite();
-                unite.setId(idUnites.get(i));
+                unite.setId(Long.valueOf(idUnites.get(i)));
                 utilisation.setUnite(unite);
                 utilisationMachineRepository.save(utilisation);
             }
@@ -114,16 +107,16 @@ public class MachineController {
                     // Recherche du produit par nom (à améliorer si plusieurs produits ont le même nom)
                     Produit produit = produitService.findAll().stream().filter(p -> p.getNom().equals(nomProduit)).findFirst().orElse(null);
                     if (produit != null) {
-                        produitId = produit.getId();
+                        produitId = Math.toIntExact(produit.getId());
                     }
                     if (produitId != null) {
                         Produit p = new Produit();
-                        p.setId(produitId);
+                        p.setId(Long.valueOf(produitId));
                         utilisation.setProduit(p);
                     }
                     utilisation.setDuree(existantsDurees.get(idx));
                     Unite unite = new Unite();
-                    unite.setId(existantsIdUnites.get(idx));
+                    unite.setId(Long.valueOf(existantsIdUnites.get(idx)));
                     utilisation.setUnite(unite);
                     utilisationMachineRepository.save(utilisation);
                 }

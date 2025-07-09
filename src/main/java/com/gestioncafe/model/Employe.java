@@ -26,7 +26,7 @@ public class Employe {
     @Column(nullable = false)
     private String contact;
 
-    private LocalDate dateRecrutement;
+    private Date dateRecrutement;
 
     @OneToOne
     @JoinColumn(name = "id_candidat")
@@ -49,11 +49,11 @@ public class Employe {
         this.genre = genre;
     }
 
-    public LocalDate getDateRecrutement() {
+    public Date getDateRecrutement() {
         return dateRecrutement;
     }
 
-    public void setDateRecrutement(LocalDate dateRecrutement) {
+    public void setDateRecrutement(Date dateRecrutement) {
         this.dateRecrutement = dateRecrutement;
     }
 

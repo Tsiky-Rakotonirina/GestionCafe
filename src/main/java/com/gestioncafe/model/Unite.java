@@ -2,6 +2,8 @@ package com.gestioncafe.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "unite")
 public class Unite {
@@ -17,7 +19,7 @@ public class Unite {
     private CategorieUnite categorieUnite;
 
     @Column(name = "valeur_pr_norme", precision = 10)
-    private Double valeurPrNorme; // valeur par rapport au norme
+    private BigDecimal valeurPrNorme; // valeur par rapport au norme
 
     // Getters and Setters
     public Long getId() {
@@ -45,11 +47,11 @@ public class Unite {
         this.categorieUnite = categorieUnite;
     }
 
-    public Double getValeurPrNorme() {
+    public BigDecimal getValeurPrNorme() {
         return valeurPrNorme;
     }
 
-    public void setValeurPrNorme(Double valeurPrNorme) {
+    public void setValeurPrNorme(BigDecimal valeurPrNorme) {
         this.valeurPrNorme = valeurPrNorme;
     }
 }

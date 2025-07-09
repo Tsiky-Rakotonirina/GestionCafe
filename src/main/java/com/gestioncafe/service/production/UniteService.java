@@ -20,7 +20,7 @@ public class UniteService {
     }
 
     public Optional<Unite> findById(Integer id) {
-        return uniteRepository.findById(id);
+        return uniteRepository.findById(Long.valueOf(id));
     }
 
     public Unite save(Unite unite) {
@@ -28,6 +28,6 @@ public class UniteService {
     }
 
     public void deleteById(Integer id) {
-        uniteRepository.deleteById(id);
+        uniteRepository.deleteById(Long.valueOf(id));
     }
 }

@@ -1,20 +1,14 @@
 package com.gestioncafe.service.production;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.DetailRecette;
-import com.gestioncafe.model.HistoriqueEstimation;
-import com.gestioncafe.model.MatierePremiere;
-import com.gestioncafe.model.Produit;
-import com.gestioncafe.model.Recette;
-import com.gestioncafe.model.Unite;
+import com.gestioncafe.model.*;
 import com.gestioncafe.repository.DetailsVenteRepository;
 import com.gestioncafe.repository.ProduitRepository;
 import com.gestioncafe.repository.RecetteRepository;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProduitService {
@@ -25,16 +19,19 @@ public class ProduitService {
 
     private final RecetteService recetteService;
     private final DetailRecetteService detailRecetteService;
-    private final MatierePremiereService matierePremiereService;
     private final HistoriqueEstimationService historiqueEstimationService;
 
-    public ProduitService(ProduitRepository produitRepository, RecetteRepository recetteRepository, DetailsVenteRepository detailsVenteRepository, RecetteService recetteService, DetailRecetteService detailRecetteService, MatierePremiereService matierePremiereService, HistoriqueEstimationService historiqueEstimationService) {
+    public ProduitService(ProduitRepository produitRepository,
+                          RecetteRepository recetteRepository,
+                          DetailsVenteRepository detailsVenteRepository,
+                          RecetteService recetteService,
+                          DetailRecetteService detailRecetteService,
+                          HistoriqueEstimationService historiqueEstimationService) {
         this.produitRepository = produitRepository;
         this.recetteRepository = recetteRepository;
         this.detailsVenteRepository = detailsVenteRepository;
         this.recetteService = recetteService;
         this.detailRecetteService = detailRecetteService;
-        this.matierePremiereService = matierePremiereService;
         this.historiqueEstimationService = historiqueEstimationService;
     }
 
@@ -43,7 +40,7 @@ public class ProduitService {
     }
 
     public Optional<Produit> findById(Integer id) {
-        return produitRepository.findById(id);
+        return produitRepository.findById(Long.valueOf(id));
     }
 
     public Produit save(Produit produit) {
@@ -76,7 +73,7 @@ public class ProduitService {
     }
 
     public void deleteById(Integer id) {
-        produitRepository.deleteById(id);
+        produitRepository.deleteById(Long.valueOf(id));
     }
 
     // Calcul réel du coût de fabrication d'un produit à partir de la recette et de l'historique d'estimation
@@ -111,13 +108,13 @@ public class ProduitService {
             if (estimationRecente != null && estimationRecente.getPrix() != null) {
                 // Conversion de la quantité à la norme (ex: g -> kg)
                 BigDecimal quantiteNorme = detail.getQuantite();
-                if (uniteRecette != null && uniteRecette.getValeurParNorme() != null) {
-                    quantiteNorme = quantiteNorme.multiply(uniteRecette.getValeurParNorme());
+                if (uniteRecette != null && uniteRecette.getValeurPrNorme() != null) {
+                    quantiteNorme = quantiteNorme.multiply(uniteRecette.getValeurPrNorme());
                 }
 
                 BigDecimal prixEstime = BigDecimal.valueOf(estimationRecente.getPrix());
                 Unite uniteEstimation = estimationRecente.getUnite();
-                BigDecimal valeurParNormeEstimation = uniteEstimation != null && uniteEstimation.getValeurParNorme() != null ? uniteEstimation.getValeurParNorme() : BigDecimal.ONE;
+                BigDecimal valeurParNormeEstimation = uniteEstimation != null && uniteEstimation.getValeurPrNorme() != null ? uniteEstimation.getValeurPrNorme() : BigDecimal.ONE;
                 // Prix par unité de norme
                 BigDecimal prixParNorme = prixEstime.divide(valeurParNormeEstimation, 6, java.math.RoundingMode.HALF_UP);
 
