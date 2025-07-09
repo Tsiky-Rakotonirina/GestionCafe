@@ -1,35 +1,15 @@
 package com.gestioncafe.controller.rh;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.gestioncafe.model.*;
+import com.gestioncafe.service.rh.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.gestioncafe.model.Candidat;
-import com.gestioncafe.model.DetailCandidat;
-import com.gestioncafe.model.Employe;
-import com.gestioncafe.model.Grade;
-import com.gestioncafe.model.Irsa;
-import com.gestioncafe.model.IrsaWrapper;
-import com.gestioncafe.model.JourFerie;
-import com.gestioncafe.model.StatutEmploye;
-import com.gestioncafe.service.rh.CandidatService;
-import com.gestioncafe.service.rh.DetailCandidatService;
-import com.gestioncafe.service.rh.EmployeService;
-import com.gestioncafe.service.rh.ExperienceService;
-import com.gestioncafe.service.rh.FormationService;
-import com.gestioncafe.service.rh.GenreService;
-import com.gestioncafe.service.rh.GradeService;
-import com.gestioncafe.service.rh.LangueService;
-import com.gestioncafe.service.rh.RhCongeService;
-import com.gestioncafe.service.rh.RhParametreService;
-import com.gestioncafe.service.rh.RhSalaireService;
-import com.gestioncafe.service.rh.RhService;
-import com.gestioncafe.service.rh.SerieBacService;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/administratif/rh")
@@ -50,11 +30,11 @@ public class RhController {
     private final FormationService formationService;
     private final EmployeService employeService;
 
-    public RhController(RhParametreService rhParametreService, RhService rhService, RhSalaireService rhSalaireService, 
-            RhCongeService rhCongeService, CandidatService candidatService,
-            DetailCandidatService detailCandidatService, GenreService genreService, GradeService gradeService,
-            SerieBacService serieBacService, LangueService langueService, ExperienceService experienceService,
-            FormationService formationService, EmployeService employeService) {
+    public RhController(RhParametreService rhParametreService, RhService rhService, RhSalaireService rhSalaireService,
+                        RhCongeService rhCongeService, CandidatService candidatService,
+                        DetailCandidatService detailCandidatService, GenreService genreService, GradeService gradeService,
+                        SerieBacService serieBacService, LangueService langueService, ExperienceService experienceService,
+                        FormationService formationService, EmployeService employeService) {
         this.rhParametreService = rhParametreService;
         this.rhService = rhService;
         this.rhSalaireService = rhSalaireService;
@@ -94,8 +74,8 @@ public class RhController {
     public String gestionSalaires(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-                .map(StatutEmploye::getEmploye)
-                .collect(Collectors.toList());
+            .map(StatutEmploye::getEmploye)
+            .collect(Collectors.toList());
         model.addAttribute("variationSalaireNet", rhService.variationSalaireNet());
         model.addAttribute("variationCommission", rhService.variationCommission());
         model.addAttribute("variationAvance", rhService.variationAvance());
@@ -109,9 +89,9 @@ public class RhController {
         List<Candidat> candidats = candidatService.getAllCandidats();
 
         Map<Long, List<DetailCandidat>> detailsMap = candidats.stream()
-                .collect(Collectors.toMap(
-                        Candidat::getId,
-                        candidat -> detailCandidatService.getDetailsByCandidatId(candidat.getId())));
+            .collect(Collectors.toMap(
+                Candidat::getId,
+                candidat -> detailCandidatService.getDetailsByCandidatId(candidat.getId())));
 
         model.addAttribute("genres", genreService.getAllGenres());
         model.addAttribute("grades", gradeService.getAllGrades());
@@ -132,8 +112,8 @@ public class RhController {
     public String gestionConges(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-                .map(StatutEmploye::getEmploye)
-                .collect(Collectors.toList());
+            .map(StatutEmploye::getEmploye)
+            .collect(Collectors.toList());
         model.addAttribute("employes", employes);
         model.addAttribute("nbjCongeUtilise", rhService.nbjCongeUtilise(employes));
         model.addAttribute("nbjCongeReserve", rhService.nbjCongeReserve(employes));
@@ -161,7 +141,7 @@ public class RhController {
             // Fusionner ou synchroniser avec les données réelles
             for (Irsa dbIrsa : irsas) {
                 boolean existe = irsaWrapper.getIrsas().stream()
-                        .anyMatch(i -> i.getId() != null && i.getId().equals(dbIrsa.getId()));
+                    .anyMatch(i -> i.getId() != null && i.getId().equals(dbIrsa.getId()));
                 if (!existe) {
                     irsaWrapper.addIrsa(dbIrsa);
                 }
@@ -187,15 +167,15 @@ public class RhController {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
             model.addAttribute("employe", employe);
-            
+
             // Charger les commissions de l'employé
             var commissions = rhSalaireService.getCommissionsByEmployeId(id);
             model.addAttribute("commissions", commissions);
-            
+
             // Charger les raisons de commission pour le formulaire d'ajout
             var raisonCommissions = rhSalaireService.getAllRaisonCommissions();
             model.addAttribute("raisonCommissions", raisonCommissions);
-            
+
             return "administratif/rh/commission";
         } catch (RuntimeException e) {
             model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
@@ -209,15 +189,15 @@ public class RhController {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
             model.addAttribute("employe", employe);
-            
+
             // Charger les fiches de paie de l'employé
             var ficheDePaies = rhSalaireService.getFicheDePaiesByEmployeId(id);
             model.addAttribute("ficheDePaies", ficheDePaies);
-            
+
             // Charger les paiements effectués pour l'employé
             var payements = rhSalaireService.getPayementsByEmployeId(id);
             model.addAttribute("payements", payements);
-            
+
             return "administratif/rh/fiche-de-paie";
         } catch (RuntimeException e) {
             model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
@@ -231,23 +211,23 @@ public class RhController {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
             model.addAttribute("employe", employe);
-            
+
             // Charger les avances de l'employé
             var avances = rhSalaireService.getAvancesByEmployeId(id);
             model.addAttribute("avances", avances);
-            
+
             // Charger le prochain salaire disponible
             double prochainSalaire = rhSalaireService.prochainSalaire(id);
             model.addAttribute("prochainSalaire", prochainSalaire);
-            
+
             // Charger le montant retenu pour avances
             double retenuPourAvance = rhSalaireService.retenuPourAvance(id);
             model.addAttribute("retenuPourAvance", retenuPourAvance);
-            
+
             // Charger les raisons d'avance pour le formulaire d'ajout
             var raisonAvances = rhSalaireService.getAllRaisonAvances();
             model.addAttribute("raisonAvances", raisonAvances);
-            
+
             return "administratif/rh/avance";
         } catch (RuntimeException e) {
             model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
@@ -262,31 +242,31 @@ public class RhController {
             var selectedEmploye = rhSalaireService.getEmployeById(id);
             model.addAttribute("employe", selectedEmploye);
             model.addAttribute("selectedEmploye", selectedEmploye);
-            
+
             // Charger tous les employés pour la sidebar
             List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
             List<Employe> tousLesEmployes = statutEmployes.stream()
-                    .map(StatutEmploye::getEmploye)
-                    .collect(Collectors.toList());
+                .map(StatutEmploye::getEmploye)
+                .collect(Collectors.toList());
             model.addAttribute("employes", tousLesEmployes);
-            
+
             // Charger les congés de l'employé sélectionné
             var conges = rhCongeService.getCongesByEmployeId(id);
             model.addAttribute("conges", conges);
-            
+
             // Charger les types de congé pour le formulaire d'ajout
             var typeConges = rhService.getAllTypeConges();
             model.addAttribute("typeConges", typeConges);
-            
+
             // Charger les statistiques pour tous les employés (pour l'affichage dans la sidebar et le détail)
             var nbjCongeUtilise = rhService.nbjCongeUtilise(tousLesEmployes);
             var nbjCongeReserve = rhService.nbjCongeReserve(tousLesEmployes);
             var nbjCongeNonUtilise = rhService.nbjCongeNonUtilise(tousLesEmployes);
-            
+
             model.addAttribute("nbjCongeUtilise", nbjCongeUtilise);
             model.addAttribute("nbjCongeReserve", nbjCongeReserve);
             model.addAttribute("nbjCongeNonUtilise", nbjCongeNonUtilise);
-            
+
             return "administratif/rh/gestion-conges";
         } catch (RuntimeException e) {
             model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);
