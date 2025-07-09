@@ -164,31 +164,49 @@
         }
 
         .action-btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 0.9rem;
-            font-weight: 500;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
             text-decoration: none;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
         }
 
         .action-btn.primary {
-            background: var(--primary-color);
+            background: var(--rh-primary);
             color: white;
         }
 
-        .action-btn.secondary {
-            background: rgba(139, 69, 19, 0.1);
-            color: var(--primary-color);
+        .action-btn.primary:hover {
+            background: var(--rh-dark);
+            color: white;
+            transform: translateY(-1px);
         }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+        .action-btn.secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--gray-200);
+            color: var(--gray-800);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .action-btn.info:hover {
+            background: #138496;
+            color: white;
+            transform: translateY(-1px);
         }
 
         .employe-detail-content {
@@ -300,6 +318,25 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
         }
+
+        .employe-item-container {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .employe-item-container:hover {
+            background: rgba(139, 69, 19, 0.05);
+            transform: translateX(4px);
+        }
+
+        .employe-item-container.active {
+            background: rgba(139, 69, 19, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
     </style>
 </head>
 <body>
@@ -321,10 +358,9 @@
                 </div>
 
                 <div class="employes-list" th:if="${employesInfos != null and !#lists.isEmpty(employesInfos)}">
-                    <a th:each="info : ${employesInfos}"
-                       th:href="@{'/administratif/rh/gestion-employes/' + ${info.employe.id}}"
+                    <div th:each="info : ${employesInfos}"
                        th:class="${employeDetail != null and employeDetail.id == info.employe.id} ? 'employe-item active' : 'employe-item'"
-                       class="employe-item-link">
+                       class="employe-item-container">
                         <div class="employe-name" th:text="${info.employe.nom}">Nom de l'employé</div>
                         <div class="employe-info" th:text="${info.gradeActuel}">Grade</div>
                         <div class="employe-info">
@@ -335,7 +371,21 @@
                         </div>
                         <span th:class="'employe-badge ' + ${#strings.toLowerCase(info.statut)}"
                               th:text="${info.statut}">Statut</span>
-                    </a>
+                        <div style="margin-top:0.8rem;">
+                            <a th:href="@{'/administratif/rh/fiche-employe/' + ${info.employe.id}}"
+                               class="action-btn primary" style="font-size:0.8rem; padding:0.25rem 0.6rem; margin-right:0.5rem;">
+                                <i class="fas fa-user"></i> Fiche
+                            </a>
+                            <a th:href="@{'/administratif/rh/fiche-de-paie/' + ${info.employe.id}}"
+                               class="action-btn secondary" style="font-size:0.8rem; padding:0.25rem 0.6rem; margin-right:0.5rem;">
+                                <i class="fas fa-file-invoice-dollar"></i> Paie
+                            </a>
+                            <a th:href="@{'/administratif/rh/commission/' + ${info.employe.id}}"
+                               class="action-btn info" style="font-size:0.8rem; padding:0.25rem 0.6rem;">
+                                <i class="fas fa-percentage"></i> Commission
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <div th:if="${employesInfos == null or #lists.isEmpty(employesInfos)}" class="empty-state">

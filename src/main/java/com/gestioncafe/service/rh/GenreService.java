@@ -10,8 +10,11 @@ import java.util.List;
 @Service
 public class GenreService {
 
-    @Autowired
-    private GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
+
+    public GenreService(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
+    }
 
     public List<Genre> getAllGenres() {
         return genreRepository.findAll();

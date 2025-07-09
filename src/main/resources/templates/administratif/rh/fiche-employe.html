@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche Employé - GestionCafe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/templates/styles.css" rel="stylesheet">
+    <style>
+        .employee-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--rh-primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .info-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        .section-header {
+            border-left: 4px solid var(--rh-primary);
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        .timeline-item {
+            border-left: 2px solid var(--rh-light);
+            padding-left: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--rh-primary);
+            position: absolute;
+            left: -7px;
+            top: 5px;
+        }
+        .badge-status {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <div th:replace="~{administratif/rh/layout/sidebar :: sidebar}"></div>
+
+        <!-- Main Content -->
+        <div id="main-content">
+            <!-- Header -->
+            <div th:replace="~{administratif/rh/layout/header :: header}"></div>
+
+            <!-- Page Content -->
+            <div class="container-fluid px-4 py-3">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-1">
+                            <i class="fas fa-user-circle text-rh-primary me-2"></i>
+                            Fiche Employé
+                        </h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="/administratif/rh" class="text-decoration-none">RH</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="/administratif/rh/gestion-employes" class="text-decoration-none">Gestion Employés</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Fiche Employé</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div>
+                        <a href="/administratif/rh/gestion-employes" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Employee Profile Header -->
+                <div class="row mb-4" th:if="${employe}">
+                    <div class="col-12">
+                        <div class="card info-card">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <img th:src="${employe.image != null ? '/static/uploads/' + employe.image : '/static/images/default-avatar.png'}"
+                                             alt="Photo de profil" class="employee-avatar">
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="mb-2" th:text="${employe.nom}">Nom de l'employé</h3>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <p class="mb-1">
+                                                    <i class="fas fa-venus-mars text-muted me-2"></i>
+                                                    <span th:text="${employe.genre?.nom ?: 'Non spécifié'}">Genre</span>
+                                                </p>
+                                                <p class="mb-1">
+                                                    <i class="fas fa-birthday-cake text-muted me-2"></i>
+                                                    <span th:text="${#dates.format(employe.dateNaissance, 'dd/MM/yyyy')}">Date de naissance</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="mb-1">
+                                                    <i class="fas fa-phone text-muted me-2"></i>
+                                                    <span th:text="${employe.contact}">Contact</span>
+                                                </p>
+                                                <p class="mb-1">
+                                                    <i class="fas fa-calendar-plus text-muted me-2"></i>
+                                                    Recruté le <span th:text="${#dates.format(employe.dateRecrutement, 'dd/MM/yyyy')}">Date</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div th:if="${employeInfos}">
+                                            <span class="badge badge-status bg-success me-2" th:text="${employeInfos.statut}">Statut</span>
+                                            <span class="badge badge-status bg-info" th:if="${employeInfos.gradeActuel}" th:text="${employeInfos.gradeActuel}">Grade</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-cog me-1"></i> Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" th:href="@{'/administratif/rh/fiche-de-paie/' + ${employe.id}}">
+                                                        <i class="fas fa-file-invoice me-2"></i> Fiche de Paie
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" th:href="@{'/administratif/rh/commission/' + ${employe.id}}">
+                                                        <i class="fas fa-percentage me-2"></i> Commissions
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" th:href="@{'/administratif/rh/avance/' + ${employe.id}}">
+                                                        <i class="fas fa-hand-holding-usd me-2"></i> Avances
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" th:href="@{'/administratif/rh/conge/' + ${employe.id}}">
+                                                        <i class="fas fa-calendar-times me-2"></i> Congés
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4" th:if="${employeInfos}">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card info-card">
+                            <div class="card-body text-center p-3">
+                                <div class="stat-icon bg-primary mx-auto mb-2">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h4 class="mb-1" th:text="${employeInfos.nombreClients}">0</h4>
+                                <p class="text-muted mb-0 small">Clients gérés</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card info-card">
+                            <div class="card-body text-center p-3">
+                                <div class="stat-icon bg-success mx-auto mb-2">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h4 class="mb-1" th:text="${employeInfos.nombrePresences}">0</h4>
+                                <p class="text-muted mb-0 small">Présences</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card info-card">
+                            <div class="card-body text-center p-3">
+                                <div class="stat-icon bg-warning mx-auto mb-2">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h4 class="mb-1" th:text="${#numbers.formatDecimal(employeInfos.efficacite, 1, 1)} + '%'">0%</h4>
+                                <p class="text-muted mb-0 small">Efficacité</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card info-card">
+                            <div class="card-body text-center p-3">
+                                <div class="stat-icon bg-info mx-auto mb-2">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <h4 class="mb-1">A+</h4>
+                                <p class="text-muted mb-0 small">Note globale</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Tabs -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card info-card">
+                            <div class="card-body">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs mb-4" id="employeeTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                                            <i class="fas fa-info-circle me-1"></i> Vue d'ensemble
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="salary-tab" data-bs-toggle="tab" data-bs-target="#salary" type="button" role="tab">
+                                            <i class="fas fa-money-bill-wave me-1"></i> Salaires
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button" role="tab">
+                                            <i class="fas fa-clock me-1"></i> Activité récente
+                                        </button>
+                                    </li>
+                                </ul>
+
+                                <!-- Tab content -->
+                                <div class="tab-content" id="employeeTabsContent">
+                                    <!-- Overview Tab -->
+                                    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5 class="section-header">
+                                                    <i class="fas fa-user me-2"></i> Informations personnelles
+                                                </h5>
+                                                <div class="table-responsive">
+                                                    <table class="table table-borderless">
+                                                        <tr>
+                                                            <td class="text-muted" style="width: 40%;"><strong>Nom complet:</strong></td>
+                                                            <td th:text="${employe.nom}">-</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted"><strong>Genre:</strong></td>
+                                                            <td th:text="${employe.genre?.nom ?: 'Non spécifié'}">-</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted"><strong>Date de naissance:</strong></td>
+                                                            <td th:text="${#dates.format(employe.dateNaissance, 'dd/MM/yyyy')}">-</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted"><strong>Contact:</strong></td>
+                                                            <td th:text="${employe.contact}">-</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted"><strong>Date de recrutement:</strong></td>
+                                                            <td th:text="${#dates.format(employe.dateRecrutement, 'dd/MM/yyyy')}">-</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h5 class="section-header">
+                                                    <i class="fas fa-briefcase me-2"></i> Informations professionnelles
+                                                </h5>
+                                                <div class="table-responsive" th:if="${employeInfos}">
+                                                    <table class="table table-borderless">
+                                                        <tr>
+                                                            <td class="text-muted" style="width: 40%;"><strong>Statut:</strong></td>
+                                                            <td>
+                                                                <span class="badge bg-success" th:text="${employeInfos.statut}">-</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr th:if="${employeInfos.gradeActuel}">
+                                                            <td class="text-muted"><strong>Grade actuel:</strong></td>
+                                                            <td>
+                                                                <span class="badge bg-info" th:text="${employeInfos.gradeActuel}">-</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted"><strong>Clients gérés:</strong></td>
+                                                            <td th:text="${employeInfos.nombreClients}">0</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted"><strong>Taux de présence:</strong></td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <span th:text="${employeInfos.nombrePresences}">0</span>
+                                                                    <div class="progress ms-2" style="width: 100px; height: 8px;">
+                                                                        <div class="progress-bar bg-success" role="progressbar" 
+                                                                             th:style="'width: ' + ${employeInfos.efficacite} + '%'"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted"><strong>Efficacité:</strong></td>
+                                                            <td>
+                                                                <span class="text-success fw-bold" th:text="${#numbers.formatDecimal(employeInfos.efficacite, 1, 1)} + '%'">0%</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Salary Tab -->
+                                    <div class="tab-pane fade" id="salary" role="tabpanel">
+                                        <h5 class="section-header">
+                                            <i class="fas fa-money-bill-wave me-2"></i> Fiches de paie récentes
+                                        </h5>
+                                        <div class="row" th:if="${ficheDePaies != null and !ficheDePaies.isEmpty()}">
+                                            <div class="col-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Mois</th>
+                                                                <th>Salaire de base</th>
+                                                                <th>Commissions</th>
+                                                                <th>Avances</th>
+                                                                <th>Net à payer</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr th:each="fiche : ${ficheDePaies}">
+                                                                <td>
+                                                                    <span class="badge bg-primary" th:text="${#dates.format(fiche.mois, 'MM/yyyy')}">Mois</span>
+                                                                </td>
+                                                                <td th:text="${#numbers.formatDecimal(fiche.salaireBase, 0, 2)} + ' Ar'">0 Ar</td>
+                                                                <td th:text="${#numbers.formatDecimal(fiche.commission, 0, 2)} + ' Ar'">0 Ar</td>
+                                                                <td th:text="${#numbers.formatDecimal(fiche.avance, 0, 2)} + ' Ar'">0 Ar</td>
+                                                                <td>
+                                                                    <strong class="text-success" th:text="${#numbers.formatDecimal(fiche.netAPayer, 0, 2)} + ' Ar'">0 Ar</strong>
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-sm btn-outline-primary" title="Voir détails">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="text-center">
+                                                    <a th:href="@{'/administratif/rh/fiche-de-paie/' + ${employe.id}}" class="btn btn-primary">
+                                                        <i class="fas fa-file-invoice me-1"></i> Voir toutes les fiches de paie
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div th:if="${ficheDePaies == null or ficheDePaies.isEmpty()}" class="text-center py-5">
+                                            <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
+                                            <h5 class="text-muted">Aucune fiche de paie disponible</h5>
+                                            <p class="text-muted">Les fiches de paie apparaîtront ici une fois générées.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Activity Tab -->
+                                    <div class="tab-pane fade" id="activity" role="tabpanel">
+                                        <h5 class="section-header">
+                                            <i class="fas fa-clock me-2"></i> Activité récente
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 class="text-muted mb-3">Commissions récentes</h6>
+                                                <div th:if="${commissions != null and !commissions.isEmpty()}">
+                                                    <div class="timeline-item" th:each="commission : ${commissions}">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <strong th:text="${commission.raison?.nom ?: 'Commission'}">Commission</strong>
+                                                                <p class="text-muted small mb-1" th:text="${#dates.format(commission.dateCommission, 'dd/MM/yyyy')}">Date</p>
+                                                            </div>
+                                                            <span class="badge bg-success" th:text="${#numbers.formatDecimal(commission.montant, 0, 2)} + ' Ar'">Montant</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div th:if="${commissions == null or commissions.isEmpty()}" class="text-center text-muted py-3">
+                                                    <i class="fas fa-percentage fa-2x mb-2"></i>
+                                                    <p>Aucune commission récente</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6 class="text-muted mb-3">Avances récentes</h6>
+                                                <div th:if="${avances != null and !avances.isEmpty()}">
+                                                    <div class="timeline-item" th:each="avance : ${avances}">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <strong th:text="${avance.raison?.nom ?: 'Avance'}">Avance</strong>
+                                                                <p class="text-muted small mb-1" th:text="${#dates.format(avance.dateAvance, 'dd/MM/yyyy')}">Date</p>
+                                                            </div>
+                                                            <span class="badge bg-warning" th:text="${#numbers.formatDecimal(avance.montant, 0, 2)} + ' Ar'">Montant</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div th:if="${avances == null or avances.isEmpty()}" class="text-center text-muted py-3">
+                                                    <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
+                                                    <p>Aucune avance récente</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Display -->
+                <div th:if="${erreur}" class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${erreur}">Erreur</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/rh/script.js"></script>
+</body>
+</html>

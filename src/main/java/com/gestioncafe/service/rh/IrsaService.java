@@ -1,20 +1,22 @@
 package com.gestioncafe.service.rh;
 
+import com.gestioncafe.model.Irsa;
+import com.gestioncafe.repository.IrsaRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.Irsa;
-import com.gestioncafe.repository.IrsaRepository;
 
 @Service
 public class IrsaService {
 
-    @Autowired
-    private IrsaRepository irsaRepository;
+    private final IrsaRepository irsaRepository;
+
+    public IrsaService(IrsaRepository irsaRepository) {
+        this.irsaRepository = irsaRepository;
+    }
 
     public List<Irsa> findAll() {
         return irsaRepository.findAll();
@@ -33,7 +35,7 @@ public class IrsaService {
 
         // 1. S'assurer que la première tranche commence à 0
         boolean aucuneCommenceAZero = all.stream()
-                .noneMatch(i -> i.getSalaireMin() == 0.0);
+            .noneMatch(i -> i.getSalaireMin() == 0.0);
         if (aucuneCommenceAZero) {
             irsa.setSalaireMin(0.0);
             minSal = 0.0;
@@ -92,7 +94,7 @@ public class IrsaService {
 
             if (current.getSalaireMax() != next.getSalaireMin()) {
                 throw new Exception("Les tranches IRSA ne sont pas continues entre " +
-                        current.getSalaireMax() + " et " + next.getSalaireMin());
+                    current.getSalaireMax() + " et " + next.getSalaireMin());
             }
         }
 
@@ -109,9 +111,9 @@ public class IrsaService {
         List<Irsa> tranches = findAll();
 
         Irsa aSupprimer = tranches.stream()
-                .filter(i -> i.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new Exception("Tranche introuvable pour suppression"));
+            .filter(i -> i.getId().equals(id))
+            .findFirst()
+            .orElseThrow(() -> new Exception("Tranche introuvable pour suppression"));
 
         tranches.remove(aSupprimer);
         tranches.sort(Comparator.comparingDouble(Irsa::getSalaireMin));
@@ -126,7 +128,7 @@ public class IrsaService {
 
             if (actuelle.getSalaireMax() != suivante.getSalaireMin()) {
                 throw new Exception("Suppression invalide : discontinuité entre "
-                        + actuelle.getSalaireMax() + " et " + suivante.getSalaireMin());
+                    + actuelle.getSalaireMax() + " et " + suivante.getSalaireMin());
             }
         }
 

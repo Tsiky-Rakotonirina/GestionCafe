@@ -1,44 +1,43 @@
 package com.gestioncafe.controller.rh;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gestioncafe.model.Employe;
+import com.gestioncafe.model.FicheDePaie;
+import com.gestioncafe.model.Payement;
+import com.gestioncafe.service.rh.RhSalaireService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.ui.Model;
 
-import com.gestioncafe.service.rh.*;
-
-import jakarta.servlet.http.HttpServletResponse;
-
-import com.gestioncafe.model.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
 
 @Controller
 @RequestMapping("/administratif/rh/salaire")
 public class RhSalaireController {
 
-    @Autowired
-    private RhSalaireService rhSalaireService;
+    private final RhSalaireService rhSalaireService;
+
+    public RhSalaireController(RhSalaireService rhSalaireService) {
+        this.rhSalaireService = rhSalaireService;
+    }
 
     @GetMapping("/fiche-de-paie")
     public String ficheDePaie(
-            @RequestParam("idEmploye") String idEmploye,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "taille", defaultValue = "5") int taille,
-            Model model,
-            RedirectAttributes ra) {
+        @RequestParam("idEmploye") String idEmploye,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "taille", defaultValue = "5") int taille,
+        Model model,
+        RedirectAttributes ra) {
 
         String erreur = "";
 
@@ -123,13 +122,13 @@ public class RhSalaireController {
 
     @PostMapping("/payer-fiche-de-paie")
     public String payer(@RequestParam("idEmploye") String idEmploye,
-            @RequestParam("moisReference") String moisReference, @RequestParam("salaireDeBase") String salaireDeBase,
-            @RequestParam("abscences") String abscences, @RequestParam("commissions") String commissions,
-            @RequestParam("retenuesSociales") String retenuesSociales,
-            @RequestParam("impots") String impots, @RequestParam("salaireBrut") String salaireBrut,
-            @RequestParam("salaireNetImposable") String salaireNetImposable,
-            @RequestParam("salaireNet") String salaireNet, @RequestParam("retenueAvance") String retenueAvance,
-            @RequestParam("netAPayer") String montant, Model model, RedirectAttributes ra) {
+                        @RequestParam("moisReference") String moisReference, @RequestParam("salaireDeBase") String salaireDeBase,
+                        @RequestParam("abscences") String abscences, @RequestParam("commissions") String commissions,
+                        @RequestParam("retenuesSociales") String retenuesSociales,
+                        @RequestParam("impots") String impots, @RequestParam("salaireBrut") String salaireBrut,
+                        @RequestParam("salaireNetImposable") String salaireNetImposable,
+                        @RequestParam("salaireNet") String salaireNet, @RequestParam("retenueAvance") String retenueAvance,
+                        @RequestParam("netAPayer") String montant, Model model, RedirectAttributes ra) {
         String erreur = "";
         try {
             Long id = Long.parseLong(idEmploye);
@@ -146,7 +145,7 @@ public class RhSalaireController {
             double netAPayer = Double.parseDouble(montant);
 
             rhSalaireService.ajoutPayement(
-                    id, base, abs, comm, retenueSoc, imp, brut, netImp, net, avance, netAPayer, date);
+                id, base, abs, comm, retenueSoc, imp, brut, netImp, net, avance, netAPayer, date);
 
             ra.addAttribute("succesPayemet", "Payement de " + montant + " pour l'employe");
             return "redirect:/administratif/rh/salaire/fiche-de-paie?idEmploye=" + idEmploye;
@@ -192,7 +191,7 @@ public class RhSalaireController {
 
     @PostMapping("/ajout-avance")
     public String ajoutAvance(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant,
-            @RequestParam("idRaison") String idRaison, Model model, RedirectAttributes ra) {
+                              @RequestParam("idRaison") String idRaison, Model model, RedirectAttributes ra) {
         String erreur = "";
         System.out.println(erreur);
         try {
@@ -221,7 +220,7 @@ public class RhSalaireController {
 
     @PostMapping("/ajout-commission")
     public String ajoutCommission(@RequestParam("idEmploye") String idEmploye, @RequestParam("montant") String montant,
-            @RequestParam("idRaison") String idRaison, Model model, RedirectAttributes ra) {
+                                  @RequestParam("idRaison") String idRaison, Model model, RedirectAttributes ra) {
         String erreur = "";
         try {
             double montantDouble = Double.parseDouble(montant);

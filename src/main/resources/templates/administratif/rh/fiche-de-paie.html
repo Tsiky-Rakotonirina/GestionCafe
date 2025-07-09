@@ -11,221 +11,255 @@
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <link rel="stylesheet" th:href="@{/css/rh/fiche.css}">
     <link rel="stylesheet" th:href="@{/css/rh/historique.css}">
+    <link rel="stylesheet" th:href="@{/css/rh/fiche-paie.css}">
     <script th:src="@{/js/rh/ficheDePaies.js}"></script>
 </head>
 
 <body>
-    <!-- Header -->
-    <div th:replace="~{administratif/rh/layout/header :: header('Fiche de paie')}"></div>
-    <main class="content">
-        <!-- Sidebar  -->
-        <div class="sidebar" id="sidebar">
-            <nav class="sidebar-nav">
-                <ul>
-                    <li class="nav-item active">
-                        <a th:href="@{/administratif/rh/gestion-employes}" class="nav-link">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Gestion des employes</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/gestion-salaires}" class="nav-link">
-                            <i class="fas fa-boxes"></i>
-                            <span>Gestion des salaires</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/gestion-recrutements}" class="nav-link">
-                            <i class="fas fa-cogs"></i>
-                            <span>Gestion des recrutement</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/gestion-conges}" class="nav-link">
-                            <i class="fas fa-euro-sign"></i>
-                            <span>Gestion des conges et des jours feries</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/parametre}" class="nav-link">
-                            <i class="fas fa-euro-sign"></i>
-                            <span>Parametrages</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="main-content" id="mainContent">
-
+    <div th:replace="~{administratif/rh/layout/sidebar :: sidebar}"></div>
+    <div class="main-content" id="mainContent">
+        <div th:replace="~{administratif/rh/layout/header :: header('Fiche de paie')}"></div>
+        <main class="content">
             <div class="financial-details">
                 <div class="finance-chart-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-chart-area"></i>Gestion des fiches de paie</h3>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3><i class="fas fa-chart-area"></i>Gestion des fiches de paie</h3>
+                            <a href="/administratif/rh/gestion-employes" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Retour
+                            </a>
+                        </div>
                     </div>
                     <div class="chart-placeholder">
 
-                        <div class="production-items-grid">
-                            <div class="production-item-card">
-                                <div class="item-details">
-                                    <h4>Employe : <span th:text="${employe.nom != null ? employe.nom : '-'}">-</span>
+                        <!-- Employee Profile Card -->
+                        <div class="employee-profile-card">
+                            <div class="employee-header">
+                                <div class="employee-avatar">
+                                    <img th:src="${employe.image != null ? '/static/uploads/' + employe.image : '/static/images/default-avatar.png'}"
+                                         alt="Photo de profil" class="avatar-img">
+                                    <div class="avatar-fallback" th:text="${#strings.substring(employe.nom, 0, 1)}">E</div>
+                                </div>
+                                <div class="employee-info">
+                                    <h4 class="employee-name">
+                                        <i class="fas fa-user me-2"></i>
+                                        <span th:text="${employe.nom != null ? employe.nom : 'Nom non défini'}">Nom de l'employé</span>
                                     </h4>
-                                    <div class="customer-avatar">
-                                        <img src="" alt="">
+                                    <div class="employee-details">
+                                        <div class="detail-item">
+                                            <i class="fas fa-calendar-alt text-primary"></i>
+                                            <span class="detail-label">Recrutement :</span>
+                                            <span class="detail-value" th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">-</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-venus-mars text-info"></i>
+                                            <span class="detail-label">Genre :</span>
+                                            <span class="detail-value" th:text="${employe.genre != null ? employe.genre.nom : '-'}">-</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-phone text-success"></i>
+                                            <span class="detail-label">Contact :</span>
+                                            <span class="detail-value" th:text="${employe.contact != null ? employe.contact : '-'}">-</span>
+                                        </div>
                                     </div>
-                                    <div class="item-stats">
-                                        <span class="quantity">Date Recrutement : <span
-                                                th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">-</span></span>
-                                        <br>
-                                        <span class="quantity">Genre : <span
-                                                th:text="${employe.genre != null ? employe.genre.valeur : '-'}">-</span></span>
-                                        <br>
-                                        <span class="quantity">Contact : <span
-                                                th:text="${employe.contact != null ? employe.contact : '-'}">-</span></span>
-                                    </div>
-                                    <br>
-                                    <a th:href="@{/administratif/rh/salaire/fiche-de-paie(idEmploye=${employe.id})}"
-                                        class="btn secondary">Voir la fiche de l'employe</a><br>
+                                </div>
+                                <div class="employee-actions">
+                                    <a th:href="@{'/administratif/rh/fiche-employe/' + ${employe.id}}" class="btn btn-primary">
+                                        <i class="fas fa-user-circle me-1"></i> Fiche Employé
+                                    </a>
                                 </div>
                             </div>
-                            <br><br>
-                            <div class="orders-container">
+                        </div>
+                            <!-- Payroll Cards Section -->
+                            <div class="payroll-section">
                                 <div th:if="${ficheDePaies != null and !ficheDePaies.empty}">
-                                    <h3>Liste des fiches de paies impayées</h3>
-
-                                    <div th:each="ficheDePaie : ${ficheDePaies.content}">
-                                        <form th:action="@{/administratif/rh/salaire/payer-fiche-de-paie}" method="post">
-                                            <input type="hidden" name="idEmploye" th:value="${employe.id}">
-                                            <div class="order-card priority">
-                                                <div class="order-header">
-                                                    <div class="order-id">
-                                                        <i class="fas fa-hashtag"></i>
-                                                        <label>Mois référence :</label>
-                                                        <input type="text" name="moisReference"
-                                                            th:value="${ficheDePaie.moisReference}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="order-items">
-                                                    <div class="order-item"><label>Salaire de base :</label>
-                                                        <input type="text" name="salaireDeBase"
-                                                            th:value="${ficheDePaie.salaireDeBase}" readonly>
-                                                    </div>
-                                                    <div class="order-item"><label>Absences :</label>
-                                                        <input type="text" name="abscences"
-                                                            th:value="${ficheDePaie.abscences}" readonly>
-                                                    </div>
-                                                    <div class="order-item"><label>Commissions :</label>
-                                                        <input type="text" name="commissions"
-                                                            th:value="${ficheDePaie.commissions}" readonly>
-                                                    </div>
-                                                    <div class="order-item"><label>Retenues sociales :</label>
-                                                        <input type="text" name="retenuesSociales"
-                                                            th:value="${ficheDePaie.retenuesSociales}" readonly>
-                                                    </div>
-                                                    <div class="order-item"><label>Impôts :</label>
-                                                        <input type="text" name="impots"
-                                                            th:value="${ficheDePaie.impots}" readonly>
-                                                    </div>
-                                                    <hr>
-                                                    <div class="order-item"><label>Salaire brut :</label>
-                                                        <input type="text" name="salaireBrut"
-                                                            th:value="${ficheDePaie.salaireBrut}" readonly>
-                                                    </div>
-                                                    <div class="order-item"><label>Net imposable :</label>
-                                                        <input type="text" name="salaireNetImposable"
-                                                            th:value="${ficheDePaie.salaireNetImposable}" readonly>
-                                                    </div>
-                                                    <div class="order-item"><label>Salaire net :</label>
-                                                        <input type="text" name="salaireNet"
-                                                            th:value="${ficheDePaie.salaireNet}" readonly>
-                                                    </div>
-                                                    <div class="order-item"><label>Retenue pour avance :</label>
-                                                        <input type="text" name="retenueAvance"
-                                                            th:value="${ficheDePaie.retenueAvance}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="order-footer">
-                                                    <div class="order-total">
-                                                        <label class="total-label">Net à payer :</label>
-                                                        <input type="text" name="netAPayer" class="total-amount"
-                                                            th:value="${ficheDePaie.netAPayer}" readonly>
-                                                    </div>
-                                                    <div class="order-actions">
-                                                        <button class="btn success small" type="submit">
-                                                            <i class="fas fa-check"></i> Payer
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
+                                    <div class="section-header">
+                                        <h3><i class="fas fa-file-invoice-dollar me-2"></i>Fiches de paie impayées</h3>
+                                        <span class="badge badge-warning" th:text="${ficheDePaies.totalElements} + ' en attente'">0 en attente</span>
                                     </div>
 
-                                    <!-- ✅ Pagination Controls -->
-                                    <div class="pagination-controls">
+                                    <div class="payroll-cards">
+                                        <div th:each="ficheDePaie : ${ficheDePaies.content}" class="payroll-card">
+                                            <form th:action="@{/administratif/rh/salaire/payer-fiche-de-paie}" method="post">
+                                                <input type="hidden" name="idEmploye" th:value="${employe.id}">
+                                                
+                                                <!-- Card Header -->
+                                                <div class="payroll-card-header">
+                                                    <div class="month-info">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <span class="month-label">Mois de référence</span>
+                                                        <span class="month-value" th:text="${ficheDePaie.moisReference}">-</span>
+                                                        <input type="hidden" name="moisReference" th:value="${ficheDePaie.moisReference}">
+                                                    </div>
+                                                    <div class="status-badge">
+                                                        <span class="badge badge-pending">En attente</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Salary Details Grid -->
+                                                <div class="salary-details-grid">
+                                                    <div class="salary-section gains">
+                                                        <h5><i class="fas fa-plus-circle text-success"></i> Gains</h5>
+                                                        <div class="salary-item">
+                                                            <span class="label">Salaire de base</span>
+                                                            <span class="amount positive" th:text="${#numbers.formatDecimal(ficheDePaie.salaireDeBase, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                            <input type="hidden" name="salaireDeBase" th:value="${ficheDePaie.salaireDeBase}">
+                                                        </div>
+                                                        <div class="salary-item">
+                                                            <span class="label">Commissions</span>
+                                                            <span class="amount positive" th:text="${#numbers.formatDecimal(ficheDePaie.commissions, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                            <input type="hidden" name="commissions" th:value="${ficheDePaie.commissions}">
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="salary-section deductions">
+                                                        <h5><i class="fas fa-minus-circle text-danger"></i> Déductions</h5>
+                                                        <div class="salary-item">
+                                                            <span class="label">Absences</span>
+                                                            <span class="amount negative" th:text="'-' + ${#numbers.formatDecimal(ficheDePaie.abscences, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                            <input type="hidden" name="abscences" th:value="${ficheDePaie.abscences}">
+                                                        </div>
+                                                        <div class="salary-item">
+                                                            <span class="label">Retenues sociales</span>
+                                                            <span class="amount negative" th:text="'-' + ${#numbers.formatDecimal(ficheDePaie.retenuesSociales, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                            <input type="hidden" name="retenuesSociales" th:value="${ficheDePaie.retenuesSociales}">
+                                                        </div>
+                                                        <div class="salary-item">
+                                                            <span class="label">Impôts</span>
+                                                            <span class="amount negative" th:text="'-' + ${#numbers.formatDecimal(ficheDePaie.impots, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                            <input type="hidden" name="impots" th:value="${ficheDePaie.impots}">
+                                                        </div>
+                                                        <div class="salary-item">
+                                                            <span class="label">Retenue pour avance</span>
+                                                            <span class="amount negative" th:text="'-' + ${#numbers.formatDecimal(ficheDePaie.retenueAvance, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                            <input type="hidden" name="retenueAvance" th:value="${ficheDePaie.retenueAvance}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Summary Section -->
+                                                <div class="salary-summary">
+                                                    <div class="summary-item">
+                                                        <span class="label">Salaire brut</span>
+                                                        <span class="amount" th:text="${#numbers.formatDecimal(ficheDePaie.salaireBrut, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                        <input type="hidden" name="salaireBrut" th:value="${ficheDePaie.salaireBrut}">
+                                                    </div>
+                                                    <div class="summary-item">
+                                                        <span class="label">Net imposable</span>
+                                                        <span class="amount" th:text="${#numbers.formatDecimal(ficheDePaie.salaireNetImposable, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                        <input type="hidden" name="salaireNetImposable" th:value="${ficheDePaie.salaireNetImposable}">
+                                                    </div>
+                                                    <div class="summary-item">
+                                                        <span class="label">Salaire net</span>
+                                                        <span class="amount" th:text="${#numbers.formatDecimal(ficheDePaie.salaireNet, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                        <input type="hidden" name="salaireNet" th:value="${ficheDePaie.salaireNet}">
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Final Amount and Action -->
+                                                <div class="payroll-footer">
+                                                    <div class="net-pay">
+                                                        <span class="net-label">Net à payer</span>
+                                                        <span class="net-amount" th:text="${#numbers.formatDecimal(ficheDePaie.netAPayer, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</span>
+                                                        <input type="hidden" name="netAPayer" th:value="${ficheDePaie.netAPayer}">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success btn-pay">
+                                                        <i class="fas fa-check-circle me-1"></i>
+                                                        Effectuer le paiement
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modern Pagination -->
+                                    <div class="modern-pagination">
                                         <a th:if="${ficheDePaies.hasPrevious()}"
-                                            th:href="@{|/administratif/rh/salaire/fiche-de-paie?idEmploye=${employe.id}&page=${ficheDePaies.number - 1}&taille=${taille}|}">
-                                            ◀ Précédent
+                                           th:href="@{|/administratif/rh/fiche-de-paie/${employe.id}?page=${ficheDePaies.number - 1}&taille=${taille}|}"
+                                           class="btn btn-outline-secondary btn-sm">
+                                            <i class="fas fa-chevron-left me-1"></i> Précédent
                                         </a>
 
-                                        <span>Page <span th:text="${ficheDePaies.number + 1}"></span> /
-                                            <span th:text="${ficheDePaies.totalPages}"></span>
-                                        </span>
+                                        <div class="pagination-info">
+                                            <span>Page <strong th:text="${ficheDePaies.number + 1}">1</strong> sur 
+                                                  <strong th:text="${ficheDePaies.totalPages}">1</strong></span>
+                                        </div>
 
                                         <a th:if="${ficheDePaies.hasNext()}"
-                                            th:href="@{|/administratif/rh/salaire/fiche-de-paie?idEmploye=${employe.id}&page=${ficheDePaies.number + 1}&taille=${taille}|}">
-                                            Suivant ▶
+                                           th:href="@{|/administratif/rh/fiche-de-paie/${employe.id}?page=${ficheDePaies.number + 1}&taille=${taille}|}"
+                                           class="btn btn-outline-secondary btn-sm">
+                                            Suivant <i class="fas fa-chevron-right ms-1"></i>
                                         </a>
                                     </div>
                                 </div>
 
-                                <div th:if="${ficheDePaies == null or ficheDePaies.empty}">
-                                    <h4>Aucune fiche de paie impayée pour l'employé</h4>
+                                <div th:if="${ficheDePaies == null or ficheDePaies.empty}" class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                    </div>
+                                    <h4>Aucune fiche de paie en attente</h4>
+                                    <p>Toutes les fiches de paie de cet employé ont été traitées.</p>
                                 </div>
                             </div>
 
                         </div>
-                    <div th:if="${erreurPayement}">
-                    <p th:text="${erreurPayement}"></p>
-                </div>
+                        
+                        <!-- Error Messages -->
+                        <div th:if="${erreurPayement}" class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span th:text="${erreurPayement}">Erreur de paiement</span>
+                        </div>
                     </div>
 
-                    <div class="expense-breakdown-card">
+                    <!-- Payment History Section -->
+                    <div class="payment-history-card">
                         <div class="card-header">
-                            <h3><i class="fas fa-pie-chart"></i> Historique des payements de salaire</h3>
+                            <h3><i class="fas fa-history me-2"></i>Historique des paiements</h3>
                         </div>
                         <div class="table-container">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Mois reference</th>
-                                        <th>Date Payement</th>
-                                        <th>Montant (Ariary) </th>
-                                        <th>Importer Pdf</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="payement : ${payements}">
-                                        <td><strong><span
-                                                    th:text="${payement.moisReference != null ? payement.moisReference : '-'}">-</span></strong>
-                                        </td>
-                                        <td><span
-                                                th:text="${payement.datePayement != null ? payement.datePayement : '-'}">-</span>
-                                        </td>
-                                        <td><strong><span
-                                                    th:text="${payement.montant != null ? payement.montant : '-'}">-</span></strong>
-                                        </td>
-                                        <td>
-                                            <a th:href="@{/administratif/rh/salaire/importer-fiche-de-paie(idPayement=${payement.id})}"
-                                                class="btn secondary">Importer la fiche de paie</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div th:if="${payements != null and !#lists.isEmpty(payements)}">
+                                <table class="modern-table">
+                                    <thead>
+                                        <tr>
+                                            <th><i class="fas fa-calendar me-1"></i>Mois de référence</th>
+                                            <th><i class="fas fa-clock me-1"></i>Date de paiement</th>
+                                            <th><i class="fas fa-money-bill-wave me-1"></i>Montant</th>
+                                            <th><i class="fas fa-file-pdf me-1"></i>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="payement : ${payements}">
+                                            <td>
+                                                <span class="month-badge" th:text="${payement.moisReference != null ? payement.moisReference : '-'}">-</span>
+                                            </td>
+                                            <td th:text="${payement.datePayement != null ? #dates.format(payement.datePayement, 'dd/MM/yyyy') : '-'}">-</td>
+                                            <td class="amount-cell">
+                                                <strong th:text="${payement.montant != null ? #numbers.formatDecimal(payement.montant, 0, 'COMMA', 2, 'POINT') + ' Ar' : '-'}">-</strong>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/administratif/rh/salaire/importer-fiche-de-paie(idPayement=${payement.id})}"
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-download me-1"></i>PDF
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div th:if="${payements == null or #lists.isEmpty(payements)}" class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <h4>Aucun historique de paiement</h4>
+                                <p>Aucun paiement n'a encore été effectué pour cet employé.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
             </div>
-    </main>
+        </main>
+    </div>
     <!-- <script th:src="@{/templates/script.js}"></script> -->
 </body>
 

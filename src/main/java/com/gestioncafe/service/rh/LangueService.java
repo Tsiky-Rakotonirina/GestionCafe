@@ -10,8 +10,11 @@ import java.util.List;
 @Service
 public class LangueService {
 
-    @Autowired
-    private LangueRepository langueRepository;
+    private final LangueRepository langueRepository;
+
+    public LangueService(LangueRepository langueRepository) {
+        this.langueRepository = langueRepository;
+    }
 
     public List<Langue> getAllLangues() {
         return langueRepository.findAll();

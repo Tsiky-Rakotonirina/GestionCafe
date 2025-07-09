@@ -10,8 +10,11 @@ import com.gestioncafe.repository.*;
 
 @Service
 public class JourFerieService {
-    @Autowired
-    private JourFerieRepository jourFerieRepository;
+    private final JourFerieRepository jourFerieRepository;
+
+    public JourFerieService(JourFerieRepository jourFerieRepository) {
+        this.jourFerieRepository = jourFerieRepository;
+    }
 
     public List<JourFerie> findAll() {
         return jourFerieRepository.findAll();

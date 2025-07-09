@@ -215,6 +215,19 @@
     margin-left: auto;
 }
 
+/* Style pour la cellule du mois dans le tableau consolidé */
+.month-cell {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+}
+
 /* Modern Table Styles */
 .modern-table {
     width: 100%;
@@ -245,11 +258,13 @@
 }
 
 .modern-table tbody tr {
-    transition: var(--transition);
+    transition: all 0.2s ease;
 }
 
 .modern-table tbody tr:hover {
-    background: rgba(139, 69, 19, 0.02);
+    background-color: var(--bg-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modern-table tbody tr:nth-child(even) {

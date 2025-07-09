@@ -26,15 +26,22 @@ import com.gestioncafe.repository.TypeCongeRepository;
 
 @Service
 public class RhCongeService {
-    @Autowired
-    private CongeRepository congeRepository;
-    @Autowired
-    private EmployeRepository employeRepository;
-    @Autowired
-    private TypeCongeRepository typeCongeRepository;
-    @Autowired 
+    private final CongeRepository congeRepository;
+    private final EmployeRepository employeRepository;
+    private final TypeCongeRepository typeCongeRepository;
+    final
     JourFerieRepository jourFerieRepository;
-    
+
+    public RhCongeService(CongeRepository congeRepository,
+                          EmployeRepository employeRepository,
+                          TypeCongeRepository typeCongeRepository,
+                          JourFerieRepository jourFerieRepository) {
+        this.congeRepository = congeRepository;
+        this.employeRepository = employeRepository;
+        this.typeCongeRepository = typeCongeRepository;
+        this.jourFerieRepository = jourFerieRepository;
+    }
+
     @Transactional
     public void ajoutConge(Long idEmploye, Long idTypeConge, Date dateDebut, Date dateFin) throws Exception{
         Employe employe = employeRepository.findById(idEmploye)

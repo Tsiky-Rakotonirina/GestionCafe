@@ -10,8 +10,11 @@ import java.util.List;
 @Service
 public class DetailCandidatService {
 
-    @Autowired
-    private DetailCandidatRepository detailCandidatRepository;
+    private final DetailCandidatRepository detailCandidatRepository;
+
+    public DetailCandidatService(DetailCandidatRepository detailCandidatRepository) {
+        this.detailCandidatRepository = detailCandidatRepository;
+    }
 
     public List<DetailCandidat> getDetailsByCandidatId(Long candidatId) {
         return detailCandidatRepository.findByCandidatId(candidatId);

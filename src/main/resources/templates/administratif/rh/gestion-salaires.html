@@ -10,6 +10,77 @@
         rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <link rel="stylesheet" th:href="@{/css/rh/salaires.css}">
+    <style>
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--rh-primary, #8B4513);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--rh-dark, #6B3410);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+        }
+        
+        .btn-outline-secondary {
+            background: transparent;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+        
+        .btn-outline-secondary:hover {
+            background: var(--gray-100);
+            transform: translateY(-1px);
+        }
+        
+        .d-flex {
+            display: flex;
+        }
+        
+        .justify-content-between {
+            justify-content: space-between;
+        }
+        
+        .align-items-center {
+            align-items: center;
+        }
+        
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+        
+        .me-1 {
+            margin-right: 0.25rem;
+        }
+        
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+        
+        .text-muted {
+            color: var(--gray-600) !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,6 +90,25 @@
         <div th:replace="~{administratif/rh/layout/header :: header('Gestion des salaires')}"></div>
 
         <main class="content">
+            <!-- Page Header with Back Button -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-money-bill-wave me-2"></i>
+                        Gestion des Salaires
+                    </h1>
+                    <p class="text-muted mb-0">Gérer les fiches de paie, commissions et avances des employés</p>
+                </div>
+                <div>
+                    <a href="/administratif/rh" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-1"></i> Retour RH
+                    </a>
+                    <a href="/administratif/rh/gestion-employes" class="btn btn-primary">
+                        <i class="fas fa-users me-1"></i> Gestion Employés
+                    </a>
+                </div>
+            </div>
+
             <!-- Section des employés -->
             <div class="employees-section">
                 <div class="employees-header">
@@ -109,25 +199,31 @@
                     <!-- Contenu de l'onglet Salaires -->
                     <div id="salaires-tab" class="tab-content active">
                         <div th:if="${variationSalaireNet != null and !#lists.isEmpty(variationSalaireNet)}">
-                            <div th:each="moisEntry : ${variationSalaireNet}" class="report-card">
+                            <div class="report-card">
                                 <div class="report-card-header">
-                                    <h3><i class="fas fa-calendar"></i> <span th:text="${moisEntry.mois}">Mois</span></h3>
-                                    <span class="month-badge">Salaires nets</span>
+                                    <h3><i class="fas fa-money-bill-wave"></i> Salaires nets des employés</h3>
+                                    <span class="month-badge">Tous les mois</span>
                                 </div>
                                 
                                 <table class="modern-table">
                                     <thead>
                                         <tr>
                                             <th><i class="fas fa-user"></i> ID Employé</th>
+                                            <th><i class="fas fa-calendar"></i> Mois</th>
                                             <th><i class="fas fa-money-bill-wave"></i> Montant</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:each="salaire : ${moisEntry.salaires}">
-                                            <td th:text="${salaire.idEmploye}">ID</td>
-                                            <td class="amount-cell" 
-                                                th:text="${#numbers.formatDecimal(salaire.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
-                                        </tr>
+                                        <th:block th:each="moisEntry : ${variationSalaireNet}">
+                                            <tr th:each="salaire : ${moisEntry.salaires}">
+                                                <td th:text="${salaire.idEmploye}">ID</td>
+                                                <td>
+                                                    <span class="month-cell" th:text="${moisEntry.mois}">Mois</span>
+                                                </td>
+                                                <td class="amount-cell" 
+                                                    th:text="${#numbers.formatDecimal(salaire.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
+                                            </tr>
+                                        </th:block>
                                     </tbody>
                                 </table>
                             </div>
@@ -143,25 +239,31 @@
                     <!-- Contenu de l'onglet Commissions -->
                     <div id="commissions-tab" class="tab-content">
                         <div th:if="${variationCommission != null and !#lists.isEmpty(variationCommission)}">
-                            <div th:each="moisEntry : ${variationCommission}" class="report-card">
+                            <div class="report-card">
                                 <div class="report-card-header">
-                                    <h3><i class="fas fa-calendar"></i> <span th:text="${moisEntry.mois}">Mois</span></h3>
-                                    <span class="month-badge">Commissions</span>
+                                    <h3><i class="fas fa-coins"></i> Commissions des employés</h3>
+                                    <span class="month-badge">Tous les mois</span>
                                 </div>
                                 
                                 <table class="modern-table">
                                     <thead>
                                         <tr>
                                             <th><i class="fas fa-user"></i> ID Employé</th>
+                                            <th><i class="fas fa-calendar"></i> Mois</th>
                                             <th><i class="fas fa-coins"></i> Montant</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:each="commission : ${moisEntry.commissions}">
-                                            <td th:text="${commission.idEmploye}">ID</td>
-                                            <td class="amount-cell" 
-                                                th:text="${#numbers.formatDecimal(commission.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
-                                        </tr>
+                                        <th:block th:each="moisEntry : ${variationCommission}">
+                                            <tr th:each="commission : ${moisEntry.commissions}">
+                                                <td th:text="${commission.idEmploye}">ID</td>
+                                                <td>
+                                                    <span class="month-cell" th:text="${moisEntry.mois}">Mois</span>
+                                                </td>
+                                                <td class="amount-cell" 
+                                                    th:text="${#numbers.formatDecimal(commission.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
+                                            </tr>
+                                        </th:block>
                                     </tbody>
                                 </table>
                             </div>
@@ -177,25 +279,31 @@
                     <!-- Contenu de l'onglet Avances -->
                     <div id="avances-tab" class="tab-content">
                         <div th:if="${variationAvance != null and !#lists.isEmpty(variationAvance)}">
-                            <div th:each="moisEntry : ${variationAvance}" class="report-card">
+                            <div class="report-card">
                                 <div class="report-card-header">
-                                    <h3><i class="fas fa-calendar"></i> <span th:text="${moisEntry.mois}">Mois</span></h3>
-                                    <span class="month-badge">Avances</span>
+                                    <h3><i class="fas fa-hand-holding-usd"></i> Avances des employés</h3>
+                                    <span class="month-badge">Tous les mois</span>
                                 </div>
                                 
                                 <table class="modern-table">
                                     <thead>
                                         <tr>
                                             <th><i class="fas fa-user"></i> ID Employé</th>
+                                            <th><i class="fas fa-calendar"></i> Mois</th>
                                             <th><i class="fas fa-hand-holding-usd"></i> Montant</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:each="avance : ${moisEntry.avances}">
-                                            <td th:text="${avance.idEmploye}">ID</td>
-                                            <td class="amount-cell" 
-                                                th:text="${#numbers.formatDecimal(avance.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
-                                        </tr>
+                                        <th:block th:each="moisEntry : ${variationAvance}">
+                                            <tr th:each="avance : ${moisEntry.avances}">
+                                                <td th:text="${avance.idEmploye}">ID</td>
+                                                <td>
+                                                    <span class="month-cell" th:text="${moisEntry.mois}">Mois</span>
+                                                </td>
+                                                <td class="amount-cell" 
+                                                    th:text="${#numbers.formatDecimal(avance.montant, 0, 'COMMA', 2, 'POINT')} + ' Ar'">0 Ar</td>
+                                            </tr>
+                                        </th:block>
                                     </tbody>
                                 </table>
                             </div>

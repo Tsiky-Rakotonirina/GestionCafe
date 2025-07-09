@@ -2,22 +2,18 @@ package com.gestioncafe.service.rh;
 
 import com.gestioncafe.model.Grade;
 import com.gestioncafe.repository.GradeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.*;
-import com.gestioncafe.repository.*;
-
 
 @Service
 public class GradeService {
-    @Autowired
-    private GradeRepository gradeRepository;
+    private final GradeRepository gradeRepository;
+
+    public GradeService(GradeRepository gradeRepository) {
+        this.gradeRepository = gradeRepository;
+    }
 
     public List<Grade> findAll() {
         return gradeRepository.findAll();

@@ -10,8 +10,11 @@ import java.util.List;
 @Service
 public class FormationService {
 
-    @Autowired
-    private FormationRepository formationRepository;
+    private final FormationRepository formationRepository;
+
+    public FormationService(FormationRepository formationRepository) {
+        this.formationRepository = formationRepository;
+    }
 
     public List<Formation> getAllFormations() {
         return formationRepository.findAll();

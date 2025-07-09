@@ -1,17 +1,19 @@
 package com.gestioncafe.service.rh;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RhParametreService {
-    @Autowired
     private JourFerieService jourFerieService;
-    @Autowired
     private GradeService gradeService;
 
-    @Autowired
     private IrsaService irsaService;
+
+    public RhParametreService(JourFerieService jourFerieService, GradeService gradeService, IrsaService irsaService) {
+        this.jourFerieService = jourFerieService;
+        this.gradeService = gradeService;
+        this.irsaService = irsaService;
+    }
 
     public IrsaService getIrsaService() {
         return irsaService;

@@ -10,150 +10,176 @@
         rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <link rel="stylesheet" th:href="@{/css/rh/historique.css}">
+    <link rel="stylesheet" th:href="@{/css/rh/avance.css}">
     <script th:src="@{/js/rh/avance.js}"></script>
 </head>
 
 <body>
-    <!-- Header -->
-    <div th:replace="~{administratif/rh/layout/header :: header('Gestion des avances')}"></div>
-    <main class="content">
-        <!-- Sidebar  -->
-        <div class="sidebar" id="sidebar">
-            <nav class="sidebar-nav">
-                <ul>
-                    <li class="nav-item active">
-                        <a th:href="@{/administratif/rh/gestion-employes}" class="nav-link">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Gestion des employes</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/gestion-salaires}" class="nav-link">
-                            <i class="fas fa-boxes"></i>
-                            <span>Gestion des salaires</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/gestion-recrutements}" class="nav-link">
-                            <i class="fas fa-cogs"></i>
-                            <span>Gestion des recrutement</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/gestion-conges}" class="nav-link">
-                            <i class="fas fa-euro-sign"></i>
-                            <span>Gestion des conges et des jours feries</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/administratif/rh/parametre}" class="nav-link">
-                            <i class="fas fa-euro-sign"></i>
-                            <span>Parametrages</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="main-content" id="mainContent">
-
-            <div class="financial-details">
-                <div class="finance-chart-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-area"></i>Gestion des avances</h3>
-                    </div>
-                    <div class="chart-placeholder">
-
-                        <div class="production-items-grid">
-                            <div class="production-item-card">
-                                <div class="item-details">
-                                    <h4>Employe : nom</h4>
-                                    <div class="customer-avatar">
-                                        <img src="" alt="">
-                                    </div>
-                                    <div class="item-stats">
-                                        <span class="quantity">Date Recrutement : </span>
-                                        <br>
-                                        <span class="quantity">Genre : </span>
-                                        <br>
-                                        <span class="quantity">Contact : </span>
-                                    </div>
-                                    <br>
-                                    <a th:href="@{/administratif/rh/salaire/avance(idEmploye=${employe.id})}"
-                                        class="btn secondary">Voir la fiche de l'employe</a><br>
+    <div th:replace="~{administratif/rh/layout/sidebar :: sidebar}"></div>
+    <div class="main-content" id="mainContent">
+        <div th:replace="~{administratif/rh/layout/header :: header('Gestion des avances')}"></div>
+        <main class="content">
+            <div class="advance-container">
+                <!-- Employee Profile Card -->
+                <div class="employee-profile-card">
+                    <div class="employee-header">
+                        <div class="employee-avatar">
+                            <img th:src="${employe.image != null ? '/static/uploads/' + employe.image : ''}"
+                                 alt="Photo de profil" class="avatar-img" th:if="${employe.image != null}">
+                            <span th:if="${employe.image == null}" th:text="${#strings.substring(employe.nom, 0, 1)}">E</span>
+                        </div>
+                        <div class="employee-info">
+                            <h4 class="employee-name">
+                                <i class="fas fa-user me-2"></i>
+                                <span th:text="${employe.nom != null ? employe.nom : 'Nom non défini'}">Nom de l'employé</span>
+                            </h4>
+                            <div class="employee-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar-alt text-primary"></i>
+                                    <span class="detail-label">Recrutement :</span>
+                                    <span class="detail-value" th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-venus-mars text-info"></i>
+                                    <span class="detail-label">Genre :</span>
+                                    <span class="detail-value" th:text="${employe.genre != null ? employe.genre.nom : '-'}">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone text-success"></i>
+                                    <span class="detail-label">Contact :</span>
+                                    <span class="detail-value" th:text="${employe.contact != null ? employe.contact : '-'}">-</span>
                                 </div>
                             </div>
-                            <br><br>
-                            <div class="form-showcase">
-                                <h5>Formulaire pour accorder une avance</h5>
-                                Reste du prochain salaire disponible : <span
-                                    th:text="${prochainSalaire != null ? prochainSalaire : '-'}">-</span>
-                                Retenu pour avance du prochain salaire : <span
-                                    th:text="${retenuPourAvance != null ? retenuPourAvance : '-'}">-</span>
-                                <form th:action="@{/administratif/rh/salaire/ajout-avance}" method="post"
-                                    class="form-example">
-                                    <div class="form-group">
-                                        <label class="form-label">Montant (Ariary) :</label>
-                                        <input type="number" class="form-input" placeholder="Ex : 50000" name="montant"
-                                            min="0" step="100" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Raison :</label>
-                                        <select class="form-select" name="idRaison">
-                                            <option value="">Choisir une raison </option>
-                                            <option th:each="raisonAvance : ${raisonAvances}"
-                                                th:value="${raisonAvance.id}">
-                                                <span
-                                                    th:text="${raisonAvance != null ? raisonAvance.valeur : '-'}">-</span>
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <input type="hidden" name="idEmploye" th:value="${employe.id}">
-                                    <button type="submit" class="btn primary">Donner une avance</button>
-                                    <br><br>
-                                </form>
-                            </div>
-                            <br><br>
                         </div>
+                        <div class="employee-actions">
+                            <a th:href="@{'/administratif/rh/fiche-employe/' + ${employe.id}}" class="btn btn-primary">
+                                <i class="fas fa-user-circle me-1"></i> Fiche Employé
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advance Section -->
+                <div class="advance-section">
+                    <!-- Advance Form -->
+                    <div class="advance-form-card">
+                        <div class="form-header">
+                            <h3><i class="fas fa-hand-holding-usd"></i> Accorder une avance</h3>
+                        </div>
+                        
+                        <div class="salary-info">
+                            <div class="salary-item">
+                                <span class="salary-label">Prochain salaire disponible :</span>
+                                <span class="salary-value" th:text="${prochainSalaire != null ? #numbers.formatDecimal(prochainSalaire, 0, 'COMMA', 2, 'POINT') + ' Ar' : 'Non disponible'}">-</span>
+                            </div>
+                            <div class="salary-item">
+                                <span class="salary-label">Déjà retenu pour avances :</span>
+                                <span class="salary-value" th:text="${retenuPourAvance != null ? #numbers.formatDecimal(retenuPourAvance, 0, 'COMMA', 2, 'POINT') + ' Ar' : '0 Ar'}">-</span>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/administratif/rh/salaire/ajout-avance}" method="post" class="advance-form">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-money-bill-wave me-1"></i> Montant de l'avance
+                                </label>
+                                <input type="number" class="form-input" placeholder="Ex : 50 000" name="montant"
+                                       min="0" required>
+                                <small class="form-help">Saisissez le montant en Ariary</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-info-circle me-1"></i> Raison de l'avance
+                                </label>
+                                <select class="form-select" name="idRaison" required>
+                                    <option value="">Choisir une raison...</option>
+                                    <option th:each="raisonAvance : ${raisonAvances}"
+                                            th:value="${raisonAvance.id}"
+                                            th:text="${raisonAvance.valeur}">
+                                        Raison
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <input type="hidden" name="idEmploye" th:value="${employe.id}">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-check-circle"></i>
+                                Accorder l'avance
+                            </button>
+                        </form>
                     </div>
 
-                    <div class="expense-breakdown-card">
-                        <div class="card-header">
-                            <h3>Historique des avances</h3>
+                    <!-- Advance Statistics -->
+                    <div class="advance-stats-card">
+                        <div class="stats-header">
+                            <h3><i class="fas fa-chart-pie"></i> Statistiques</h3>
                         </div>
-                        <div class="table-container" th:if="${avances != null and !#lists.isEmpty(avances)}">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th><i class="fas fa-tag"></i> Date avance</th>
-                                        <th><i class="fas fa-euro-sign"></i> Montant</th>
-                                        <th><i class="fas fa-info-circle"></i> Raison</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="avance : ${avances}">
-                                        <td><strong><span
-                                                    th:text="${avance.dateAvance != null ? avance.dateAvance : '-'}">-</span></strong>
-                                        </td>
-                                        <td><strong><span
-                                                    th:text="${avance.montant != null ? avance.montant : '-'}">-</span></strong>
-                                        </td>
-                                        <td><span
-                                                th:text="${avance.raisonAvance != null ? avance.raisonAvance.valeur : '-'}">-</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div th:if="${avances == null or #lists.isEmpty(avances)}">
-                            <h4>Aucunes avances donnees a l'employe</h4>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-list"></i>
+                                </div>
+                                <div class="stat-value" th:text="${#lists.size(avances ?: {})}">0</div>
+                                <div class="stat-label">Avances accordées</div>
+                            </div>
+                            
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <div class="stat-value" th:text="${avances != null ? #aggregates.sum(avances.![montant]) + ' Ar' : '0 Ar'}">0 Ar</div>
+                                <div class="stat-label">Total des avances</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div th:if="${erreurAjoutAvance}">
-                    <p th:text="${erreurAjoutAvance}"></p>
+
+                <!-- Advance History -->
+                <div class="advance-history-card">
+                    <div class="history-header">
+                        <h3><i class="fas fa-history"></i> Historique des avances</h3>
+                    </div>
+                    
+                    <div th:if="${avances != null and !#lists.isEmpty(avances)}">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-calendar me-1"></i> Date</th>
+                                    <th><i class="fas fa-money-bill-wave me-1"></i> Montant</th>
+                                    <th><i class="fas fa-info-circle me-1"></i> Raison</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="avance : ${avances}">
+                                    <td class="date-cell" th:text="${avance.dateAvance != null ? #dates.format(avance.dateAvance, 'dd/MM/yyyy') : '-'}">-</td>
+                                    <td class="amount-cell" th:text="${avance.montant != null ? #numbers.formatDecimal(avance.montant, 0, 'COMMA', 2, 'POINT') + ' Ar' : '-'}">-</td>
+                                    <td class="reason-cell">
+                                        <span class="reason-badge" th:text="${avance.raisonAvance != null ? avance.raisonAvance.valeur : 'Non spécifiée'}">-</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div th:if="${avances == null or #lists.isEmpty(avances)}" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <h4>Aucune avance accordée</h4>
+                        <p>Aucune avance n'a encore été accordée à cet employé</p>
+                    </div>
+                </div>
+
+                <!-- Error Messages -->
+                <div th:if="${erreurAjoutAvance}" class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span th:text="${erreurAjoutAvance}">Erreur lors de l'ajout de l'avance</span>
                 </div>
             </div>
-    </main>
+        </main>
+    </div>
     <!-- <script th:src="@{/templates/script.js}"></script> -->
 </body>
 
