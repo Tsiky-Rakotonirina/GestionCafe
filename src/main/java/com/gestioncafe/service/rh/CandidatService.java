@@ -1,12 +1,10 @@
 package com.gestioncafe.service.rh;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.gestioncafe.model.Candidat;
 import com.gestioncafe.model.StatutEmploye;
 import com.gestioncafe.repository.CandidatRepository;
 import com.gestioncafe.repository.StatutEmployeRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
@@ -14,12 +12,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class CandidatService {
+    private final CandidatRepository candidatRepository;
 
-    @Autowired
-    private CandidatRepository candidatRepository;
+    private final StatutEmployeRepository statutEmployeRepository;
 
-    @Autowired
-    private StatutEmployeRepository statutEmployeRepository;
+    public CandidatService(CandidatRepository candidatRepository, StatutEmployeRepository statutEmployeRepository) {
+        this.candidatRepository = candidatRepository;
+        this.statutEmployeRepository = statutEmployeRepository;
+    }
 
     public List<Candidat> getAllCandidats() {
         // Étape 1 : récupérer tous les StatutEmploye avec statut.id = 1
@@ -49,18 +49,18 @@ public class CandidatService {
     }
 
     public List<Candidat> getCandidatsByGenreId(Long genreId) {
-    // 1. Récupérer les StatutEmploye avec statut.id = 1
-    List<StatutEmploye> statutEmployes = statutEmployeRepository.findByIdStatut(1L);
+        // 1. Récupérer les StatutEmploye avec statut.id = 1
+        List<StatutEmploye> statutEmployes = statutEmployeRepository.findByIdStatut(1L);
 
-    // 2. Obtenir les ID des candidats déjà recrutés
-    Set<Long> candidatsRecrutesIds = statutEmployes.stream()
-        .map(se -> se.getEmploye().getCandidat().getId())
-        .collect(Collectors.toSet());
+        // 2. Obtenir les ID des candidats déjà recrutés
+        Set<Long> candidatsRecrutesIds = statutEmployes.stream()
+            .map(se -> se.getEmploye().getCandidat().getId())
+            .collect(Collectors.toSet());
 
-    // 3. Récupérer les candidats par genre, puis filtrer ceux qui ne sont pas encore recrutés
-    return candidatRepository.findByGenreId(genreId).stream()
-        .filter(c -> !candidatsRecrutesIds.contains(c.getId()))
-        .collect(Collectors.toList());
-}
+        // 3. Récupérer les candidats par genre, puis filtrer ceux qui ne sont pas encore recrutés
+        return candidatRepository.findByGenreId(genreId).stream()
+            .filter(c -> !candidatsRecrutesIds.contains(c.getId()))
+            .collect(Collectors.toList());
+    }
 
 }
