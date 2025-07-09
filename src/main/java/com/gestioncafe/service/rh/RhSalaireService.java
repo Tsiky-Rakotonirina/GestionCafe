@@ -5,6 +5,10 @@ import com.gestioncafe.repository.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +34,12 @@ public class RhSalaireService {
     private final PresenceRepository presenceRepository;
     private final StatutEmployeRepository statutEmployeRepository;
 
-    public RhSalaireService(IrsaRepository irsaRepository, EmployeRepository employeRepository, CommissionRepository commissionRepository, AvanceRepository avanceRepository, RaisonCommissionRepository raisonCommissionRepository, RaisonAvanceRepository raisonAvanceRepository, CotisationSocialeRepository cotisationSocialeRepository, GradeEmployeRepository gradeEmployeRepository, PayementRepository payementRepository, PresenceRepository presenceRepository, StatutEmployeRepository statutEmployeRepository) {
+    public RhSalaireService(IrsaRepository irsaRepository, EmployeRepository employeRepository,
+            CommissionRepository commissionRepository, AvanceRepository avanceRepository,
+            RaisonCommissionRepository raisonCommissionRepository, RaisonAvanceRepository raisonAvanceRepository,
+            CotisationSocialeRepository cotisationSocialeRepository, GradeEmployeRepository gradeEmployeRepository,
+            PayementRepository payementRepository, PresenceRepository presenceRepository,
+            StatutEmployeRepository statutEmployeRepository) {
         this.irsaRepository = irsaRepository;
         this.employeRepository = employeRepository;
         this.commissionRepository = commissionRepository;
@@ -46,7 +55,7 @@ public class RhSalaireService {
 
     public Employe getEmployeById(Long id) {
         return employeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Employé non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Employé non trouvé avec l'ID: " + id));
     }
 
     public List<Payement> getPayementsByEmployeId(Long idEmploye) {
@@ -55,92 +64,160 @@ public class RhSalaireService {
 
     public List<FicheDePaie> getFicheDePaiesByEmployeId(Long idEmploye) {
         List<FicheDePaie> ficheDePaies = new ArrayList<>();
-        Payement dernierPayement = payementRepository.findLatestPayementByEmployeId(idEmploye);
-        LocalDate dateApaye = dernierPayement.getMoisReference().toLocalDate().plusMonths(1);
-        LocalDate dateRepere = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
-        List<Date> dates = new ArrayList<>();
-        while (!dateApaye.isAfter(dateRepere)) {
-            dates.add(Date.valueOf(dateApaye));
-            dateApaye = dateApaye.plusMonths(1);
-        }
-        List<CotisationSociale> cotisationSociales = cotisationSocialeRepository.findAll();
-        double tauxCotisationSociale = 0;
-        for (CotisationSociale cotisationSociale : cotisationSociales) {
-            tauxCotisationSociale += cotisationSociale.getTaux();
-        }
-        List<Irsa> irsas = irsaRepository.findAll();
-        for (Date date : dates) {
-            StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(idEmploye, date.toLocalDate().atStartOfDay())
-                .orElse(null);
-            if (statutEmploye == null || statutEmploye.getStatut().getId() != 1) {
-                break;
-            }
-            LocalDate localDateDebut = date.toLocalDate().withDayOfMonth(1);
-            Date dateDebut = Date.valueOf(localDateDebut);
-            double salaire = 0;
-            double salaireDeBase = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, date);
-            salaire = salaireDeBase;
-            List<Presence> abscence = presenceRepository.findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(idEmploye, dateDebut, date);
-            double abscences = abscence.size() * salaire / 22;
-            salaire -= abscences;
-            double totalCommission = 0;
-            List<Commission> commissions = commissionRepository.findByIdEmployeAndDateCommissionBetween(idEmploye, dateDebut, date);
-            for (Commission commission : commissions) {
-                totalCommission += commission.getMontant();
-            }
-            salaire += totalCommission;
-            double retenuesSociales = salaire * tauxCotisationSociale;
-            salaire -= (salaire * tauxCotisationSociale);
+        try {
+            Payement dernierPayement = payementRepository.findTopByIdEmployeOrderByMoisReferenceDesc(idEmploye);
+            LocalDate dateApaye = dernierPayement.getMoisReference().toLocalDate().plusMonths(1);
+            LocalDate dateRepere = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
 
-            double impots = 0;
-            for (Irsa irsa : irsas) {
-                if (salaire >= irsa.getSalaireMin() && (irsa.getSalaireMax() == 0 || salaire <= irsa.getSalaireMax())) {
-                    impots = (salaire - irsa.getSalaireMin()) * irsa.getTaux();
+            List<Date> dates = new ArrayList<>();
+            while (!dateApaye.isAfter(dateRepere)) {
+                dates.add(Date.valueOf(dateApaye));
+                dateApaye = dateApaye.plusMonths(1);
+            }
+
+            List<CotisationSociale> cotisationSociales = cotisationSocialeRepository.findAll();
+            double tauxCotisationSociale = cotisationSociales.stream()
+                    .mapToDouble(CotisationSociale::getTaux)
+                    .sum();
+
+            List<Irsa> irsas = irsaRepository.findAll();
+
+            for (Date date : dates) {
+                StatutEmploye statutEmploye = statutEmployeRepository
+                        .findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(idEmploye, date)
+                        .orElse(null);
+
+                if (statutEmploye == null || statutEmploye.getIdStatut() != 1) {
                     break;
                 }
+
+                LocalDate localDateDebut = date.toLocalDate().withDayOfMonth(1);
+                Date dateDebut = Date.valueOf(localDateDebut);
+
+                Double salaireDeBase = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, date);
+                if (salaireDeBase == null) {
+                    continue;
+                }
+
+                double salaire = salaireDeBase;
+
+                // Absences
+                List<Presence> abscence = presenceRepository
+                        .findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(idEmploye, dateDebut, date);
+                double abscences = abscence.size() * salaire / 22;
+                salaire -= abscences;
+
+                // Commissions
+                double totalCommission = commissionRepository
+                        .findByIdEmployeAndDateCommissionBetween(idEmploye, dateDebut, date)
+                        .stream()
+                        .mapToDouble(Commission::getMontant)
+                        .sum();
+                salaire += totalCommission;
+
+                // Retenues sociales
+                double retenuesSociales = salaire * (tauxCotisationSociale / 100);
+                salaire -= retenuesSociales;
+
+                // IRSA
+                double impots = 0;
+                for (Irsa irsa : irsas) {
+                    if (salaire >= irsa.getSalaireMin()
+                            && (irsa.getSalaireMax() == 0 || salaire <= irsa.getSalaireMax())) {
+                        impots = (salaire - irsa.getSalaireMin()) * (irsa.getTaux() / 100);
+                        break;
+                    }
+                }
+                salaire -= impots;
+
+                // Retenue avance
+                double retenuPourAvance = this.retenuPourAvance(idEmploye);
+                salaire -= retenuPourAvance;
+
+                // Empêche salaire négatif
+
+                // DEBUG : Affichage des détails
+                System.out.println("---- Fiche de paie pour le mois de " + dateDebut + " ----");
+                System.out.println("Salaire de base       : " + salaireDeBase);
+                System.out.println("Absences (jours)      : " + abscence.size() + ", Montant = " + abscences);
+                System.out.println("Commissions           : " + totalCommission);
+                System.out.println("Retenues sociales     : " + retenuesSociales);
+                System.out.println("Impôts IRSA           : " + impots);
+                System.out.println("Retenue avance        : " + retenuPourAvance);
+                System.out.println("=> Salaire net final  : " + salaire);
+                System.out.println("--------------------------------------------");
+
+                ficheDePaies.add(new FicheDePaie(dateDebut, salaireDeBase, abscences, totalCommission,
+                        retenuesSociales, impots, retenuPourAvance));
             }
-            salaire -= impots;
-            double retenuPourAvance = this.retenuPourAvance(idEmploye);
-            salaire -= retenuPourAvance;
-            ficheDePaies.add(new FicheDePaie(dateDebut, salaireDeBase, abscences, totalCommission, retenuesSociales, impots, retenuPourAvance));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return ficheDePaies;
     }
 
+    public Page<FicheDePaie> getFicheDePaiesByEmployeId(Long idEmploye, Pageable pageable) {
+        List<FicheDePaie> fullList = getFicheDePaiesByEmployeId(idEmploye); // ta méthode actuelle
 
-    public double prochainSalaire(Long idEmploye) {
-        LocalDate ceJour = LocalDate.now().withDayOfMonth(1);
-        Date dateRepere = Date.valueOf(ceJour);
-        double prochainSalaire = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, dateRepere);
-        List<CotisationSociale> cotisationSociales = cotisationSocialeRepository.findAll();
-        double tauxCotisationSociale = 0;
-        for (CotisationSociale cotisationSociale : cotisationSociales) {
-            tauxCotisationSociale += cotisationSociale.getTaux();
-        }
-        prochainSalaire -= (prochainSalaire * tauxCotisationSociale);
-        List<Irsa> irsas = irsaRepository.findAll();
-        double impots = 0;
-        for (Irsa irsa : irsas) {
-            if (prochainSalaire >= irsa.getSalaireMin() && (irsa.getSalaireMax() == 0 || prochainSalaire <= irsa.getSalaireMax())) {
-                impots = (prochainSalaire - irsa.getSalaireMin()) * irsa.getTaux();
-                break;
+        int total = fullList.size();
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), total);
+
+        List<FicheDePaie> pageContent = fullList.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageable, total);
+    }
+
+    public Double prochainSalaire(Long idEmploye) {
+        Double prochainSalaire = 0.0;
+        try {
+            LocalDate ceJour = LocalDate.now().withDayOfMonth(1);
+            Date dateRepere = Date.valueOf(ceJour);
+            Double tmp = gradeEmployeRepository.findSalaireByEmployeAndDate(idEmploye, dateRepere);
+            if (tmp != null) {
+                prochainSalaire = tmp;
             }
+            List<CotisationSociale> cotisationSociales = cotisationSocialeRepository.findAll();
+            double tauxCotisationSociale = 0;
+            for (CotisationSociale cotisationSociale : cotisationSociales) {
+                tauxCotisationSociale += cotisationSociale.getTaux();
+            }
+            prochainSalaire -= (prochainSalaire * (tauxCotisationSociale / 100));
+            List<Irsa> irsas = irsaRepository.findAll();
+            double impots = 0;
+            for (Irsa irsa : irsas) {
+                if (prochainSalaire >= irsa.getSalaireMin()
+                        && (irsa.getSalaireMax() == 0 || prochainSalaire <= irsa.getSalaireMax())) {
+                    impots = (prochainSalaire - irsa.getSalaireMin()) * (irsa.getTaux() / 100);
+                    break;
+                }
+            }
+            prochainSalaire -= impots;
+            double retenuPourAvance = this.retenuPourAvance(idEmploye);
+            prochainSalaire -= retenuPourAvance;
+        } catch (Exception e) {
+            System.out.println("prochainSalaire: " + e.getLocalizedMessage());
         }
-        prochainSalaire -= impots;
-        double retenuPourAvance = this.retenuPourAvance(idEmploye);
-        prochainSalaire -= retenuPourAvance;
+
         return prochainSalaire;
     }
 
-    public double retenuPourAvance(Long idEmploye) {
-        LocalDate ceJour = LocalDate.now();
-        ceJour = ceJour.withDayOfMonth(1);
-        Date dateRepere = Date.valueOf(ceJour);
-        List<Avance> avances = avanceRepository.findByIdEmployeAndDateAvanceAfter(idEmploye, dateRepere);
-        double totalAvances = 0;
-        for (Avance avance : avances) {
-            totalAvances += avance.getMontant();
+    public Double retenuPourAvance(Long idEmploye) {
+        Double totalAvances = 0.0;
+        try {
+            LocalDate ceJour = LocalDate.now();
+            ceJour = ceJour.withDayOfMonth(1);
+            Date dateRepere = Date.valueOf(ceJour);
+            List<Avance> avances = avanceRepository.findByIdEmployeAndDateAvanceAfter(idEmploye, dateRepere);
+
+            for (Avance avance : avances) {
+                totalAvances += avance.getMontant();
+            }
+        } catch (Exception e) {
+            System.out.println("retenuPourAvance: " + e.getLocalizedMessage());
         }
+
         return totalAvances;
     }
 
@@ -152,7 +229,6 @@ public class RhSalaireService {
         return avanceRepository.findByIdEmployeOrderByDateAvanceDesc(idEmploye);
     }
 
-
     public List<RaisonCommission> getAllRaisonCommissions() {
         return raisonCommissionRepository.findAll();
     }
@@ -163,14 +239,16 @@ public class RhSalaireService {
 
     @Transactional
     public void ajoutPayement(Long idEmploye, double salaireDeBase, double abscences, double commissions,
-                              double retenuesSociales, double impots, double salaireBrut, double salaireNetImposable,
-                              double salaireNet, double retenueAvance, double netAPayer, Date moisReference) {
+            double retenuesSociales, double impots, double salaireBrut, double salaireNetImposable,
+            double salaireNet, double retenueAvance, double netAPayer, Date moisReference) {
         try {
             Date datePayement = Date.valueOf(LocalDate.now());
             String pdfNom = (datePayement.getTime() / 1000) + ".pdf";
             String referencePayement = "/uploads/ficheDePaie/" + pdfNom;
-            payementRepository.save(new Payement(idEmploye, netAPayer, moisReference, datePayement, referencePayement));
-            Employe employe = employeRepository.findById(idEmploye).orElseThrow(() -> new RuntimeException("Employé introuvable"));
+            payementRepository.save(new Payement(idEmploye, netAPayer, moisReference, datePayement, referencePayement,
+                    impots, retenuesSociales));
+            Employe employe = employeRepository.findById(idEmploye)
+                    .orElseThrow(() -> new RuntimeException("Employé introuvable"));
 
             Document document = new Document();
             File file = new File(referencePayement);
@@ -203,7 +281,7 @@ public class RhSalaireService {
 
     public Payement getPayementById(Long id) {
         return payementRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Payement non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Payement non trouvé avec l'ID: " + id));
     }
 
     public void ajoutAvance(Long idEmploye, Long idRaison, double montant) throws Exception {
@@ -221,7 +299,7 @@ public class RhSalaireService {
         }
         Date dateAvance = Date.valueOf(LocalDate.now());
         RaisonAvance raisonAvance = raisonAvanceRepository.findById(idRaison)
-            .orElseThrow(() -> new Exception("Raison non trouvée"));
+                .orElseThrow(() -> new Exception("Raison non trouvée"));
         avanceRepository.save(new Avance(raisonAvance, idEmploye, montant, dateAvance));
     }
 
@@ -232,7 +310,7 @@ public class RhSalaireService {
         LocalDate localDate = LocalDate.now();
         Date dateCommission = Date.valueOf(localDate);
         RaisonCommission raisonCommission = raisonCommissionRepository.findById(idRaison)
-            .orElseThrow(() -> new Exception("Raison non trouvée"));
+                .orElseThrow(() -> new Exception("Raison non trouvée"));
         commissionRepository.save(new Commission(raisonCommission, idEmploye, montant, dateCommission));
     }
 

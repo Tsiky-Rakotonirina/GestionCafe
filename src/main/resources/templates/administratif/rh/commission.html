@@ -132,9 +132,11 @@
                     </div>
                 </div>
             </div>
-
+                <div th:if="${erreurAjoutCommission}">
+                    <p th:text="${erreurAjoutCommission}"></p>
+                </div>
         </div>
 </main>
-<script th:src="@{/templates/script.js}"></script>
+<!-- <script th:src="@{/templates/script.js}"></script> -->
 </body>
 </html>

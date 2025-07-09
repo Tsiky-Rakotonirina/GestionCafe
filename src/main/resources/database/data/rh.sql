@@ -1,7 +1,12 @@
--- Genres
+INSERT INTO administratif(nom, mot_de_passe)
+VALUES ('admin', 'admin');
+
+
+
 INSERT INTO genre(id, nom)
 VALUES (1, 'Homme'),
        (2, 'Femme');
+
 
 INSERT INTO grade (salaire, nom) VALUES
 (800000, 'Stagiaire'),
@@ -104,9 +109,45 @@ INSERT INTO detail_candidat (id_candidat, id_serie_bac, id_formation, id_langue,
 (1, NULL, 5, 2, NULL),
 (1, NULL, NULL, 3, NULL);
 
--- Correction : Insérer l'employé avec id_tiers (ici 1), contact et nom non NULL
-INSERT INTO employe (id_tiers, id_genre, date_naissance, date_recrutement, date_demission, reference_cv, contact, nom, id_candidat)
-VALUES (1, 1, '1990-05-20', '2023-02-01', NULL, 'CV_Rakoto_Jean_2023.pdf', '0341234567', 'Rakoto Jean', 1);
+
+-- Tiers (clients et employé)
+INSERT INTO tiers(nom, prenom, id_genre, contact, email, image)
+VALUES ('Client', 'Un', 1, '0123456789', 'client1@mail.com', NULL),
+       ('Client', 'Deux', 2, '0987654321', 'client2@mail.com', NULL),
+       ('Employe', 'Test', 1, '0112233445', 'employe@mail.com', NULL);
+
+-- Clients
+INSERT INTO client(id, id_tiers, date_adhesion, date_naissance)
+VALUES (1, 1, '2024-01-01', '2000-01-01'),
+       (2, 2, '2024-01-02', '2001-02-02');
+
+-- Employé
+INSERT INTO employe (
+    nom,
+    id_genre,
+    contact,
+    id_tiers,
+    date_naissance,
+    date_recrutement,
+    date_demission,
+    reference_cv,
+    id_candidat,     -- requis
+    image            -- facultatif
+)
+VALUES (
+    'Rabe',
+    1,
+    '+261337386933',
+    1,
+    '1990-01-01',
+    '2023-01-01',
+    NULL,            -- date_demission (facultatif)
+    NULL,            -- reference_cv (facultatif)
+    1,               -- id_candidat (doit exister dans candidat.id)
+    NULL             -- image (facultatif)
+);
+
+
 
 INSERT INTO statut_employe (id_employe, date_statut, id_statut) VALUES
 (1, '2023-02-01 08:00:00', 1);
@@ -173,12 +214,27 @@ INSERT INTO commission (id_raison_commission, id_employe, date_commission, monta
 (1, 1, '2023-04-01', 150000),
 (4, 1, '2023-12-15', 200000);
 
-INSERT INTO payement (id_employe, date_payement, montant, reference_payement, mois_reference) VALUES
-(1, '2023-03-05', 1800000, 'PAY202303001', '2023-02-01'),
-(1, '2023-04-05', 1800000, 'PAY202304001', '2023-03-01'),
-(1, '2023-05-05', 1800000, 'PAY202305001', '2023-04-01'),
-(1, '2023-06-05', 1800000, 'PAY202306001', '2023-05-01'),
-(1, '2023-07-05', 2500000, 'PAY202307001', '2023-06-01'),
-(1, '2023-08-05', 2500000, 'PAY202308001', '2023-07-01'),
-(1, '2023-09-05', 2500000, 'PAY202309001', '2023-08-01');
+INSERT INTO payement (
+    id_employe, date_payement, montant, reference_payement, mois_reference, irsa, cotisation_sociale
+) VALUES
+-- Mois 02/2023 - 1 800 000
+(1, '2023-03-05', 1800000, 'PAY202303001', '2023-02-01', 120000, 45000),
+
+-- Mois 03/2023 - 1 800 000
+(1, '2023-04-05', 1800000, 'PAY202304001', '2023-03-01', 120000, 45000),
+
+-- Mois 04/2023 - 1 800 000
+(1, '2023-05-05', 1800000, 'PAY202305001', '2023-04-01', 120000, 45000),
+
+-- Mois 05/2023 - 1 800 000
+(1, '2023-06-05', 1800000, 'PAY202306001', '2023-05-01', 120000, 45000),
+
+-- Mois 06/2023 - 2 500 000
+(1, '2023-07-05', 2500000, 'PAY202307001', '2023-06-01', 190000, 62500),
+
+-- Mois 07/2023 - 2 500 000
+(1, '2023-08-05', 2500000, 'PAY202308001', '2023-07-01', 190000, 62500),
+
+-- Mois 08/2023 - 2 500 000
+(1, '2023-09-05', 2500000, 'PAY202309001', '2023-08-01', 190000, 62500);
 

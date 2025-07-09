@@ -1,4 +1,4 @@
-CREATE TABLE administratif
+CREATE TABLE administratif 
 (
     id           SERIAL PRIMARY KEY,
     nom          VARCHAR(255),
@@ -296,18 +296,20 @@ CREATE TABLE commission
 );
 
 -- Table payement employe
-CREATE TABLE payement
-(
-    id                 SERIAL PRIMARY KEY,
-    id_employe         INTEGER        NOT NULL,
-    date_payement      DATE           NOT NULL,
-    montant            DECIMAL(10, 2) NOT NULL,
-    reference_payement VARCHAR(255)   NULL,
-    mois_reference     DATE           NOT NULL,
+CREATE TABLE payement (
+    id                 SERIAL        PRIMARY KEY,
+    id_employe         INTEGER       NOT NULL,
+    date_payement      DATE          NOT NULL,
+    montant            DECIMAL(10,2) NOT NULL,
+    reference_payement VARCHAR(255)  NULL,
+    mois_reference     DATE          NOT NULL,
+    irsa DECIMAL(10,2) ,
+    cotisation_sociale DECIMAL(10,2),
+    
 
     CONSTRAINT fk_payement_employe_employe
         FOREIGN KEY (id_employe)
-            REFERENCES employe (id)
+        REFERENCES employe(id)
 );
 
 -- catégorie des unités

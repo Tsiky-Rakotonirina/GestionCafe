@@ -3,6 +3,7 @@ package com.gestioncafe.controller.rh;
 import com.gestioncafe.model.*;
 import com.gestioncafe.service.rh.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.gestioncafe.service.rh.*;
+import com.gestioncafe.model.*;
+
 @Controller
 @RequestMapping("/administratif/rh")
-
 public class RhController {
 
     private final RhParametreService rhParametreService;
@@ -74,11 +77,25 @@ public class RhController {
     public String gestionSalaires(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-            .map(StatutEmploye::getEmploye)
-            .collect(Collectors.toList());
-        model.addAttribute("variationSalaireNet", rhService.variationSalaireNet());
-        model.addAttribute("variationCommission", rhService.variationCommission());
-        model.addAttribute("variationAvance", rhService.variationAvance());
+                .map(StatutEmploye::getEmploye)
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> varSN = rhService.variationSalaireNet();
+        List<Map<String, Object>> varCOMM = rhService.variationCommission();
+        List<Map<String, Object>> varAVC = rhService.variationAvance();
+
+        System.out.println("== Variation Salaire Net ==");
+        varSN.forEach(map -> System.out.println(map));
+
+        System.out.println("== Variation Commission ==");
+        varCOMM.forEach(map -> System.out.println(map));
+
+        System.out.println("== Variation Avance ==");
+        varAVC.forEach(map -> System.out.println(map));
+
+        model.addAttribute("variationSalaireNet", varSN);
+        model.addAttribute("variationCommission", varCOMM);
+        model.addAttribute("variationAvance", varAVC);
         model.addAttribute("employes", employes);
 
         return "administratif/rh/gestion-salaires";
@@ -112,8 +129,8 @@ public class RhController {
     public String gestionConges(Model model) {
         List<StatutEmploye> statutEmployes = rhService.getAllEmployesActifs();
         List<Employe> employes = statutEmployes.stream()
-            .map(StatutEmploye::getEmploye)
-            .collect(Collectors.toList());
+                .map(StatutEmploye::getEmploye)
+                .collect(Collectors.toList());
         model.addAttribute("employes", employes);
         model.addAttribute("nbjCongeUtilise", rhService.nbjCongeUtilise(employes));
         model.addAttribute("nbjCongeReserve", rhService.nbjCongeReserve(employes));
