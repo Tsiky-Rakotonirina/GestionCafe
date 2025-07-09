@@ -205,21 +205,15 @@
                                     <th>Prix de Revient</th>
                                     <th>Prix de Vente</th>
                                     <th>Bénéfice</th>
-                                    <th>Date Production</th>
-                                    <th>Date Péremption</th>
-                                    <th>Quantité Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="produit : ${produits}">
+                                <tr th:each="produit : ${produitsLogistique}">
                                     <td th:text="${produit.nom}"></td>
                                     <td th:text="${produit.stock}"></td>
-                                    <td th:text="${#numbers.formatDecimal(produit.typeProduit.valeur, 1, 2, 'COMMA') + ' Ar'}"></td>
-                                    <td th:text="${#numbers.formatDecimal(produit.typeProduit.valeur * 1.3, 1, 2, 'COMMA') + ' Ar'}"></td>
-                                    <td th:text="${#numbers.formatDecimal(produit.typeProduit.valeur * 0.3, 1, 2, 'COMMA') + ' Ar'}"></td>
-                                    <td th:text="${#dates.format(produit.dateProduction, 'dd/MM/yyyy')}"></td>
-                                    <td th:text="${#dates.format(produit.datePeremption, 'dd/MM/yyyy')}"></td>
-                                    <td th:text="${produit.stockTotal}"></td>
+                                    <td th:text="${#numbers.formatDecimal(produit.coutRevient, 1, 2, 'COMMA') + ' Ar'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(produit.prixVente, 1, 2, 'COMMA') + ' Ar'}"></td>
+                                    <td th:text="${#numbers.formatDecimal(produit.benefice, 1, 2, 'COMMA') + ' Ar'}"></td>
                                 </tr>
                             </tbody>
                         </table>
