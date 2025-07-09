@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Fournisseurs</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
+
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+
+                <!-- Image de logo -->
+                <!--<img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">-->
+                <span>Cafe</span>
+            </a>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item">
+                <a th:href="@{/administratif/logistique}" data-page="logistique" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Logistique</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a th:href="@{/administratif/stock/fournisseurs}" data-page="fournisseurs" class="nav-link">
+                    <i class="fas fa-truck"></i>
+                    <span>Fournisseurs</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/stock/approvisionnement}" data-page="approvisionnement" class="nav-link">
+                    <i class="fas fa-cart-plus"></i> <!-- Icône plus appropriée pour les approvisionnements -->
+                    <span>Approvisionnement</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/stock/matiere-premiere}" data-page="matiere-premiere" class="nav-link">
+                    <i class="fas fa-boxes"></i>
+                    <span>Matiere Premiere</span>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-profile">
+
+            <div class="user-info">
+                <span class="user-name">Admin</span>
+                <span class="user-role">Gérant</span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="page-title" id="pageTitle">Listes Fournisseurs</h1>
+        </div>
+        <div class="header-right">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2>Gestion des Fournisseurs</h2>
+                    <div class="d-flex">
+                        <input type="text" id="searchInput" class="form-control me-2" placeholder="Rechercher...">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addFournisseurModal">
+                            <i class="fas fa-plus"></i> Ajouter
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th><a th:href="@{/administratif/stock/fournisseurs(sort='nom')}">Nom</a></th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th><a th:href="@{/administratif/stock/fournisseurs(sort='frais')}">Frais</a></th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="fournisseurTableBody">
+                            <tr th:each="fournisseur : ${fournisseurs}">
+                                <td class="fournisseur-nom"><a th:href="@{/administratif/stock/fournisseurs/detail/{id}(id=${fournisseur.id})}"
+                                       th:text="${fournisseur.nom}"></a></td>
+                                <td class="fournisseur-contact" th:text="${fournisseur.contact}"></td>
+                                <td class="fournisseur-email" th:text="${fournisseur.email}"></td>
+                                <td class="fournisseur-frais" th:text="${#numbers.formatDecimal(fournisseur.frais, 1, 2)} + ' Ar'"></td>
+                                <td>
+                                    <a th:href="@{/administratif/stock/fournisseurs/edit/} + ${fournisseur.id}"
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/administratif/stock/fournisseurs/delete/} + ${fournisseur.id}"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Add Fournisseur Modal -->
+<div class="modal fade" id="addFournisseurModal" tabindex="-1" aria-labelledby="addFournisseurModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFournisseurModalLabel">Ajouter un Fournisseur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/administratif/stock/fournisseurs/save}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom</label>
+                        <input type="text" class="form-control" id="nom" name="nom" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contact" class="form-label">Contact</label>
+                        <input type="text" class="form-control" id="contact" name="contact">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="frais" class="form-label">Frais</label>
+                        <input type="number" step="0.01" class="form-control" id="frais" name="frais" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap5/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/stock/script.js}"></script>
+<script>
+// Correction du filtrage JS côté client sur la table des fournisseurs
+window.addEventListener('load', function() {
+    var searchInput = document.getElementById('searchInput');
+    var tableBody = document.getElementById('fournisseurTableBody');
+    if (!searchInput || !tableBody) return;
+    searchInput.addEventListener('input', function() {
+        var filter = searchInput.value.toLowerCase();
+        var rows = tableBody.querySelectorAll('tr');
+        rows.forEach(function(row) {
+            var text = row.innerText.toLowerCase();
+            if (text.indexOf(filter) > -1) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

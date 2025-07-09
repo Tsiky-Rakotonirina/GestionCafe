@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Matières Premières</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                <!--<img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">-->
+                <span>Cafe</span>
+            </a>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item">
+                <a th:href="@{/administratif/logistique}" data-page="logistique" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Logistique</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/stock/fournisseurs}" data-page="fournisseurs" class="nav-link">
+                    <i class="fas fa-truck"></i>
+                    <span>Fournisseurs</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/stock/approvisionnement}" data-page="approvisionnement" class="nav-link">
+                    <i class="fas fa-cart-plus"></i> <!-- Icône plus appropriée pour les approvisionnements -->
+                    <span>Approvisionnement</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a th:href="@{/administratif/stock/matiere-premiere}" data-page="matiere-premiere" class="nav-link">
+                    <i class="fas fa-boxes"></i>
+                    <span>Matiere Premiere</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-profile">
+
+            <div class="user-info">
+                <span class="user-name">Admin</span>
+                <span class="user-role">Gérant</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="page-title" id="pageTitle">Listes Matières Premières</h1>
+        </div>
+        <div class="header-right">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2>Gestion des Matières Premières</h2>
+                    <div class="d-flex">
+                        <form class="d-flex me-2" th:action="@{/administratif/stock/matiere-premiere}" method="get">
+                            <input type="text" name="search" class="form-control" placeholder="Rechercher..."
+                                   th:value="${search}">
+                            <button type="submit" class="btn btn-primary ms-2">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                        <button class="btn btn-success" data-bs-toggle="modal"
+                                data-bs-target="#addMatierePremiereModal">
+                            <i class="fas fa-plus"></i> Ajouter
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Quantité & Coût par Matière Première</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="quantiteCoutChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Quantité & Coût Perdus</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="perteChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Durée Moyenne en Stock</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="dureeStockChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th><a th:href="@{/administratif/stock/matiere-premiere(sort='nom')}">Nom</a></th>
+                                <th>Stock</th>
+                                <th>Unité</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="matiere : ${matieresPremieres}">
+                                <td th:text="${matiere.nom}"></td>
+                                <td th:text="${matiere.stock} + ' ' + ${matiere.unite.valeur}"></td>
+
+                                <td th:text="${matiere.unite.valeur}"></td>
+                                <td>
+                                    <a th:href="@{/administratif/stock/matiere-premiere/edit/} + ${matiere.id}"
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/administratif/stock/matiere-premiere/delete/} + ${matiere.id}"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette matière première?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal fade" id="addMatierePremiereModal" tabindex="-1" aria-labelledby="addMatierePremiereModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMatierePremiereModalLabel">Ajouter une Matière Première</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/administratif/stock/matiere-premiere/save}" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom</label>
+                        <input type="text" class="form-control" id="nom" name="nom" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idUnite" class="form-label">Unité</label>
+                        <select class="form-control" id="idUnite" name="idUnite" required>
+                            <option th:each="unite : ${unites}" th:value="${unite.id}"
+                                    th:text="${unite.valeur}"></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input type="file" class="form-control" id="image" name="image">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap5/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{https://cdn.jsdelivr.net/npm/chart.js}"></script>
+<script th:src="@{/js/stock/script.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const statsData = [[${statistiques}]];
+    /*]]>*/
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Vérifiez que les données sont bien disponibles
+        if (!statsData) {
+            console.error("Les données statistiques ne sont pas disponibles");
+            return;
+        }
+
+        // Récupérer les données des statistiques
+        const periodes = statsData.periodes;
+        const matieres = statsData.matieres;
+
+        // Préparer les données pour les graphiques
+        const quantiteData = periodes.map(periode => {
+            const qte = statsData.quantiteParMatiereParMois[periode];
+            return Object.values(qte).reduce((sum, val) => sum + val, 0);
+        });
+
+        const coutData = periodes.map(periode => {
+            const cout = statsData.coutParMatiereParMois[periode];
+            return Object.values(cout).reduce((sum, val) => sum + val, 0);
+        });
+
+        const perteQuantiteData = periodes.map(periode => {
+            const perte = statsData.perteQuantiteParMois[periode];
+            return Object.values(perte).reduce((sum, val) => sum + val, 0);
+        });
+
+        const perteCoutData = periodes.map(periode => {
+            const perte = statsData.perteCoutParMois[periode];
+            return Object.values(perte).reduce((sum, val) => sum + val, 0);
+        });
+
+        const dureeStockLabels = Object.keys(statsData.dureeMoyenneStock);
+        const dureeStockData = Object.values(statsData.dureeMoyenneStock);
+
+        // Création des graphiques
+        createQuantiteCoutChart(periodes, quantiteData, coutData);
+        createPerteChart(periodes, perteQuantiteData, perteCoutData);
+        createDureeStockChart(dureeStockLabels, dureeStockData);
+    });
+
+    function createQuantiteCoutChart(labels, quantiteData, coutData) {
+        const ctx = document.getElementById('quantiteCoutChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantité (kg)',
+                    data: quantiteData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Coût (€)',
+                    data: coutData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function createPerteChart(labels, perteQuantiteData, perteCoutData) {
+        const ctx = document.getElementById('perteChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantité Perdue (kg)',
+                    data: perteQuantiteData,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1,
+                    fill: true
+                }, {
+                    label: 'Coût Perdu (€)',
+                    data: perteCoutData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function createDureeStockChart(labels, data) {
+        const ctx = document.getElementById('dureeStockChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Durée moyenne en stock (jours)',
+                    data: data,
+                    backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

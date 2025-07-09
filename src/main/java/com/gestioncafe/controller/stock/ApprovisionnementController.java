@@ -111,10 +111,10 @@ public class ApprovisionnementController {
 
     // Classe helper pour afficher les fournisseurs avec leurs prix
     public static class FournisseurPrix {
-        private Long id;
-        private String nom;
-        private BigDecimal prixUnitaire;
-        private double frais;
+        private final Long id;
+        private final String nom;
+        private final BigDecimal prixUnitaire;
+        private final double frais;
 
         public FournisseurPrix(Long id, String nom, BigDecimal prixUnitaire, double frais) {
             this.id = id;
@@ -139,7 +139,5 @@ public class ApprovisionnementController {
         public double getFrais() {
             return frais;
         }
-
-
     }
 }

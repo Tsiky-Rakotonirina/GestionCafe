@@ -1,11 +1,16 @@
 package com.gestioncafe.service;
 
-import com.gestioncafe.model.*;
-import com.gestioncafe.repository.*;
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import com.gestioncafe.model.Approvisionnement;
+import com.gestioncafe.model.DetailFournisseur;
+import com.gestioncafe.model.MatierePremiere;
+import com.gestioncafe.repository.ApprovisionnementRepository;
+import com.gestioncafe.repository.DetailFournisseurRepository;
+import com.gestioncafe.repository.MatierePremiereRepository;
 
 @Service
 public class ApprovisionnementService {
@@ -46,6 +51,9 @@ public class ApprovisionnementService {
         approvisionnement.setTotal(total);
         approvisionnement.setDateApprovisionnement(dateApprovisionnement);
         approvisionnement.setReferenceFacture(referenceFacture);
+
+        // Calculer la date de péremption (date d'approvisionnement + 30 jours)
+        approvisionnement.setDatePeremption(dateApprovisionnement.plusDays(30));
         
         // Mettre à jour le stock
         matiere.setStock(matiere.getStock() + quantite);
