@@ -1,12 +1,11 @@
 package com.gestioncafe.controller.marketing;
 
-import com.gestioncafe.service.MarketingService;
 import com.gestioncafe.model.Marketing;
-
+import com.gestioncafe.service.MarketingService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -14,8 +13,11 @@ import java.util.List;
 @RequestMapping("/administratif/marketing")
 public class MarketingController {
 
-    @Autowired
-    private MarketingService marketingService;
+    private final MarketingService marketingService;
+
+    public MarketingController(MarketingService marketingService) {
+        this.marketingService = marketingService;
+    }
 
     @GetMapping
     public String index(Model model) {
