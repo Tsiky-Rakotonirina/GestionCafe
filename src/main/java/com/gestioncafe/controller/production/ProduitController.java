@@ -1,18 +1,43 @@
 package com.gestioncafe.controller.production;
 
-import com.gestioncafe.dto.IngredientFormDTO;
-import com.gestioncafe.dto.IngredientsFormWrapper;
-import com.gestioncafe.model.*;
-import com.gestioncafe.service.production.*;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.gestioncafe.dto.IngredientFormDTO;
+import com.gestioncafe.dto.IngredientsFormWrapper;
+import com.gestioncafe.model.DetailRecette;
+import com.gestioncafe.model.HistoriqueEstimation;
+import com.gestioncafe.model.MatierePremiere;
+import com.gestioncafe.model.PrixVenteProduit;
+import com.gestioncafe.model.Produit;
+import com.gestioncafe.model.Recette;
+import com.gestioncafe.model.Unite;
+import com.gestioncafe.service.production.DetailRecetteService;
+import com.gestioncafe.service.production.HistoriqueEstimationService;
+import com.gestioncafe.service.production.MatierePremiereService;
+import com.gestioncafe.service.production.PackageProduitService;
+import com.gestioncafe.service.production.PrixVenteProduitService;
+import com.gestioncafe.service.production.ProduitService;
+import com.gestioncafe.service.production.RecetteService;
+import com.gestioncafe.service.production.UniteService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/produits")
@@ -80,7 +105,6 @@ public class ProduitController {
         @RequestParam BigDecimal tempsFabricationRecette,
         HttpServletRequest req
     ) {
-
         Produit savedProduit;
         if (produit.getId() != null) {
             // Edition : on met à jour l'existant

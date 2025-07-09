@@ -1,5 +1,19 @@
 package com.gestioncafe.controller.production;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.gestioncafe.model.DetailFournisseur;
 import com.gestioncafe.model.HistoriqueEstimation;
 import com.gestioncafe.model.MatierePremiere;
@@ -11,14 +25,6 @@ import com.gestioncafe.service.production.DetailFournisseurService;
 import com.gestioncafe.service.production.HistoriqueEstimationService;
 import com.gestioncafe.service.production.MatierePremiereService;
 import com.gestioncafe.service.production.SeuilMatierePremiereService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 @Controller
 @RequestMapping("/administratif/production/matiere-premiere")
@@ -81,6 +87,7 @@ public class MatierePremiereController {
             imageFile.transferTo(dest);
             matierePremiere.setImage("/" + uploadDir + fileName);
         }
+        
         service.save(matierePremiere);
 
         return "redirect:/administratif/production/matiere-premiere";

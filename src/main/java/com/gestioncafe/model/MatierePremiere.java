@@ -122,4 +122,18 @@ public class MatierePremiere {
     public void setSeuils(List<SeuilMatierePremiere> seuils) {
         this.seuils = seuils;
     }
+
+    // Retourne le dernier prix unitaire (prix du DetailFournisseur le plus récent)
+    public java.math.BigDecimal getDernierPrixUnitaire() {
+        if (detailsFournisseur == null || detailsFournisseur.isEmpty()) {
+            return null;
+        }
+        DetailFournisseur dernier = null;
+        for (DetailFournisseur d : detailsFournisseur) {
+            if (dernier == null || (d.getDateModification() != null && d.getDateModification().after(dernier.getDateModification()))) {
+                dernier = d;
+            }
+        }
+        return (dernier != null) ? dernier.getPrix() : null;
+    }
 }

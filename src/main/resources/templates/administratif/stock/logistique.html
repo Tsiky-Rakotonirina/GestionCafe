@@ -133,7 +133,7 @@
                                 <tr th:each="matiere : ${matieresPremieres}">
                                     <td th:text="${matiere.nom}"></td>
                                     <td th:text="${matiere.stock}"></td>
-                                    <td th:text="${matiere.unite.valeur}"></td>
+                                    <td th:text="${matiere.unite.nom}"></td>
                                     <td th:with="prix=${matiere.dernierPrixUnitaire}">
                                         <span th:text="${prix != null} ? ${#numbers.formatDecimal(matiere.stock * prix, 1, 2, 'COMMA') + ' Ar'} : '0 Ar'"></span>
                                     </td>
