@@ -3,6 +3,7 @@ package com.gestioncafe.model;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 
 @Entity
@@ -11,7 +12,6 @@ public class Employe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Column(nullable = false)
     private String nom;
@@ -26,7 +26,45 @@ public class Employe {
     @Column(nullable = false)
     private String contact;
 
-    // Getters et setters
+    private LocalDate dateRecrutement;
+
+    @OneToOne
+    @JoinColumn(name = "id_candidat")
+    private Candidat candidat;
+
+
+    public Candidat getCandidat() {
+        return candidat;
+    }
+
+    public void setCandidat(Candidat candidat) {
+        this.candidat = candidat;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public LocalDate getDateRecrutement() {
+        return dateRecrutement;
+    }
+
+    public void setDateRecrutement(LocalDate dateRecrutement) {
+        this.dateRecrutement = dateRecrutement;
+    }
+
+    public Date getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(Date dateNaissance) {
+        this.dateNaissance = dateNaissance;
+    }
+
     public Long getId() {
         return id;
     }
