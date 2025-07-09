@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CafeManager Pros - Dashboard Analytics</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/marketing/dashboard.css}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="product-info">
+                <!-- Lien vers la page administratif -->
+                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <!-- Image de logo -->
+                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- Cartes de statistiques -->
+        <div class="stats-grid">
+            <!-- Carte Âge Moyen -->
+            <div class="stat-card">
+                <div class="stat-icon age">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Âge Moyen</h3>
+                    <div class="stat-value" th:text="${averageAge}">28</div>
+                    <span class="stat-unit">ans</span>
+                </div>
+            </div>
+
+            <!-- Carte Budget Moyen -->
+            <div class="stat-card">
+                <div class="stat-icon budget">
+                    <i class="fas fa-euro-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Budget Moyen</h3>
+                    <div class="stat-value" th:text="${averageBudgetMoyen}">45.50</div>
+                    <span class="stat-unit">€</span>
+                </div>
+            </div>
+
+            <!-- Carte Prix Estimation -->
+            <div class="stat-card">
+                <div class="stat-icon price">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Prix Moyen Estimé</h3>
+                    <div class="stat-value" th:text="${averageEstimationPrixProduit}">12.75</div>
+                    <span class="stat-unit">€</span>
+                </div>
+            </div>
+
+            <!-- Carte Total Clients -->
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Clients</h3>
+                    <div class="stat-value" id="totalClients">156</div>
+                    <span class="stat-unit">personnes</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques principaux -->
+        <div class="charts-grid">
+            <!-- Répartition Hommes/Femmes -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-venus-mars"></i> Répartition par Genre</h3>
+                </div>
+                <div class="chart-content">
+                    <div class="gender-chart">
+                        <div class="pie-chart" id="genderPie">
+                            <div class="pie-segment men" id="menSegment"></div>
+                            <div class="pie-segment women" id="womenSegment"></div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color men-color"></span>
+                                <span>Hommes</span>
+                                <span class="percentage" th:text="${pourcentageHommes}" id="menPercent">60</span>%
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color women-color"></span>
+                                <span>Femmes</span>
+                                <span class="percentage" th:text="${pourcentageFemmes}" id="womenPercent">40</span>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Lieux -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-map-marker-alt"></i> Lieux Populaires</h3>
+                </div>
+                <div class="chart-content">
+                    <div class="progress-bars" id="lieuxChart">
+                        <!-- Les barres seront générées par JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Produits -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-coffee"></i> Produits Populaires</h3>
+                </div>
+                <div class="chart-content">
+                    <div class="progress-bars" id="produitsChart">
+                        <!-- Les barres seront générées par JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analyse des Âges -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-area"></i> Répartition par Âge</h3>
+                </div>
+                <div class="chart-content">
+                    <div class="age-distribution" id="ageChart">
+                        <div class="age-group">
+                            <span class="age-label">18-25 ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 25%"></div>
+                            </div>
+                            <span class="age-percent">25%</span>
+                        </div>
+                        <div class="age-group">
+                            <span class="age-label">26-35 ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 45%"></div>
+                            </div>
+                            <span class="age-percent">45%</span>
+                        </div>
+                        <div class="age-group">
+                            <span class="age-label">36-50 ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 20%"></div>
+                            </div>
+                            <span class="age-percent">20%</span>
+                        </div>
+                        <div class="age-group">
+                            <span class="age-label">50+ ans</span>
+                            <div class="age-bar">
+                                <div class="age-progress" style="width: 10%"></div>
+                            </div>
+                            <span class="age-percent">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau de données détaillées -->
+        <div class="data-table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-table"></i> Données Détaillées</h3>
+                <button class="btn-export">
+                    <i class="fas fa-download"></i> Exporter
+                </button>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Genre</th>
+                            <th>Lieu</th>
+                            <th>Produit</th>
+                            <th>Âge</th>
+                            <th>Budget Moyen</th>
+                            <th>Estimation Prix</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${marketingList}">
+                            <td th:text="${m.id}">1</td>
+                            <td>
+                                <span class="gender-badge" th:text="${m.genre.valeur}" th:class="${m.genre.valeur == 'Homme' ? 'male' : 'female'}">Homme</span>
+                            </td>
+                            <td th:text="${m.lieu.nom}">Paris</td>
+                            <td th:text="${m.produit.nom}">Cappuccino</td>
+                            <td th:text="${m.age}">28</td>
+                            <td class="budget-cell" th:text="${m.budgetMoyen}">45.50€</td>
+                            <td class="price-cell" th:text="${m.estimationPrixProduit}">4.50€</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+        <script th:src="@{/js/marketing/dashboard.js}"></script> 
+</body>
+</html>
