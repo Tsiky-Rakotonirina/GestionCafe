@@ -70,7 +70,7 @@ public class RhSalaireService {
         }
         List<Irsa> irsas = irsaRepository.findAll();
         for (Date date : dates) {
-            StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(idEmploye, date)
+            StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(idEmploye, date.toLocalDate().atStartOfDay())
                 .orElse(null);
             if (statutEmploye == null || statutEmploye.getStatut().getId() != 1) {
                 break;

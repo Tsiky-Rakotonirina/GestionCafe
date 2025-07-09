@@ -1,32 +1,27 @@
 package com.gestioncafe.controller.rh;
 
+import com.gestioncafe.service.rh.RhCongeService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-
-import com.gestioncafe.service.rh.*;
-import com.gestioncafe.repository.*;
-import com.gestioncafe.model.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/administratif/rh/conge")
 public class RhCongeController {
 
-    @Autowired
-    private RhCongeService rhCongeService;
+    private final RhCongeService rhCongeService;
+
+    public RhCongeController(RhCongeService rhCongeService) {
+        this.rhCongeService = rhCongeService;
+    }
 
     @PostMapping("/ajout-conge")
     public String ajoutConge(@RequestParam("typeConge") String typeConge, @RequestParam("dateDebut") String dateDebut, @RequestParam("dateFin") String dateFin, @RequestParam("idEmploye") String idEmploye, Model model) {
         String erreur = "";
-        try{
+        try {
             Long idTypeConge = Long.parseLong(typeConge);
             java.sql.Date debut = java.sql.Date.valueOf(dateDebut);
             java.sql.Date fin = java.sql.Date.valueOf(dateFin);
@@ -43,7 +38,7 @@ public class RhCongeController {
         return "redirect:/administratif/rh/gestion-conges";
     }
 
-     @GetMapping("/calendrier")
+    @GetMapping("/calendrier")
     public String calendrier(Model model) {
         model.addAttribute("jours", rhCongeService.jours());
         return "administratif/rh/calendrier";

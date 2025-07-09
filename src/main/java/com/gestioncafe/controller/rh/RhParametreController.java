@@ -19,8 +19,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/administratif/rh/parametre")
 public class RhParametreController {
 
-    @Autowired
-    private RhParametreService rhParametreService;
+    private final RhParametreService rhParametreService;
+
+    public RhParametreController(RhParametreService rhParametreService) {
+        this.rhParametreService = rhParametreService;
+    }
 
     @PostMapping("/ajout-jour-ferie")
     public String ajoutJourFerie(@ModelAttribute("jourFerie") JourFerie jourFerie) {

@@ -5,257 +5,254 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="'Fiche Client - ' + ${ficheClient.nomComplet}">Fiche Client</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div th:replace="~{administratif/marketing/layout/sidebar :: sidebar}"></div>
-    <div class="main-content" id="mainContent">
-        <div th:replace="~{administratif/marketing/layout/header :: header('Fiche client')}"></div>
-        <main class="content">
-            <!-- Page Header -->
-            <div class="page-header modern-header">
-                <div class="header-content">
-                    <div class="header-title-section">
-                        <div class="header-icon">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                        <div>
-                            <h2 th:text="${ficheClient.nomComplet}">Fiche Client</h2>
-                            <p class="header-subtitle">
-                                <a th:href="@{/marketing/clients}" style="color: var(--gray-600); text-decoration: none;">
-                                    <i class="fas fa-arrow-left"></i>
-                                    Retour à la liste des clients
-                                </a>
-                            </p>
-                        </div>
+<div th:replace="~{administratif/marketing/layout/sidebar :: sidebar}"></div>
+<div class="main-content" id="mainContent">
+    <div th:replace="~{administratif/marketing/layout/header :: header('Fiche client')}"></div>
+    <main class="content">
+        <!-- Page Header -->
+        <div class="page-header modern-header">
+            <div class="header-content">
+                <div class="header-title-section">
+                    <div class="header-icon">
+                        <i class="fas fa-user-circle"></i>
                     </div>
-                    <div class="header-actions">
-                        <span th:text="${ficheClient.statutClient}" 
+                    <div>
+                        <h2 th:text="${ficheClient.nomComplet}">Fiche Client</h2>
+                        <p class="header-subtitle">
+                            <a th:href="@{/marketing/clients}" style="color: var(--gray-600); text-decoration: none;">
+                                <i class="fas fa-arrow-left"></i>
+                                Retour à la liste des clients
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                        <span th:text="${ficheClient.statutClient}"
                               th:class="${ficheClient.statutClient == 'Client fidèle'} ? 'badge success large' : 
                                         (${ficheClient.statutClient == 'Client régulier'} ? 'badge warning large' : 'badge secondary large')">
                             Statut
                         </span>
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Informations principales du client -->
-            <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                <!-- Informations personnelles -->
-                <div class="chart-card hover-glow">
-                    <div class="card-header">
-                        <h3><i class="fas fa-user"></i> Informations personnelles</h3>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <div style="display: grid; gap: 1.5rem;">
-                            <div class="info-row">
-                                <span class="info-label">Nom :</span>
-                                <span class="info-value" th:text="${ficheClient.nom}">Nom</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Prénom :</span>
-                                <span class="info-value" th:text="${ficheClient.prenom}">Prénom</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Genre :</span>
-                                <span th:text="${ficheClient.nomGenre}" 
-                                      th:class="${ficheClient.nomGenre == 'Homme'} ? 'badge primary' : 
+        <!-- Informations principales du client -->
+        <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <!-- Informations personnelles -->
+            <div class="chart-card hover-glow">
+                <div class="card-header">
+                    <h3><i class="fas fa-user"></i> Informations personnelles</h3>
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="display: grid; gap: 1.5rem;">
+                        <div class="info-row">
+                            <span class="info-label">Nom :</span>
+                            <span class="info-value" th:text="${ficheClient.nom}">Nom</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Prénom :</span>
+                            <span class="info-value" th:text="${ficheClient.prenom}">Prénom</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Genre :</span>
+                            <span th:text="${ficheClient.nomGenre}"
+                                  th:class="${ficheClient.nomGenre == 'Homme'} ? 'badge primary' :
                                                 (${ficheClient.nomGenre == 'Femme'} ? 'badge danger' : 'badge secondary')">
                                     Genre
                                 </span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Âge :</span>
-                                <span th:text="${ficheClient.age}" class="badge info">Âge</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Contact :</span>
-                                <span class="info-value">
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Âge :</span>
+                            <span th:text="${ficheClient.age}" class="badge info">Âge</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Contact :</span>
+                            <span class="info-value">
                                     <i class="fas fa-phone" style="color: var(--primary-color);"></i>
                                     <span th:text="${ficheClient.contact}">Contact</span>
                                 </span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Email :</span>
-                                <span class="info-value">
-                                    <i class="fas fa-envelope" style="color: var(--primary-color);"></i>
-                                    <a th:href="'mailto:' + ${ficheClient.email}" th:text="${ficheClient.email}" style="color: var(--primary-color);">Email</a>
-                                </span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Date adhésion :</span>
-                                <span class="info-value" th:text="${#temporals.format(ficheClient.dateAdhesion, 'dd/MM/yyyy')}">Date</span>
-                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Résumé commercial -->
-                <div class="chart-card hover-glow">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-line"></i> Résumé commercial</h3>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="stat-card primary">
-                                <div class="stat-icon">
-                                    <i class="fas fa-shopping-cart"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3>Ventes Total</h3>
-                                    <p class="stat-value" th:text="${ficheClient.nbVenteTotal}">0</p>
-                                </div>
-                            </div>
-                            <div class="stat-card success">
-                                <div class="stat-icon">
-                                    <i class="fas fa-euro-sign"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3>CA Total</h3>
-                                    <p class="stat-value" th:text="${#numbers.formatDecimal(ficheClient.chiffreAffaireTotal, 0, 'COMMA', 0, 'POINT')}">0</p>
-                                    <p style="font-size: 0.8rem; opacity: 0.8;">Ar</p>
-                                </div>
-                            </div>
-                            <div class="stat-card warning">
-                                <div class="stat-icon">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3>Dernier achat</h3>
-                                    <p class="stat-value" th:text="${ficheClient.derniereDateVente != null ? #temporals.format(ficheClient.derniereDateVente, 'dd/MM/yyyy') : 'Aucun'}">Aucun</p>
-                                </div>
-                            </div>
-                            <div class="stat-card info">
-                                <div class="stat-icon">
-                                    <i class="fas fa-trophy"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3>Statut</h3>
-                                    <p class="stat-value" style="font-size: 0.9rem;" th:text="${ficheClient.statutClient}">Client</p>
-                                </div>
-                            </div>
+                        <div class="info-row">
+                            <span class="info-label">Email :</span>
+                            <span class="info-value">
+                                    <i class="fas fa-envelope" style="color: var(--primary-color);"></i>
+                                    <a th:href="'mailto:' + ${ficheClient.email}" th:text="${ficheClient.email}"
+                                       style="color: var(--primary-color);">Email</a>
+                                </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Date adhésion :</span>
+                            <span class="info-value"
+                                  th:text="${#temporals.format(ficheClient.dateAdhesion, 'dd/MM/yyyy')}">Date</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Analyse détaillée -->
-            <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                <!-- Analyse des achats -->
-                <div class="chart-card hover-glow">
-                    <div class="card-header">
-                        <h3><i class="fas fa-shopping-cart"></i> Analyse des achats</h3>
+            <!-- Résumé commercial -->
+            <div class="chart-card hover-glow">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Résumé commercial</h3>
+                </div>
+                <div style="padding: 2rem;">
+                    <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="stat-card primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Ventes Total</h3>
+                                <p class="stat-value" th:text="${ficheClient.nbVenteTotal}">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-icon">
+                                <i class="fas fa-euro-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>CA Total</h3>
+                                <p class="stat-value"
+                                   th:text="${#numbers.formatDecimal(ficheClient.chiffreAffaireTotal, 0, 'COMMA', 0, 'POINT')}">
+                                    0</p>
+                                <p style="font-size: 0.8rem; opacity: 0.8;">Ar</p>
+                            </div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Dernier achat</h3>
+                                <p class="stat-value"
+                                   th:text="${ficheClient.derniereDateVente != null ? #temporals.format(ficheClient.derniereDateVente, 'dd/MM/yyyy') : 'Aucun'}">
+                                    Aucun</p>
+                            </div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Statut</h3>
+                                <p class="stat-value" style="font-size: 0.9rem;" th:text="${ficheClient.statutClient}">
+                                    Client</p>
+                            </div>
+                        </div>
                     </div>
-                    <div style="padding: 2rem;">
-                        <div style="display: grid; gap: 1.5rem;">
-                            <div class="info-row" th:if="${ficheClient.produitPlusAchete != null}">
-                                <span class="info-label">Produit préféré :</span>
-                                <span class="info-value">
-                                    <span th:text="${ficheClient.produitPlusAchete}" style="color: var(--primary-color); font-weight: 600;"></span>
-                                    <span th:text="'(' + ${ficheClient.quantiteProduitPlusAchete} + ' fois)'" style="color: var(--gray-500); font-size: 0.85rem;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analyse détaillée -->
+        <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <!-- Analyse des achats -->
+            <div class="chart-card hover-glow">
+                <div class="card-header">
+                    <h3><i class="fas fa-shopping-cart"></i> Analyse des achats</h3>
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="display: grid; gap: 1.5rem;">
+                        <div class="info-row" th:if="${ficheClient.produitPlusAchete != null}">
+                            <span class="info-label">Produit préféré :</span>
+                            <span class="info-value">
+                                    <span th:text="${ficheClient.produitPlusAchete}"
+                                          style="color: var(--primary-color); font-weight: 600;"></span>
+                                    <span th:text="'(' + ${ficheClient.quantiteProduitPlusAchete} + ' fois)'"
+                                          style="color: var(--gray-500); font-size: 0.85rem;"></span>
                                 </span>
-                            </div>
-                            
-                            <div class="info-row" th:if="${ficheClient.depenseMoyenneParCommande != null}">
-                                <span class="info-label">Dépense moyenne :</span>
-                                <span class="badge success" th:text="${#numbers.formatDecimal(ficheClient.depenseMoyenneParCommande, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</span>
-                            </div>
-                            
-                            <div class="info-row" th:if="${ficheClient.depenseMin != null}">
-                                <span class="info-label">Dépense minimum :</span>
-                                <span class="badge secondary" th:text="${#numbers.formatDecimal(ficheClient.depenseMin, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</span>
-                            </div>
-                            
-                            <div class="info-row" th:if="${ficheClient.depenseMax != null}">
-                                <span class="info-label">Dépense maximum :</span>
-                                <span class="badge warning" th:text="${#numbers.formatDecimal(ficheClient.depenseMax, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</span>
-                            </div>
-                            
-                            <div class="info-row" th:if="${ficheClient.categorieDepense != null}">
-                                <span class="info-label">Catégorie client :</span>
-                                <span th:text="${ficheClient.categorieDepense}" 
-                                      th:class="${ficheClient.categorieDepense == 'Gros acheteur'} ? 'badge success' : 
+                        </div>
+
+                        <div class="info-row" th:if="${ficheClient.depenseMoyenneParCommande != null}">
+                            <span class="info-label">Dépense moyenne :</span>
+                            <span class="badge success"
+                                  th:text="${#numbers.formatDecimal(ficheClient.depenseMoyenneParCommande, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</span>
+                        </div>
+
+                        <div class="info-row" th:if="${ficheClient.depenseMin != null}">
+                            <span class="info-label">Dépense minimum :</span>
+                            <span class="badge secondary"
+                                  th:text="${#numbers.formatDecimal(ficheClient.depenseMin, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</span>
+                        </div>
+
+                        <div class="info-row" th:if="${ficheClient.depenseMax != null}">
+                            <span class="info-label">Dépense maximum :</span>
+                            <span class="badge warning"
+                                  th:text="${#numbers.formatDecimal(ficheClient.depenseMax, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</span>
+                        </div>
+
+                        <div class="info-row" th:if="${ficheClient.categorieDepense != null}">
+                            <span class="info-label">Catégorie client :</span>
+                            <span th:text="${ficheClient.categorieDepense}"
+                                  th:class="${ficheClient.categorieDepense == 'Gros acheteur'} ? 'badge success' :
                                                 (${ficheClient.categorieDepense == 'Acheteur moyen'} ? 'badge warning' : 'badge secondary')">
                                     Catégorie
                                 </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                                        </td>
-                                    </tr>
-                                    <tr th:if="${ficheClient.depenseMax != null}">
-                                        <td>Maximum :</td>
-                                        <td class="text-end">
-                                            <span th:text="${#numbers.formatDecimal(ficheClient.depenseMax, 0, 'COMMA', 0, 'POINT')} + ' Ar'" class="badge bg-warning"></span>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-                <!-- Habitudes temporelles -->
-                <div class="chart-card hover-glow">
-                    <div class="card-header">
-                        <h3><i class="fas fa-clock"></i> Habitudes temporelles</h3>
-                    </div>
-                    <div style="padding: 2rem;">
-                        <div style="display: grid; gap: 1.5rem;">
-                            <div class="info-row" th:if="${ficheClient.intervalleJourVente != null}">
-                                <span class="info-label">Fréquence de visite :</span>
-                                <span class="badge info">
+            <!-- Habitudes temporelles -->
+            <div class="chart-card hover-glow">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> Habitudes temporelles</h3>
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="display: grid; gap: 1.5rem;">
+                        <div class="info-row" th:if="${ficheClient.intervalleJourVente != null}">
+                            <span class="info-label">Fréquence de visite :</span>
+                            <span class="badge info">
                                     Tous les <span th:text="${ficheClient.intervalleJourVente}"></span> jours
                                 </span>
-                            </div>
-                            
-                            <div class="info-row" th:if="${ficheClient.jourPrefere != null}">
-                                <span class="info-label">Jour préféré :</span>
-                                <span th:text="${ficheClient.jourPrefere}" class="badge primary"></span>
-                            </div>
-                            
-                            <div class="info-row" th:if="${ficheClient.trancheHorairePrefere != null}">
-                                <span class="info-label">Créneau préféré :</span>
-                                <span th:text="${ficheClient.trancheHorairePrefere}" class="badge warning"></span>
-                            </div>
-                            
-                            <div class="info-row" th:if="${ficheClient.derniereDateVente != null}">
-                                <span class="info-label">Dernière visite :</span>
-                                <span class="info-value" th:text="${#temporals.format(ficheClient.derniereDateVente, 'dd/MM/yyyy')}">Date</span>
-                            </div>
+                        </div>
+
+                        <div class="info-row" th:if="${ficheClient.jourPrefere != null}">
+                            <span class="info-label">Jour préféré :</span>
+                            <span th:text="${ficheClient.jourPrefere}" class="badge primary"></span>
+                        </div>
+
+                        <div class="info-row" th:if="${ficheClient.trancheHorairePrefere != null}">
+                            <span class="info-label">Créneau préféré :</span>
+                            <span th:text="${ficheClient.trancheHorairePrefere}" class="badge warning"></span>
+                        </div>
+
+                        <div class="info-row" th:if="${ficheClient.derniereDateVente != null}">
+                            <span class="info-label">Dernière visite :</span>
+                            <span class="info-value"
+                                  th:text="${#temporals.format(ficheClient.derniereDateVente, 'dd/MM/yyyy')}">Date</span>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Actions -->
-            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; padding: 2rem;">
-                <a th:href="@{/marketing/clients}" class="btn outline">
-                    <i class="fas fa-arrow-left"></i>
-                    Retour à la liste
-                </a>
-                <button class="btn primary" onclick="window.print()">
-                    <i class="fas fa-print"></i>
-                    Imprimer la fiche
-                </button>
-            </div>
-                        <button class="btn btn-primary me-2" onclick="window.print()">
-                            <i class="fas fa-print me-1"></i>
-                            Imprimer
-                        </button>
-        </main>
-    </div>
-    
-    <script th:src="@{/templates/script.js}"></script>
-    <script>
-        // Fonctions utilitaires pour la fiche client
-        function exportPDF() {
-            alert('Fonctionnalité d\'export PDF à implémenter');
-        }
-    </script>
+        <!-- Actions -->
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; padding: 2rem;">
+            <a th:href="@{/marketing/clients}" class="btn outline">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la liste
+            </a>
+            <button class="btn primary" onclick="window.print()">
+                <i class="fas fa-print"></i>
+                Imprimer la fiche
+            </button>
+        </div>
+
+    </main>
+</div>
+
+<script th:src="@{/templates/script.js}"></script>
+<script>
+    // Fonctions utilitaires pour la fiche client
+    function exportPDF() {
+        alert('Fonctionnalité d\'export PDF à implémenter');
+    }
+</script>
 </body>
 </html>

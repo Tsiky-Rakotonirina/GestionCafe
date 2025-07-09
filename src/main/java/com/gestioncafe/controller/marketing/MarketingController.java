@@ -21,8 +21,8 @@ public class MarketingController {
 
     @GetMapping()
     public String accueilMarketing() {
-        // Redirige vers la liste des clients marketing
-        return "redirect:/marketing/clients";
+        // Redirige vers le dashboard marketing
+        return "redirect:/administratif/marketing/dashboard";
     }
 
     @GetMapping("/dashboard")
@@ -35,8 +35,8 @@ public class MarketingController {
         model.addAttribute("averageAge", averageAge);
 
         // Pourcentage hommes / femmes
-        double pourcentageHommes = marketingService.getPourcentageGenre("homme");
-        double pourcentageFemmes = marketingService.getPourcentageGenre("femme");
+        double pourcentageHommes = marketingService.getPourcentageGenre("Homme");
+        double pourcentageFemmes = marketingService.getPourcentageGenre("Femme");
         model.addAttribute("pourcentageHommes", pourcentageHommes);
         model.addAttribute("pourcentageFemmes", pourcentageFemmes);
 
