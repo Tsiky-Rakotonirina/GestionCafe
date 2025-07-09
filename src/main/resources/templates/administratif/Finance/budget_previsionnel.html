@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Solde de Départ</title>
+</head>
+<body>
+
+<p>mois actuel : <span th:text="${moisActuel}"> </span></p>
+<p>solde de départ actuel : <span th:text="${soldeActuel}"> Ar </span></p>
+
+<br><br>
+
+<div>
+    <p>prévision</p>
+    <p>prévision actuel du mois</p>
+    <input type="text" name="prevision">
+    <button>Valider</button>
+</div>
+
+<br><br>
+
+<p>solde de départ actuel : <span th:text="${soldeActuelDepart}"> Ar </span></p>
+
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Prévision</th>
+            <th>Réalité</th>
+            <th>Écart</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="ligne : ${soldes}">
+            <td th:text="${ligne.type}">Type</td>
+            <td th:text="${ligne.prevision}">Prévision</td>
+            <td th:text="${ligne.realite}">Réalité</td>
+            <td th:text="${ligne.ecart}">Écart</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

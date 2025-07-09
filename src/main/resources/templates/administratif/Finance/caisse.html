@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mouvement & Solde Caisse</title>
+</head>
+<body>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Mouvement Caisse</th>
+            <th>Solde Caisse</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <!-- Colonne Mouvement Caisse -->
+            <td>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>date</th>
+                            <th>type</th>
+                            <th>nature</th>
+                            <th>montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="mvt : ${mouvements}">
+                            <td th:text="${mvt.date}"></td>
+                            <td th:text="${mvt.type}"></td>
+                            <td th:text="${mvt.nature}"></td>
+                            <td th:text="${mvt.montant}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+
+            <!-- Colonne Solde Caisse -->
+            <td>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>date</th>
+                            <th>type</th>
+                            <th>nature</th>
+                            <th>montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="solde : ${soldes}">
+                            <td th:text="${solde.date}"></td>
+                            <td th:text="${solde.type}"></td>
+                            <td th:text="${solde.nature}"></td>
+                            <td th:text="${solde.montant}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

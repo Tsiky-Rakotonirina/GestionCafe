@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charges et Produits</title>
+</head>
+<body>
+    <table border="1" width="100%">
+        <tr>
+            <td colspan="3" align="center">
+                <div th:text="${titre ?: 'Titre du document'}">Titre du document</div>
+            </td>
+        </tr>
+        <tr>
+            <td width="40%">
+                <strong>Charges</strong>
+                <hr>
+                <div id="charges-numero">
+                    <span th:text="${'• numéro compte : ' + (chargeNumero ?: '')}">• numéro compte :</span>
+                </div>
+                <div id="charges-description">
+                    <span th:text="${'• description : ' + (chargeDescription ?: '')}">• description :</span>
+                </div>
+                <div id="charges-montant">
+                    <span th:text="${'• montant : ' + (chargeMontant ?: '')}">• montant :</span>
+                </div>
+                <br>
+                <div id="total-charges">
+                    <strong th:text="${'Total Charges : ' + (totalCharges ?: '')}">Total Charges :</strong>
+                </div>
+            </td>
+            <td width="40%">
+                <strong>Produits</strong>
+                <hr>
+                <div id="produits-numero">
+                    <span th:text="${'• numéro compte : ' + (produitNumero ?: '')}">• numéro compte :</span>
+                </div>
+                <div id="produits-description">
+                    <span th:text="${'• description : ' + (produitDescription ?: '')}">• description :</span>
+                </div>
+                <div id="produits-montant">
+                    <span th:text="${'• montant : ' + (produitMontant ?: '')}">• montant :</span>
+                </div>
+                <br><br><br><br>
+                <div id="total-produits">
+                    <strong th:text="${'Total produits : ' + (totalProduits ?: '')}">Total produits :</strong>
+                </div>
+            </td>
+            <td width="20%">
+                <div style="border: 1px solid black; padding: 10px;">
+                    <strong>Résultat</strong>
+                    <br><br>
+                    <div id="details-montant">
+                        <span th:text="${'→ montant : ' + (detailsMontant ?: '')}">→ montant :</span>
+                    </div>
+                    <br>
+                    <div id="details-resultat">
+                        <span th:text="${'→ résultat : ' + (detailsResultat ?: '')}">→ résultat :</span>
+                    </div>
+                    <br>
+                    <div id="details-rentabilite">
+                        <span th:text="${'→ rentabilité : ' + (detailsRentabilite ?: '')}">→ rentabilité :</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

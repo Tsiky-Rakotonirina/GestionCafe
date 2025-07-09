@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilan</title>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête -->
+        <div class="header">
+            <h1>BILAN COMPTABLE</h1>
+            <p th:text="${entreprise?.nom ?: 'Nom de l\'entreprise'}">Nom de l'entreprise</p>
+            <p th:text="${'Exercice : ' + (exercice ?: '2024')}">Exercice : 2024</p>
+        </div>
+
+        <!-- Grille principale du bilan -->
+        <div class="bilan-grid">
+            <!-- ACTIFS -->
+            <div class="actifs">
+                <!-- Actif Immobilisé -->
+                <div class="bilan-card" id="actif-immobilise">
+                    <div class="card-header">
+                        ACTIF IMMOBILISÉ
+                    </div>
+                    <div class="card-content" id="actif-immobilise-content">
+                        <div th:if="${actifImmobilise != null}">
+                            <p th:text="${'Montant : ' + actifImmobilise + ' €'}">Montant : 0 €</p>
+                        </div>
+                        <div th:unless="${actifImmobilise != null}">
+                            Données à charger...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actif Circulant -->
+                <div class="bilan-card" id="actif-circulant">
+                    <div class="card-header">
+                        ACTIF CIRCULANT
+                    </div>
+                    <div class="card-content" id="actif-circulant-content">
+                        <div th:if="${actifCirculant != null}">
+                            <p th:text="${'Montant : ' + actifCirculant + ' €'}">Montant : 0 €</p>
+                        </div>
+                        <div th:unless="${actifCirculant != null}">
+                            Données à charger...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASSIFS -->
+            <div class="passifs">
+                <!-- Capitaux Propres -->
+                <div class="bilan-card" id="capitaux-propres">
+                    <div class="card-header">
+                        CAPITAUX PROPRES
+                    </div>
+                    <div class="card-content" id="capitaux-propres-content">
+                        <div th:if="${capitauxPropres != null}">
+                            <p th:text="${'Montant : ' + capitauxPropres + ' €'}">Montant : 0 €</p>
+                        </div>
+                        <div th:unless="${capitauxPropres != null}">
+                            {% comment %} Données à charger... {% endcomment %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dettes -->
+                <div class="bilan-card" id="dettes">
+                    <div class="card-header">
+                        DETTES
+                    </div>
+                    <div class="card-content" id="dettes-content">
+                        <div th:if="${dettes != null}">
+                            <p th:text="${'Montant : ' + dettes + ' €'}">Montant : 0 €</p>
+                        </div>
+                        <div th:unless="${dettes != null}">
+                            Données à charger...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Totaux -->
+        <div class="totaux">
+            <div class="total-item total-actif" id="total-actif">
+                <div>TOTAL ACTIF</div>
+                <div th:text="${totalActif != null ? totalActif + ' €' : '0 €'}" id="total-actif-value">0 €</div>
+            </div>
+            <div class="total-item total-passif" id="total-passif">
+                <div>TOTAL PASSIF</div>
+                <div th:text="${totalPassif != null ? totalPassif + ' €' : '0 €'}" id="total-passif-value">0 €</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateBilanData(data) {
+            if (data.actifImmobilise) {
+                document.getElementById('actif-immobilise-content').innerHTML = 
+                    `<p>Montant : ${data.actifImmobilise} €</p>`;
+            }
+            
+            if (data.actifCirculant) {
+                document.getElementById('actif-circulant-content').innerHTML = 
+                    `<p>Montant : ${data.actifCirculant} €</p>`;
+            }
+            
+            if (data.capitauxPropres) {
+                document.getElementById('capitaux-propres-content').innerHTML = 
+                    `<p>Montant : ${data.capitauxPropres} €</p>`;
+            }
+            
+            if (data.dettes) {
+                document.getElementById('dettes-content').innerHTML = 
+                    `<p>Montant : ${data.dettes} €</p>`;
+            }
+            
+            // Mise à jour des totaux
+            if (data.totalActif) {
+                document.getElementById('total-actif-value').textContent = data.totalActif + ' €';
+            }
+            
+            if (data.totalPassif) {
+                document.getElementById('total-passif-value').textContent = data.totalPassif + ' €';
+            }
+        }
+
+    </script>
+</body>
+</html>
