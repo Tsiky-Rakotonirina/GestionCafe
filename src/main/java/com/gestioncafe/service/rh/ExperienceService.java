@@ -10,8 +10,11 @@ import java.util.List;
 @Service
 public class ExperienceService {
 
-    @Autowired
-    private ExperienceRepository experienceRepository;
+    private final ExperienceRepository experienceRepository;
+
+    public ExperienceService(ExperienceRepository experienceRepository) {
+        this.experienceRepository = experienceRepository;
+    }
 
     public List<Experience> getAllExperiences() {
         return experienceRepository.findAll();
