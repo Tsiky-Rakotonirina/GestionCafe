@@ -20,9 +20,9 @@ public class FicheClientService {
     public FicheClient getFicheClient(Long clientId) {
         FicheClient fiche = new FicheClient();
         
-        // 1. Informations de base du client + genre
+        // 1. Informations de base du client + genre (plus de table tiers)
         String sqlBase = """
-            SELECT c.id, t.nom, t.prenom, t.email, t.contact,
+            SELECT c.id, c.nom, c.prenom, c.email, c.contact,
                    CASE 
                        WHEN c.date_naissance IS NOT NULL THEN 
                            EXTRACT(YEAR FROM AGE(CURRENT_DATE, c.date_naissance))
@@ -37,8 +37,7 @@ public class FicheClientService {
                        WHERE v.id_client = c.id
                    ) as derniere_date_vente
             FROM client c
-            INNER JOIN tiers t ON c.id_tiers = t.id
-            LEFT JOIN genre g ON t.id_genre = g.id
+            LEFT JOIN genre g ON c.id_genre = g.id
             WHERE c.id = ?
             """;
 
