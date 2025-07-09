@@ -1,23 +1,31 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "categorie_unite")
 public class CategorieUnite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    private String nom;
+    @Column(name = "nom", length = 100)
+    private String nom; // volume, masse, temps, ...
+
+    @Column(name = "norme", length = 100)
     private String norme;
 
-    // Getters et setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

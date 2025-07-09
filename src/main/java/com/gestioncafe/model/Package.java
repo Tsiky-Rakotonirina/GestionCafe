@@ -1,7 +1,8 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
+
+import java.util.List;
 
 @Entity
 @Table(name = "package")
@@ -11,12 +12,15 @@ public class Package {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nom;
 
-    private BigDecimal cout;
+    private String description;
 
-    public Package() {}
+    @OneToMany(mappedBy = "pack")
+    private List<Produit> produits;
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -33,11 +37,19 @@ public class Package {
         this.nom = nom;
     }
 
-    public BigDecimal getCout() {
-        return cout;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCout(BigDecimal cout) {
-        this.cout = cout;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Produit> getProduits() {
+        return produits;
+    }
+
+    public void setProduits(List<Produit> produits) {
+        this.produits = produits;
     }
 }

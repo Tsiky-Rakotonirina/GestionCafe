@@ -1,6 +1,7 @@
 package com.gestioncafe.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,18 +18,21 @@ import jakarta.persistence.Table;
 public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
+    @Column(name = "nom", nullable = false, length = 255)
     private String nom;
 
+    @Column(name = "description", length = 500)
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = "stock", nullable = false, precision = 10)
     private BigDecimal stock;
 
+    @Column(name = "image", length = 255)
     private String image;
 
-    @Column(name = "delai_peremption")
+    @Column(name = "delai_peremption", precision = 10)
     private BigDecimal delaiPeremption;
 
     @ManyToOne(optional = false)
@@ -36,31 +41,19 @@ public class Produit {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_package", nullable = false)
-    private PackageProduit packageProduit;
+    private Package pack;
 
+    // Relation avec PrixVenteProduit (One-to-Many ou Many-to-One selon votre logique)
+    @OneToMany(mappedBy = "produit")
+    private List<PrixVenteProduit> prixVenteProduits;
 
-    public Unite getUnite() {
-        return unite;
-    }
-
-    public void setUnite(Unite unite) {
-        this.unite = unite;
-    }
-
-    public PackageProduit getPackageProduit() {
-        return packageProduit;
-    }
-
-    public void setPackageProduit(PackageProduit packageProduit) {
-        this.packageProduit = packageProduit;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
+    // Getters and Setters
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNom() {
@@ -102,7 +95,23 @@ public class Produit {
     public void setDelaiPeremption(BigDecimal delaiPeremption) {
         this.delaiPeremption = delaiPeremption;
     }
-}
-   
-  
 
+    public Unite getUnite() {
+        return unite;
+    }
+
+    public void setUnite(Unite unite) {
+        this.unite = unite;
+    }
+
+    public Package getPack() {
+        return pack;
+    }
+
+    public void setPack(Package pack) {
+        this.pack = pack;
+    }
+
+    public List<PrixVenteProduit> getPrixVenteProduits() { return prixVenteProduits; }
+    public void setPrixVenteProduits(List<PrixVenteProduit> prixVenteProduits) { this.prixVenteProduits = prixVenteProduits; }
+}

@@ -1,11 +1,7 @@
 package com.gestioncafe.repository;
 
-import java.util.List;
-
+import com.gestioncafe.model.Employe;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import com.gestioncafe.model.*;
 
-@Repository
-public interface EmployeRepository extends JpaRepository<Employe, Long>{
+public interface EmployeRepository extends JpaRepository<Employe, Long> {
 }

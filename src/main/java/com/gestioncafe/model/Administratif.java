@@ -21,7 +21,7 @@ public class Administratif {
     public Administratif(String nom, String motDePasse) {
         this.nom = nom;
         this.motDePasse = motDePasse;
-    }
+    } 
 
     public Administratif(Long id, String nom, String motDePasse) {
         this.id = id;

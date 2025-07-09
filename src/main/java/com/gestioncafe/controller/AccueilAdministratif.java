@@ -12,5 +12,4 @@ public class AccueilAdministratif {
     public String accueil() {
         return "administratif/accueil-administratif";
     }
-    
 }

@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafeManager Pro - Gestion de Café</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet">
-    <!-- Utilisation de Thymeleaf pour la gestion des ressources CSS -->
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
@@ -74,6 +62,16 @@
             </li>
         </ul>
     </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-profile">
+
+            <div class="user-info">
+                <span class="user-name">Admin</span>
+                <span class="user-role">Gérant</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Main Content -->
@@ -109,7 +107,7 @@
                     </div>
                     <div class="stat-info">
                         <h3>Ventes Aujourd'hui</h3>
-                        <p class="stat-value">1,250€</p>
+                        <p class="stat-value">1,250Ar</p>
                         <span class="stat-change positive"><i class="fas fa-arrow-up"></i> +12%</span>
                     </div>
                 </div>
@@ -546,7 +544,7 @@
                             </div>
                             <div class="expense-details">
                                 <span class="expense-name">Ingrédients</span>
-                                <span class="expense-amount">1,250€</span>
+                                <span class="expense-amount">1,250Ar</span>
                             </div>
                             <div class="expense-percentage">58%</div>
                         </div>
@@ -557,7 +555,7 @@
                             </div>
                             <div class="expense-details">
                                 <span class="expense-name">Salaires</span>
-                                <span class="expense-amount">650€</span>
+                                <span class="expense-amount">650Ar</span>
                             </div>
                             <div class="expense-percentage">30%</div>
                         </div>
@@ -568,7 +566,7 @@
                             </div>
                             <div class="expense-details">
                                 <span class="expense-name">Charges</span>
-                                <span class="expense-amount">150€</span>
+                                <span class="expense-amount">150Ar</span>
                             </div>
                             <div class="expense-percentage">7%</div>
                         </div>
@@ -579,7 +577,7 @@
                             </div>
                             <div class="expense-details">
                                 <span class="expense-name">Autres</span>
-                                <span class="expense-amount">100€</span>
+                                <span class="expense-amount">100Ar</span>
                             </div>
                             <div class="expense-percentage">5%</div>
                         </div>
@@ -655,7 +653,7 @@
                         <i class="fas fa-euro-sign"></i>
                     </div>
                     <div class="stat-content">
-                        <span class="stat-number">1,250€</span>
+                        <span class="stat-number">1,250Ar</span>
                         <span class="stat-label">Aujourd'hui</span>
                     </div>
                 </div>
@@ -686,17 +684,17 @@
                     <div class="order-items">
                         <div class="order-item">
                             <span class="item-name">2x Espresso</span>
-                            <span class="item-price">6.00€</span>
+                            <span class="item-price">6.00Ar</span>
                         </div>
                         <div class="order-item">
                             <span class="item-name">1x Croissant</span>
-                            <span class="item-price">2.50€</span>
+                            <span class="item-price">2.50Ar</span>
                         </div>
                     </div>
                     <div class="order-footer">
                         <div class="order-total">
                             <span class="total-label">Total:</span>
-                            <span class="total-amount">8.50€</span>
+                            <span class="total-amount">8.50Ar</span>
                         </div>
                         <div class="order-actions">
                             <button class="btn success small">
@@ -731,17 +729,17 @@
                     <div class="order-items">
                         <div class="order-item">
                             <span class="item-name">1x Cappuccino</span>
-                            <span class="item-price">4.50€</span>
+                            <span class="item-price">4.50Ar</span>
                         </div>
                         <div class="order-item">
                             <span class="item-name">1x Muffin Myrtilles</span>
-                            <span class="item-price">3.20€</span>
+                            <span class="item-price">3.20Ar</span>
                         </div>
                     </div>
                     <div class="order-footer">
                         <div class="order-total">
                             <span class="total-label">Total:</span>
-                            <span class="total-amount">7.70€</span>
+                            <span class="total-amount">7.70Ar</span>
                         </div>
                         <div class="order-actions">
                             <button class="btn warning small">
@@ -780,13 +778,13 @@
                     <div class="order-items">
                         <div class="order-item">
                             <span class="item-name">1x Latte</span>
-                            <span class="item-price">4.80€</span>
+                            <span class="item-price">4.80Ar</span>
                         </div>
                     </div>
                     <div class="order-footer">
                         <div class="order-total">
                             <span class="total-label">Total:</span>
-                            <span class="total-amount">4.80€</span>
+                            <span class="total-amount">4.80Ar</span>
                         </div>
                         <div class="order-actions">
                             <button class="btn outline small">
@@ -891,7 +889,7 @@
                             <span class="stat-label">Commandes</span>
                         </div>
                         <div class="customer-stat">
-                            <span class="stat-value">890€</span>
+                            <span class="stat-value">890Ar</span>
                             <span class="stat-label">Dépensé</span>
                         </div>
                     </div>
@@ -935,7 +933,7 @@
                             <span class="stat-label">Commandes</span>
                         </div>
                         <div class="customer-stat">
-                            <span class="stat-value">185€</span>
+                            <span class="stat-value">185Ar</span>
                             <span class="stat-label">Dépensé</span>
                         </div>
                     </div>
@@ -979,7 +977,7 @@
                             <span class="stat-label">Commandes</span>
                         </div>
                         <div class="customer-stat">
-                            <span class="stat-value">24€</span>
+                            <span class="stat-value">24Ar</span>
                             <span class="stat-label">Dépensé</span>
                         </div>
                     </div>

@@ -16,23 +16,24 @@ import jakarta.persistence.Table;
 public class Unite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    private String nom;
-
-    @Column(name = "valeur_pr_norme", precision = 20, scale = 10)
-    private BigDecimal valeurParNorme;
+    @Column(name = "nom", length = 50)
+    private String nom; // kg, g, l, cl, ...
 
     @ManyToOne
     @JoinColumn(name = "categorie_unite_id")
     private CategorieUnite categorieUnite;
 
-    // Getters et setters
-    public Integer getId() {
+    @Column(name = "valeur_pr_norme", precision = 10)
+    private Double valeurPrNorme; // valeur par rapport au norme
+
+    // Getters and Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -60,8 +61,11 @@ public class Unite {
         this.categorieUnite = categorieUnite;
     }
 
-    // Si tu utilises encore getValeurPrNorme() dans le code, ajoute aussi :
-    public BigDecimal getValeurPrNorme() {
-        return getValeurParNorme();
+    public Double getValeurPrNorme() {
+        return valeurPrNorme;
+    }
+
+    public void setValeurPrNorme(Double valeurPrNorme) {
+        this.valeurPrNorme = valeurPrNorme;
     }
 }

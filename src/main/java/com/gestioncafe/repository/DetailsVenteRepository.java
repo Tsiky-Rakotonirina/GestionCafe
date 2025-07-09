@@ -1,11 +1,13 @@
 package com.gestioncafe.repository;
 
+import com.gestioncafe.model.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -54,6 +56,7 @@ public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Inte
     List<VentePeriodeStatDTO> getVenteStatParPeriodeEtProduit(@Param("periode") String periode,
                                                               @Param("produitId") Integer produitId);
 
+public interface DetailsVenteRepository extends JpaRepository<DetailsVente, Long> {
     @Query("""
             SELECT new com.gestioncafe.dto.BeneficePeriodeStatDTO(
                 CASE WHEN :periode = 'jour' THEN FUNCTION('to_char', v.dateVente, 'YYYY-MM-DD')

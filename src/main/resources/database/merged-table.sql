@@ -1,4 +1,4 @@
-CREATE TABLE administratif 
+CREATE TABLE administratif
 (
     id           SERIAL PRIMARY KEY,
     nom          VARCHAR(255),
@@ -131,19 +131,25 @@ CREATE TABLE detail_candidat
 );
 
 -- Table employe
-
 CREATE TABLE employe
 (
     id               SERIAL PRIMARY KEY,
-    id_tiers         INTEGER NOT NULL,
-    id_genre         INTEGER NOT NULL,
-    date_naissance   DATE    NOT NULL,
-    date_recrutement DATE    NOT NULL,
-    date_demission   DATE,
-    reference_cv     TEXT    NULL,
+    id_candidat      INTEGER      NOT NULL,
+    date_recrutement DATE         NOT NULL,
+    nom              VARCHAR(255) NULL,
+    id_genre         INTEGER      NULL,
+    date_naissance   DATE         NULL,
+    contact          VARCHAR(20)  NULL,
+    image            VARCHAR(255) NULL,
+    reference_cv     VARCHAR(255) NULL,
 
-    FOREIGN KEY (id_tiers) REFERENCES tiers (id),
-    FOREIGN KEY (id_genre) REFERENCES genre (id)
+    CONSTRAINT fk_employe_candidat
+        FOREIGN KEY (id_candidat)
+            REFERENCES candidat (id),
+
+    CONSTRAINT fk_employe_genre
+        FOREIGN KEY (id_genre)
+            REFERENCES genre (id)
 );
 
 CREATE TABLE statut
@@ -281,6 +287,80 @@ CREATE TABLE raison_commission
     description VARCHAR(500) NULL
 );
 
+
+-- Table client
+CREATE TABLE client (
+    id           SERIAL         PRIMARY KEY,
+    nom          VARCHAR(255)   NOT NULL,
+    prenom       VARCHAR(255)   NOT NULL,
+    id_genre     INTEGER        NOT NULL,
+    contact      VARCHAR(255)   NULL,
+    email        VARCHAR(255)   NULL,
+    date_adhesion DATE          NOT NULL,
+
+    CONSTRAINT fk_client_genre
+        FOREIGN KEY (id_genre)
+        REFERENCES genre(id)
+);
+
+
+-- Table vente
+CREATE TABLE vente (
+    id          SERIAL       PRIMARY KEY,
+    date_vente  TIMESTAMP         NOT NULL,
+    id_client   INTEGER      NOT NULL,
+    id_employe  INTEGER      NOT NULL,
+
+    CONSTRAINT fk_vente_client
+        FOREIGN KEY (id_client)
+        REFERENCES client(id),
+
+    CONSTRAINT fk_vente_employe
+        FOREIGN KEY (id_employe)
+        REFERENCES employe(id)
+);
+
+-- Table details_vente
+CREATE TABLE details_vente (
+    id               SERIAL        PRIMARY KEY,
+    id_vente         INTEGER       NOT NULL,
+    id_produit       INTEGER       NOT NULL,
+    quantite         DECIMAL(10,2) NOT NULL,
+    prix_unitaire    DECIMAL(10,2) NOT NULL,
+    montant          DECIMAL(10,2) NOT NULL,
+
+    CONSTRAINT fk_details_vente_vente
+        FOREIGN KEY (id_vente)
+        REFERENCES vente(id),
+
+    CONSTRAINT fk_details_vente_produit
+        FOREIGN KEY (id_produit)
+        REFERENCES produit(id)
+);
+
+-- Table commande
+CREATE TABLE commande (
+    id          SERIAL      PRIMARY KEY,
+    id_vente    INTEGER     NOT NULL,
+    date_fin    TIMESTAMP        NOT NULL,
+
+    CONSTRAINT fk_commande_vente
+        FOREIGN KEY (id_vente)
+        REFERENCES vente(id)
+);
+
+
+-- Table commande
+CREATE TABLE commande (
+    id          SERIAL      PRIMARY KEY,
+    id_vente    INTEGER     NOT NULL,
+    date_fin    TIMESTAMP        NOT NULL,
+
+    CONSTRAINT fk_commande_vente
+        FOREIGN KEY (id_vente)
+        REFERENCES vente(id)
+);
+
 -- Table commission
 CREATE TABLE commission
 (
@@ -296,20 +376,18 @@ CREATE TABLE commission
 );
 
 -- Table payement employe
-CREATE TABLE payement (
-    id                 SERIAL        PRIMARY KEY,
-    id_employe         INTEGER       NOT NULL,
-    date_payement      DATE          NOT NULL,
-    montant            DECIMAL(10,2) NOT NULL,
-    reference_payement VARCHAR(255)  NULL,
-    mois_reference     DATE          NOT NULL,
-    irsa DECIMAL(10,2) ,
-    cotisation_sociale DECIMAL(10,2),
-    
+CREATE TABLE payement
+(
+    id                 SERIAL PRIMARY KEY,
+    id_employe         INTEGER        NOT NULL,
+    date_payement      DATE           NOT NULL,
+    montant            DECIMAL(10, 2) NOT NULL,
+    reference_payement VARCHAR(255)   NULL,
+    mois_reference     DATE           NOT NULL,
 
     CONSTRAINT fk_payement_employe_employe
         FOREIGN KEY (id_employe)
-        REFERENCES employe(id)
+            REFERENCES employe (id)
 );
 
 -- catégorie des unités
@@ -324,35 +402,39 @@ CREATE TABLE categorie_unite
 CREATE TABLE unite
 (
     id                 SERIAL PRIMARY KEY,
-    nom                VARCHAR(50),   --kg, g, l, cl, ...
-    categorie_unite_id INTEGER REFERENCES categorie_unite (id),
-    valeur_pr_norme    DECIMAL(10, 10) -- valeur par rapport au norme
+    nom                VARCHAR(50),    --kg, g, l, cl, ...
+    categorie_unite_id INTEGER,
+    valeur_pr_norme    DECIMAL(10, 2), -- valeur par rapport au norme
+
+    FOREIGN KEY (categorie_unite_id) REFERENCES categorie_unite (id)
 );
 
 -- Table matiere_premiere
 CREATE TABLE matiere_premiere
 (
-    id                   SERIAL PRIMARY KEY,
-    nom                  VARCHAR(255) NOT NULL,
-    id_unite             INTEGER      NOT NULL,
-    id_categorie_unite_id INTEGER      NOT NULL REFERENCES categorie_unite (id),
-    stock                DECIMAL(10, 2) DEFAULT 0, -- d
-    image                VARCHAR(255) NULL,
+    id       SERIAL PRIMARY KEY,
+    nom      VARCHAR(255)   NOT NULL,
+    id_unite INTEGER        NOT NULL,
+    stock    DECIMAL(10, 2) NOT NULL, -- d
+    image    VARCHAR(255)   NULL,
 
     CONSTRAINT fk_matiere_premiere_unite
         FOREIGN KEY (id_unite)
             REFERENCES unite (id)
 );
 
--- Table historique d'estimation des prix des matières premières (fait par le gérant)
+-- Table historique d'estimation des prix des matières premières
 CREATE TABLE historique_estimation
 (
     id                  SERIAL PRIMARY KEY,
-    id_matiere_premiere INTEGER NOT NULL REFERENCES matiere_premiere (id),
+    id_matiere_premiere INTEGER,
     prix                DECIMAL(10, 2),
     quatite             DECIMAL(10, 2),
-    id_unite            INTEGER NOT NULL REFERENCES unite (id),
-    date_application    DATE
+    id_unite            INTEGER,
+    date_application    DATE,
+
+    FOREIGN KEY (id_matiere_premiere) REFERENCES matiere_premiere (id),
+    FOREIGN KEY (id_unite) REFERENCES unite (id)
 );
 
 CREATE TABLE seuil_matiere_premiere
@@ -396,6 +478,43 @@ CREATE TABLE detail_fournisseur
             REFERENCES matiere_premiere (id)
 );
 
+-- Table approvisionnement
+CREATE TABLE approvisionnement
+(
+    id                     SERIAL PRIMARY KEY,
+    id_detail_fournisseur  INTEGER        NOT NULL,
+    id_matiere_premiere    INTEGER        NOT NULL,
+    quantite               DECIMAL(10, 2) NOT NULL,
+    total                  DECIMAL(10, 2) NOT NULL,
+    date_approvisionnement DATE           NOT NULL,
+    date_peremption        DATE           NOT NULL,
+    reference_facture      VARCHAR(255)   NOT NULL,
+
+    CONSTRAINT fk_approvisionnement_detail_fournisseur
+        FOREIGN KEY (id_detail_fournisseur)
+            REFERENCES detail_fournisseur (id),
+
+    CONSTRAINT fk_approvisionnement_matiere_premiere
+        FOREIGN KEY (id_matiere_premiere)
+            REFERENCES matiere_premiere (id)
+);
+
+-- Table mouvement_stock
+CREATE TABLE mouvement_stock
+(
+    id                   SERIAL PRIMARY KEY,
+    id_matiere_premiere  INTEGER        NOT NULL,
+    id_approvisionnement INTEGER        NOT NULL,
+    date_mouvement_stock TIMESTAMP      NOT NULL,
+    quantite             DECIMAL(10, 2) NOT NULL,
+
+    FOREIGN KEY (id_approvisionnement) REFERENCES approvisionnement (id),
+
+    CONSTRAINT fk_mouvement_stock_matiere_premiere
+        FOREIGN KEY (id_matiere_premiere)
+            REFERENCES matiere_premiere (id)
+);
+
 -- Table package
 CREATE TABLE package
 (
@@ -429,7 +548,7 @@ CREATE TABLE prix_vente_produit
     id               SERIAL PRIMARY KEY,
     id_produit       INTEGER NOT NULL,
     prix_vente       DECIMAL(10, 2),
-    date_application TIMESTAMP
+    date_application DATE
 );
 
 -- Table recette

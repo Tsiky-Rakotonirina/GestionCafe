@@ -1,61 +1,63 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.sql.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "presence") 
+@Table(name = "presence")
 public class Presence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long idEmploye;
-    private Date datePresence;
-    private Timestamp dateArrivee;
-    private boolean estPresent;
-    public Presence() {
-    }
-    public Presence(Long idEmploye, Date datePresence, Timestamp dateArrivee, boolean estPresent) {
-        this.idEmploye = idEmploye;
-        this.datePresence = datePresence;
-        this.dateArrivee = dateArrivee;
-        this.estPresent = estPresent;
-    }
-    public Presence(Long id, Long idEmploye, Date datePresence, Timestamp dateArrivee, boolean estPresent) {
-        this.id = id;
-        this.idEmploye = idEmploye;
-        this.datePresence = datePresence;
-        this.dateArrivee = dateArrivee;
-        this.estPresent = estPresent;
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "id_employe")
+    private Employe employe;
+
+    private LocalDate datePresence;
+    private LocalDateTime dateArrivee;
+    private Boolean estPresent;
+
+    // Getters et setters
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getIdEmploye() {
-        return idEmploye;
+
+    public Employe getEmploye() {
+        return employe;
     }
-    public void setIdEmploye(Long idEmploye) {
-        this.idEmploye = idEmploye;
+
+    public void setEmploye(Employe employe) {
+        this.employe = employe;
     }
-    public Date getDatePresence() {
+
+    public LocalDate getDatePresence() {
         return datePresence;
     }
-    public void setDatePresence(Date datePresence) {
+
+    public void setDatePresence(LocalDate datePresence) {
         this.datePresence = datePresence;
     }
-    public Timestamp getDateArrivee() {
+
+    public LocalDateTime getDateArrivee() {
         return dateArrivee;
     }
-    public void setDateArrivee(Timestamp dateArrivee) {
+
+    public void setDateArrivee(LocalDateTime dateArrivee) {
         this.dateArrivee = dateArrivee;
     }
-    public boolean isEstPresent() {
+
+    public Boolean getEstPresent() {
         return estPresent;
     }
-    public void setEstPresent(boolean estPresent) {
+
+    public void setEstPresent(Boolean estPresent) {
         this.estPresent = estPresent;
     }
 }

@@ -1,39 +1,33 @@
 package com.gestioncafe.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "prix_vente_produit")
 public class PrixVenteProduit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_produit", nullable = false)
     private Produit produit;
 
-    @Column(name = "prix_vente", nullable = false)
+    @Column(name = "prix_vente")
     private BigDecimal prixVente;
 
-    @Column(name = "date_application", nullable = false)
-    private LocalDateTime dateApplication;
+    @Column(name = "date_application")
+    private LocalDate dateApplication;
 
-    public Integer getId() {
+    // Getters et Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -53,11 +47,11 @@ public class PrixVenteProduit {
         this.prixVente = prixVente;
     }
 
-    public LocalDateTime getDateApplication() {
+    public LocalDate getDateApplication() {
         return dateApplication;
     }
 
-    public void setDateApplication(LocalDateTime dateApplication) {
+    public void setDateApplication(LocalDate dateApplication) {
         this.dateApplication = dateApplication;
     }
 }
