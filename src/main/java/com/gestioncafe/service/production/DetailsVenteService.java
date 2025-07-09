@@ -72,11 +72,11 @@ public class DetailsVenteService {
         );
         List<VenteProduitStatDTO> result = new ArrayList<>();
         for (Object[] row : rows) {
-            Integer produitId = ((Number) row[0]).intValue();
+            int produitId = ((Number) row[0]).intValue();
             String nom = (String) row[1];
             BigDecimal quantite = new BigDecimal(row[2].toString());
             BigDecimal montant = new BigDecimal(row[3].toString());
-            result.add(new VenteProduitStatDTO(produitId, nom, quantite, montant));
+            result.add(new VenteProduitStatDTO((long) produitId, nom, quantite, montant));
         }
         return result;
     }
