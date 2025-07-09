@@ -3,6 +3,9 @@ package com.gestioncafe.dto;
 import java.math.BigDecimal;
 
 public class FicheClient {
+    // Date de la dernière vente du client
+    private java.time.LocalDate derniereDateVente;
+
     // Pour compatibilité Thymeleaf : alias chiffreAffaireTotal
     public BigDecimal getChiffreAffaireTotal() {
         return getCaTotal();
@@ -42,6 +45,13 @@ public class FicheClient {
     
     // Constructeurs
     public FicheClient() {}
+
+    public java.time.LocalDate getDerniereDateVente() {
+        return derniereDateVente;
+    }
+    public void setDerniereDateVente(java.time.LocalDate derniereDateVente) {
+        this.derniereDateVente = derniereDateVente;
+    }
 
     public java.time.LocalDate getDateAdhesion() {
         return dateAdhesion;

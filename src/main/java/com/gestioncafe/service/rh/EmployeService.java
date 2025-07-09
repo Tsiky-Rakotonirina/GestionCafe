@@ -64,8 +64,8 @@ public class EmployeService {
             try {
                 statut = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(employe.getId())
                     .map(se -> {
-                        if (se.getIdStatut() != null) {
-                            Statut statutObj = statutRepository.findById(se.getIdStatut()).orElse(null);
+                        if (se.getStatut().getId() != null) {
+                            Statut statutObj = statutRepository.findById(se.getStatut().getId() ).orElse(null);
                             return (statutObj != null && statutObj.getValeur() != null) ? statutObj.getValeur() : "-";
                         }
                         return "-";
@@ -102,8 +102,8 @@ public class EmployeService {
         // Statut
         dto.statut = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(id)
             .map(se -> {
-                if (se.getIdStatut() != null) {
-                    Statut statutObj = statutRepository.findById(se.getIdStatut()).orElse(null);
+                if (se.getStatut().getId()  != null) {
+                    Statut statutObj = statutRepository.findById(se.getStatut().getId() ).orElse(null);
                     return (statutObj != null && statutObj.getValeur() != null) ? statutObj.getValeur() : "-";
                 }
                 return "-";

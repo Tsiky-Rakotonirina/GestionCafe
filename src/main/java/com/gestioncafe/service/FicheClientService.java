@@ -31,6 +31,11 @@ public class FicheClientService {
                    END as age,
                    g.nom as nom_genre,
                    c.date_adhesion as date_adhesion
+                   ,(
+                       SELECT MAX(v.date_vente)
+                       FROM vente v
+                       WHERE v.id_client = c.id
+                   ) as derniere_date_vente
             FROM client c
             INNER JOIN tiers t ON c.id_tiers = t.id
             LEFT JOIN genre g ON t.id_genre = g.id
@@ -46,6 +51,7 @@ public class FicheClientService {
             fiche.setAge(rs.getInt("age"));
             fiche.setNomGenre(rs.getString("nom_genre"));
             fiche.setDateAdhesion(rs.getObject("date_adhesion", java.time.LocalDate.class));
+            fiche.setDerniereDateVente(rs.getObject("derniere_date_vente", java.time.LocalDate.class));
             return null;
         }, clientId);
         

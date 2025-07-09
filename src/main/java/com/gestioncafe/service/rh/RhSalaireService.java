@@ -72,7 +72,7 @@ public class RhSalaireService {
         for (Date date : dates) {
             StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdAndDateStatutLessThanEqualOrderByDateStatutDesc(idEmploye, date)
                 .orElse(null);
-            if (statutEmploye == null || statutEmploye.getIdStatut() != 1) {
+            if (statutEmploye == null || statutEmploye.getStatut().getId() != 1) {
                 break;
             }
             LocalDate localDateDebut = date.toLocalDate().withDayOfMonth(1);
@@ -91,6 +91,7 @@ public class RhSalaireService {
             salaire += totalCommission;
             double retenuesSociales = salaire * tauxCotisationSociale;
             salaire -= (salaire * tauxCotisationSociale);
+
             double impots = 0;
             for (Irsa irsa : irsas) {
                 if (salaire >= irsa.getSalaireMin() && (irsa.getSalaireMax() == 0 || salaire <= irsa.getSalaireMax())) {
@@ -211,7 +212,7 @@ public class RhSalaireService {
         }
         StatutEmploye statutEmploye = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(idEmploye)
             .orElseThrow(() -> new RuntimeException("Employé non trouvé avec l'ID: " + idEmploye));
-        if (statutEmploye.getIdStatut() != 1) {
+        if (statutEmploye.getStatut().getId() != 1) {
             throw new Exception("Erreur dans l'ajout : employe inactif");
         }
         double prochainSalaire = this.prochainSalaire(idEmploye);
