@@ -23,19 +23,14 @@
             <div class="filter-section">
                 <h2><i class="fas fa-filter"></i> Filtrer les candidats</h2>
                 <form class="form-recrutement" method="post" th:action="@{/administratif/rh/recrutement/recrutement}">
-                    <!-- Genre -->
+                    <!-- Genre (select) -->
                     <div class="filter-group">
                         <label><i class="fas fa-venus-mars"></i> Genre</label>
-                        <div class="radio-group">
-                            <label class="radio-item">
-                                <input type="radio" name="genreId" value="1" th:checked="${param.genreId == '1'}" />
-                                <span>Homme</span>
-                            </label>
-                            <label class="radio-item">
-                                <input type="radio" name="genreId" value="2" th:checked="${param.genreId == '2'}" />
-                                <span>Femme</span>
-                            </label>
-                        </div>
+                        <select name="genreId" class="select-input">
+                            <option value="" th:selected="${param.genreId == null or param.genreId == ''}">Tous les genres</option>
+                            <option th:each="g : ${genres}" th:value="${g.id}" th:text="${g.valeur}"
+                                th:selected="${param.genreId == g.id.toString()}"></option>
+                        </select>
                     </div>
 
                     <!-- Âge -->
@@ -49,7 +44,7 @@
                         </div>
                     </div>
 
-                    <!-- Grade -->
+                    <!-- Poste -->
                     <div class="filter-group">
                         <label><i class="fas fa-briefcase"></i> Poste recherché</label>
                         <select name="gradeId" class="select-input">

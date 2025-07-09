@@ -84,7 +84,7 @@ class CafeManager {
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.remove('active');
         });
-        
+
         const activeNavItem = document.querySelector(`[data-page="${page}"]`).closest('.nav-item');
         if (activeNavItem) {
             activeNavItem.classList.add('active');
@@ -165,20 +165,20 @@ class CafeManager {
 
     performSearch(query) {
         // Simulation de recherche
-        const searchResults = this.mockSearchData.filter(item => 
+        const searchResults = this.mockSearchData.filter(item =>
             item.name.toLowerCase().includes(query.toLowerCase()) ||
             item.category.toLowerCase().includes(query.toLowerCase())
         );
-        
+
         console.log('Résultats de recherche:', searchResults);
         // Afficher les résultats
     }
 
     showNotifications() {
         const notifications = [
-            { id: 1, message: 'Stock de café faible', type: 'warning', time: '2 min' },
-            { id: 2, message: 'Nouvelle commande reçue', type: 'info', time: '5 min' },
-            { id: 3, message: 'Rapport mensuel disponible', type: 'success', time: '1h' }
+            {id: 1, message: 'Stock de café faible', type: 'warning', time: '2 min'},
+            {id: 2, message: 'Nouvelle commande reçue', type: 'info', time: '5 min'},
+            {id: 3, message: 'Rapport mensuel disponible', type: 'success', time: '1h'}
         ];
 
         // Créer et afficher le popup de notifications
@@ -284,7 +284,7 @@ class CafeManager {
         statValues.forEach(stat => {
             const finalValue = stat.textContent;
             const numericValue = parseFloat(finalValue.replace(/[^\d.]/g, ''));
-            
+
             if (!isNaN(numericValue)) {
                 this.animateValue(stat, 0, numericValue, finalValue);
             }
@@ -294,19 +294,19 @@ class CafeManager {
     animateValue(element, start, end, suffix) {
         const duration = 1000;
         const startTime = performance.now();
-        
+
         const updateValue = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const current = start + (end - start) * this.easeOutCubic(progress);
-            
+
             element.textContent = Math.floor(current) + suffix.replace(/[\d.]/g, '');
-            
+
             if (progress < 1) {
                 requestAnimationFrame(updateValue);
             }
         };
-        
+
         requestAnimationFrame(updateValue);
     }
 
@@ -325,7 +325,7 @@ class CafeManager {
     }
 
     loadPageData(page) {
-        switch(page) {
+        switch (page) {
             case 'stock':
                 this.loadStockData();
                 break;
@@ -413,7 +413,7 @@ class CafeManager {
     handleFormSubmit(form) {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
-        
+
         console.log('Données du formulaire:', data);
         this.showSuccessMessage('Formulaire soumis avec succès!');
     }
@@ -421,32 +421,32 @@ class CafeManager {
     validateField(field) {
         const value = field.value.trim();
         const fieldName = field.name || field.id;
-        
+
         // Validation basique
         if (field.required && !value) {
             this.showFieldError(field, `Le champ ${fieldName} est requis`);
             return false;
         }
-        
+
         this.clearFieldError(field);
         return true;
     }
 
     showFieldError(field, message) {
         field.classList.add('error');
-        
+
         // Supprimer message d'erreur existant
         const existingError = field.parentNode.querySelector('.field-error');
         if (existingError) {
             existingError.remove();
         }
-        
+
         // Ajouter nouveau message
         const errorEl = document.createElement('span');
         errorEl.className = 'field-error';
         errorEl.textContent = message;
         errorEl.style.cssText = 'color: var(--danger-color); font-size: 0.8rem; margin-top: 0.25rem;';
-        
+
         field.parentNode.appendChild(errorEl);
     }
 
@@ -480,7 +480,7 @@ class CafeManager {
 
     handleButtonClick(button, event) {
         const buttonText = button.textContent.trim();
-        
+
         // Ajouter effet de clic
         button.classList.add('clicked');
         setTimeout(() => {
@@ -488,7 +488,7 @@ class CafeManager {
         }, 200);
 
         console.log('Bouton cliqué:', buttonText);
-        
+
         // Actions spécifiques selon le bouton
         if (buttonText.includes('Ajouter') || buttonText.includes('Nouveau')) {
             this.showAddModal();
@@ -501,11 +501,11 @@ class CafeManager {
 
     handleIconButtonClick(button, event) {
         const icon = button.querySelector('i');
-        const actionType = icon.classList.contains('fa-edit') ? 'edit' : 
-                          icon.classList.contains('fa-trash') ? 'delete' : 'action';
-        
+        const actionType = icon.classList.contains('fa-edit') ? 'edit' :
+            icon.classList.contains('fa-trash') ? 'delete' : 'action';
+
         console.log('Action:', actionType);
-        
+
         if (actionType === 'delete') {
             this.confirmDelete(() => {
                 this.showSuccessMessage('Élément supprimé avec succès');
@@ -658,7 +658,7 @@ class CafeManager {
 
     exportData() {
         this.showSuccessMessage('Export en cours...');
-        
+
         // Simuler l'export
         setTimeout(() => {
             this.showSuccessMessage('Données exportées avec succès!');
@@ -667,7 +667,7 @@ class CafeManager {
 
     generateReport() {
         this.showSuccessMessage('Génération du rapport en cours...');
-        
+
         setTimeout(() => {
             this.showSuccessMessage('Rapport généré avec succès!');
         }, 3000);
@@ -712,11 +712,11 @@ class CafeManager {
     // Données mockées pour la recherche
     get mockSearchData() {
         return [
-            { name: 'Espresso', category: 'Café', price: 2.50 },
-            { name: 'Cappuccino', category: 'Café', price: 3.50 },
-            { name: 'Latte', category: 'Café', price: 4.00 },
-            { name: 'Croissant', category: 'Pâtisserie', price: 1.80 },
-            { name: 'Muffin', category: 'Pâtisserie', price: 2.20 },
+            {name: 'Espresso', category: 'Café', price: 2.50},
+            {name: 'Cappuccino', category: 'Café', price: 3.50},
+            {name: 'Latte', category: 'Café', price: 4.00},
+            {name: 'Croissant', category: 'Pâtisserie', price: 1.80},
+            {name: 'Muffin', category: 'Pâtisserie', price: 2.20},
         ];
     }
 }
@@ -831,10 +831,10 @@ document.head.insertAdjacentHTML('beforeend', additionalStyles);
 // Initialiser l'application
 document.addEventListener('DOMContentLoaded', () => {
     const app = new CafeManager();
-    
+
     // Exposer l'instance globalement pour le débogage
     window.cafeManager = app;
-    
+
     console.log('🚀 CafeManager Pro initialisé avec succès!');
 });
 
@@ -846,26 +846,26 @@ const utils = {
             currency: 'EUR'
         }).format(amount);
     },
-    
+
     formatDate: (date) => {
         return new Intl.DateTimeFormat('fr-FR', {
             day: '2-digit',
-            month: '2-digit',  
+            month: '2-digit',
             year: 'numeric'
         }).format(date);
     },
-    
+
     formatTime: (date) => {
         return new Intl.DateTimeFormat('fr-FR', {
             hour: '2-digit',
             minute: '2-digit'
         }).format(date);
     },
-    
+
     generateId: () => {
         return 'id_' + Math.random().toString(36).substr(2, 9);
     },
-    
+
     debounce: (func, wait) => {
         let timeout;
         return function executedFunction(...args) {
@@ -885,7 +885,7 @@ window.utils = utils;
 // Gestion de l'activation du menu sidebar
 const sidebarNav = document.querySelector('.sidebar-nav');
 if (sidebarNav) {
-    sidebarNav.addEventListener('click', function(e) {
+    sidebarNav.addEventListener('click', function (e) {
         const link = e.target.closest('a.nav-link');
         if (link) {
             // Retirer l'active de tous les li
