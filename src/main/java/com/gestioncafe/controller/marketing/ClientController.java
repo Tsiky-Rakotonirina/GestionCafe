@@ -39,6 +39,7 @@ public class ClientController {
         List<VClientLib> clients = vClientLibService.getAllClients();
         model.addAttribute("clients", clients);
         model.addAttribute("searchDto", new ClientSearchDto());
+
         return "administratif/marketing/clients/list";
     }
 

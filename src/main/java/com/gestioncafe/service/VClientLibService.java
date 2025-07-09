@@ -3,19 +3,22 @@ package com.gestioncafe.service;
 import com.gestioncafe.dto.ClientSearchDto;
 import com.gestioncafe.model.VClientLib;
 import com.gestioncafe.repository.VClientLibRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class VClientLibService {
-    
-    @Autowired
-    private VClientLibRepository vClientLibRepository;
-    
+
+    private final VClientLibRepository vClientLibRepository;
+
+    public VClientLibService(VClientLibRepository vClientLibRepository) {
+        this.vClientLibRepository = vClientLibRepository;
+    }
+
     /**
      * Recherche des clients selon les critères fournis
+     *
      * @param searchDto DTO contenant les critères de recherche
      * @return Liste des clients correspondant aux critères
      */
@@ -28,9 +31,10 @@ public class VClientLibService {
             searchDto.getDateAdhesion()
         );
     }
-    
+
     /**
      * Récupère tous les clients
+     *
      * @return Liste de tous les clients
      */
     public List<VClientLib> getAllClients() {

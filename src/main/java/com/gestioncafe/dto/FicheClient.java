@@ -1,10 +1,15 @@
 package com.gestioncafe.dto;
 
 import java.math.BigDecimal;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 
 public class FicheClient {
+    // Pour compatibilité Thymeleaf : alias chiffreAffaireTotal
+    public BigDecimal getChiffreAffaireTotal() {
+        return getCaTotal();
+    }
+    // Date d'adhésion du client
+    private java.time.LocalDate dateAdhesion;
+
     
     // Informations de base
     private Long id;
@@ -32,8 +37,18 @@ public class FicheClient {
     private String jourPrefere; // jour de la semaine
     private String trancheHorairePrefere; // ex: "Matin (8h-12h)"
     
+    // Ajouté pour compatibilité Thymeleaf (genre du client)
+    private String nomGenre;
+    
     // Constructeurs
     public FicheClient() {}
+
+    public java.time.LocalDate getDateAdhesion() {
+        return dateAdhesion;
+    }
+    public void setDateAdhesion(java.time.LocalDate dateAdhesion) {
+        this.dateAdhesion = dateAdhesion;
+    }
     
     public FicheClient(Long id, String nom, String prenom, String email, String contact, Integer age) {
         this.id = id;
@@ -92,6 +107,9 @@ public class FicheClient {
     
     public String getTrancheHorairePrefere() { return trancheHorairePrefere; }
     public void setTrancheHorairePrefere(String trancheHorairePrefere) { this.trancheHorairePrefere = trancheHorairePrefere; }
+    
+    public String getNomGenre() { return nomGenre; }
+    public void setNomGenre(String nomGenre) { this.nomGenre = nomGenre; }
     
     // Méthodes utilitaires
     public String getNomComplet() {

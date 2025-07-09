@@ -1,16 +1,15 @@
 package com.gestioncafe.service;
 
-import com.gestioncafe.dto.FicheClient;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
+import com.gestioncafe.dto.FicheClient;
 
 @Service
 public class FicheClientService {
@@ -21,7 +20,7 @@ public class FicheClientService {
     public FicheClient getFicheClient(Long clientId) {
         FicheClient fiche = new FicheClient();
         
-        // 1. Informations de base du client
+        // 1. Informations de base du client + genre
         String sqlBase = """
             SELECT c.id, t.nom, t.prenom, t.email, t.contact,
                    CASE 
@@ -29,12 +28,15 @@ public class FicheClientService {
                            EXTRACT(YEAR FROM AGE(CURRENT_DATE, c.date_naissance))
                        ELSE 
                            EXTRACT(YEAR FROM AGE(CURRENT_DATE, c.date_adhesion))
-                   END as age
+                   END as age,
+                   g.nom as nom_genre,
+                   c.date_adhesion as date_adhesion
             FROM client c
             INNER JOIN tiers t ON c.id_tiers = t.id
+            LEFT JOIN genre g ON t.id_genre = g.id
             WHERE c.id = ?
             """;
-        
+
         jdbcTemplate.queryForObject(sqlBase, (rs, rowNum) -> {
             fiche.setId(rs.getLong("id"));
             fiche.setNom(rs.getString("nom"));
@@ -42,6 +44,8 @@ public class FicheClientService {
             fiche.setEmail(rs.getString("email"));
             fiche.setContact(rs.getString("contact"));
             fiche.setAge(rs.getInt("age"));
+            fiche.setNomGenre(rs.getString("nom_genre"));
+            fiche.setDateAdhesion(rs.getObject("date_adhesion", java.time.LocalDate.class));
             return null;
         }, clientId);
         
