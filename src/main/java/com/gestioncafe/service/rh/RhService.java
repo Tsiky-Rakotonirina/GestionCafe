@@ -1,35 +1,37 @@
 package com.gestioncafe.service.rh;
 
+import com.gestioncafe.model.*;
+import com.gestioncafe.repository.*;
+import org.springframework.stereotype.Service;
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.*;
-import com.gestioncafe.repository.*;
 
 @Service
 public class RhService {
-    @Autowired
-    private StatutEmployeRepository statutEmployeRepository;
-    @Autowired
-    private PayementRepository payementRepository;
-    @Autowired
-    private CommissionRepository commissionRepository;
-    @Autowired
-    private AvanceRepository avanceRepository;
-    @Autowired 
-    private CongeRepository congeRepository;
-    @Autowired
-    private TypeCongeRepository typeCongeRepository;
+    private final StatutEmployeRepository statutEmployeRepository;
+    private final PayementRepository payementRepository;
+    private final CommissionRepository commissionRepository;
+    private final AvanceRepository avanceRepository;
+    private final CongeRepository congeRepository;
+    private final TypeCongeRepository typeCongeRepository;
+
+    public RhService(StatutEmployeRepository statutEmployeRepository,
+                     PayementRepository payementRepository,
+                     CommissionRepository commissionRepository,
+                     AvanceRepository avanceRepository,
+                     CongeRepository congeRepository,
+                     TypeCongeRepository typeCongeRepository) {
+        this.statutEmployeRepository = statutEmployeRepository;
+        this.payementRepository = payementRepository;
+        this.commissionRepository = commissionRepository;
+        this.avanceRepository = avanceRepository;
+        this.congeRepository = congeRepository;
+        this.typeCongeRepository = typeCongeRepository;
+    }
 
     public List<StatutEmploye> getAllEmployesActifs() {
         return statutEmployeRepository.findDerniersStatutsParEmployeEtStatut(Long.parseLong("1"));
@@ -47,7 +49,7 @@ public class RhService {
 
         // 2. Transformer en java.sql.Date
         List<Date> moisRefs = derniersMois.stream()
-            .map(mois -> Date.valueOf(mois))
+            .map(Date::valueOf)
             .collect(Collectors.toList());
 
         // 3. Récupérer les paiements
@@ -60,7 +62,7 @@ public class RhService {
             grouped.putIfAbsent(mois, new HashMap<>());
             Map<Long, Double> salaires = grouped.get(mois);
             salaires.put(p.getIdEmploye(),
-                        salaires.getOrDefault(p.getIdEmploye(), 0.0) + p.getMontant());
+                salaires.getOrDefault(p.getIdEmploye(), 0.0) + p.getMontant());
         }
 
         // 5. Construire le format final
@@ -139,7 +141,7 @@ public class RhService {
     }
 
     public List<Map<String, Object>> variationAvance() {
-        
+
         List<Map<String, Object>> result = new ArrayList<>();
 
         // Étape 1 : 5 derniers mois

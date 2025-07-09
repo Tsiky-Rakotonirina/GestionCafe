@@ -1,56 +1,59 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.sql.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "statut_employe") 
+@Table(name = "statut_employe")
 public class StatutEmploye {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    @ManyToOne
-    @JoinColumn(name = "id_employe")  
+    private Long id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_employe", referencedColumnName = "id")
     private Employe employe;
-    Date dateStatut;
-    Long idStatut;
-    public StatutEmploye() {
-    }
-    public StatutEmploye(Employe employe, Date dateStatut, Long idStatut) {
-        this.employe = employe;
-        this.dateStatut = dateStatut;
-        this.idStatut = idStatut;
-    }
-    public StatutEmploye(Long id, Employe employe, Date dateStatut, Long idStatut) {
-        this.id = id;
-        this.employe = employe;
-        this.dateStatut = dateStatut;
-        this.idStatut = idStatut;
-    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_statut", referencedColumnName = "id")
+    private Statut statut;
+
+    @Column(name = "date_statut", nullable = false)
+    private LocalDateTime dateStatut;
+
+    // Getters & Setters
+
     public Long getId() {
-        return id;
+        return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public Employe getEmploye() {
-        return employe;
+        return this.employe;
     }
+
     public void setEmploye(Employe employe) {
         this.employe = employe;
     }
-    public Date getDateStatut() {
-        return dateStatut;
+
+    public Statut getStatut() {
+        return this.statut;
     }
-    public void setDateStatut(Date dateStatut) {
+
+    public void setStatut(Statut statut) {
+        this.statut = statut;
+    }
+
+    public LocalDateTime getDateStatut() {
+        return this.dateStatut;
+    }
+
+    public void setDateStatut(LocalDateTime dateStatut) {
         this.dateStatut = dateStatut;
     }
-    public Long getIdStatut() {
-        return idStatut;
-    }
-    public void setIdStatut(Long idStatut) {
-        this.idStatut = idStatut;
-    }
-   
-    
 }

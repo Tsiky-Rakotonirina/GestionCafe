@@ -1,5 +1,7 @@
 package com.gestioncafe.controller.marketing;
 
+import com.gestioncafe.model.Marketing;
+import com.gestioncafe.service.marketing.MarketingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

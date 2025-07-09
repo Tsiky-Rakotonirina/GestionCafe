@@ -1,54 +1,60 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.sql.*;
+
+import java.time.LocalDate;
+
 
 @Entity
-@Table(name = "grade_employe") 
+@Table(name = "grade_employe")
 public class GradeEmploye {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    Long idEmploye;
-    @ManyToOne
-    @JoinColumn(name = "id_grade")  
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_employe", referencedColumnName = "id")
+    private Employe employe;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_grade", referencedColumnName = "id")
     private Grade grade;
-    Date dateGrade;
-    public GradeEmploye() {
-    }
-    public GradeEmploye(Long idEmploye, Grade grade, Date dateGrade) {
-        this.idEmploye = idEmploye;
-        this.grade = grade;
-        this.dateGrade = dateGrade;
-    }
-    public GradeEmploye(Long id, Long idEmploye, Grade grade, Date dateGrade) {
-        this.id = id;
-        this.idEmploye = idEmploye;
-        this.grade = grade;
-        this.dateGrade = dateGrade;
-    }
+
+    @Column(name = "date_grade", nullable = false)
+    private LocalDate dateGrade;
+
+    // Getters & Setters
+
     public Long getId() {
-        return id;
+        return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getIdEmploye() {
-        return idEmploye;
+
+    public Employe getEmploye() {
+        return this.employe;
     }
-    public void setIdEmploye(Long idEmploye) {
-        this.idEmploye = idEmploye;
+
+    public void setEmploye(Employe employe) {
+        this.employe = employe;
     }
+
     public Grade getGrade() {
-        return grade;
+        return this.grade;
     }
+
     public void setGrade(Grade grade) {
         this.grade = grade;
     }
-    public Date getDateGrade() {
-        return dateGrade;
+
+    public LocalDate getDateGrade() {
+        return this.dateGrade;
     }
-    public void setDateGrade(Date dateGrade) {
+
+    public void setDateGrade(LocalDate dateGrade) {
         this.dateGrade = dateGrade;
     }
 }
