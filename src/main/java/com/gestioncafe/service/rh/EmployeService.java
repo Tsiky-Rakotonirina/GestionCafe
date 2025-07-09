@@ -1,20 +1,14 @@
 package com.gestioncafe.service.rh;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.gestioncafe.dto.EmployeDetailDTO;
 import com.gestioncafe.dto.EmployeInfosDTO;
 import com.gestioncafe.model.Employe;
 import com.gestioncafe.model.Statut;
-import com.gestioncafe.repository.CandidatRepository;
-import com.gestioncafe.repository.EmployeRepository;
-import com.gestioncafe.repository.PresenceRepository;
-import com.gestioncafe.repository.StatutEmployeRepository;
-import com.gestioncafe.repository.StatutRepository;
-import com.gestioncafe.repository.VenteRepository;
+import com.gestioncafe.repository.*;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EmployeService {
@@ -55,7 +49,7 @@ public class EmployeService {
             }
             int nombrePresences = 0;
             try {
-                nombrePresences = presenceRepository.countByIdEmployeAndEstPresent(employe.getId(), true);
+                nombrePresences = presenceRepository.countByEmploye_IdAndEstPresent(employe.getId(), true);
             } catch (Exception e) {
                 // log or ignore
             }
@@ -65,7 +59,7 @@ public class EmployeService {
                 statut = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(employe.getId())
                     .map(se -> {
                         if (se.getStatut().getId() != null) {
-                            Statut statutObj = statutRepository.findById(se.getStatut().getId() ).orElse(null);
+                            Statut statutObj = statutRepository.findById(se.getStatut().getId()).orElse(null);
                             return (statutObj != null && statutObj.getValeur() != null) ? statutObj.getValeur() : "-";
                         }
                         return "-";
@@ -102,19 +96,20 @@ public class EmployeService {
         // Statut
         dto.statut = statutEmployeRepository.findTopByEmploye_IdOrderByDateStatutDesc(id)
             .map(se -> {
-                if (se.getStatut().getId()  != null) {
-                    Statut statutObj = statutRepository.findById(se.getStatut().getId() ).orElse(null);
+                if (se.getStatut().getId() != null) {
+                    Statut statutObj = statutRepository.findById(se.getStatut().getId()).orElse(null);
                     return (statutObj != null && statutObj.getValeur() != null) ? statutObj.getValeur() : "-";
                 }
                 return "-";
             })
             .orElse("-");
         // Statistiques
-        dto.nombrePresences = presenceRepository.countByIdEmployeAndEstPresent(id, true);
+        dto.nombrePresences = presenceRepository.countByEmploye_IdAndEstPresent(id, true);
         int nombreClients = 0;
         try {
             nombreClients = venteRepository.countDistinctClientsByEmploye(employe);
-        } catch (Exception e) {}
+        } catch (Exception ignored) {
+        }
         dto.nombreClients = nombreClients;
         dto.efficacite = (dto.nombrePresences > 0) ? ((double) dto.nombreClients / dto.nombrePresences) : 0.0;
         return dto;

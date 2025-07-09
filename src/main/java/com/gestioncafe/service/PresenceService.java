@@ -28,12 +28,12 @@ public class PresenceService {
     }
 
     public List<Presence> getPresencesForToday() {
-        return presenceRepository.findByDatePresence(LocalDate.now());
+        return presenceRepository.findByDatePresence(Date.valueOf(LocalDate.now()));
     }
 
     public void validerPresence(Long employeId, String password) {
         // Ici, vous devriez vérifier le mot de passe (logique simplifiée)
-        Presence presence = presenceRepository.findByEmployeIdAndDatePresence(employeId, LocalDate.now());
+        Presence presence = presenceRepository.findByEmploye_IdAndDatePresence(employeId, Date.valueOf(LocalDate.now()));
 
         if (presence == null) {
             presence = new Presence();

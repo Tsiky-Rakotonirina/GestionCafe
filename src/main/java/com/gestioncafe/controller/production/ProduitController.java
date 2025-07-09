@@ -179,17 +179,18 @@ public class ProduitController {
                 model.addAttribute("quantiteProduiteRecette", recette.getQuantiteProduite());
                 model.addAttribute("tempsFabricationRecette", recette.getTempsFabrication());
                 // Préparer la liste des ingrédients
-                java.util.List<DetailRecette> details = detailRecetteService.findByRecetteId(recette.getId());
-                java.util.List<com.gestioncafe.dto.IngredientFormDTO> ingredientDTOs = new java.util.ArrayList<>();
-                java.math.BigDecimal coutTotal = java.math.BigDecimal.ZERO;
+                List<DetailRecette> details = detailRecetteService.findByRecetteId(recette.getId());
+                List<com.gestioncafe.dto.IngredientFormDTO> ingredientDTOs = new ArrayList<>();
+                BigDecimal coutTotal = java.math.BigDecimal.ZERO;
                 for (DetailRecette detail : details) {
                     com.gestioncafe.dto.IngredientFormDTO dto = new com.gestioncafe.dto.IngredientFormDTO();
-                    dto.setIdMatierePremiere(detail.getMatierePremiere().getId());
+                    dto.setIdMatierePremiere(Math.toIntExact(detail.getMatierePremiere().getId()));
                     dto.setQuantite(detail.getQuantite().doubleValue());
                     dto.setIdUnite(Math.toIntExact(detail.getUnite().getId()));
                     ingredientDTOs.add(dto);
+
                     // Calcul du coût à partir de l'historique d'estimation, conversion à la norme
-                    java.util.List<HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
+                    List<HistoriqueEstimation> historiques = historiqueEstimationService.findByMatierePremiere(detail.getMatierePremiere());
                     HistoriqueEstimation estimationRecente = historiques.stream()
                         .max(java.util.Comparator.comparing(HistoriqueEstimation::getDateApplication))
                         .orElse(null);

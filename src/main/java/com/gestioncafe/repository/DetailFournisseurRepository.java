@@ -1,16 +1,17 @@
 package com.gestioncafe.repository;
 
-import com.gestioncafe.controller.stock.ApprovisionnementController;
-import com.gestioncafe.model.DetailFournisseur;
-import com.gestioncafe.model.Fournisseur;
-import com.gestioncafe.model.MatierePremiere;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
 import java.util.Optional;
 
-public interface DetailFournisseurRepository extends JpaRepository<DetailFournisseur, Integer> {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.gestioncafe.dto.FournisseurPrix;
+import com.gestioncafe.model.DetailFournisseur;
+import com.gestioncafe.model.Fournisseur;
+import com.gestioncafe.model.MatierePremiere;
+
+public interface DetailFournisseurRepository extends JpaRepository<DetailFournisseur, Long> {
     List<DetailFournisseur> findByMatierePremiere(MatierePremiere matierePremiere);
 
     List<DetailFournisseur> findByFournisseur(Fournisseur fournisseur);
@@ -37,10 +38,10 @@ public interface DetailFournisseurRepository extends JpaRepository<DetailFournis
     @Query("SELECT df FROM DetailFournisseur df WHERE df.matierePremiere.id = ?1 ")
     List<DetailFournisseur> findFournisseursByMatierePremiereId(Long matierePremiereId);
 
-    @Query("SELECT NEW ApprovisionnementController.FournisseurPrix(" +
-        "df.fournisseur.id, df.fournisseur.nom, df.prix, df.fournisseur.frais) " +
+    @Query("SELECT NEW com.gestioncafe.dto.FournisseurPrix(" +
+        "df.fournisseur.id, df.fournisseur.nom, df.prix) " +
         "FROM DetailFournisseur df WHERE df.matierePremiere.id = ?1 " +
         "ORDER BY df.prix ASC")
-    List<ApprovisionnementController.FournisseurPrix> findFournisseurPrixByMatierePremiereId(Long matierePremiereId);
+    List<FournisseurPrix> findFournisseurPrixByMatierePremiereId(Long matierePremiereId);
 
 }

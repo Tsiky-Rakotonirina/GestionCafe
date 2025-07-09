@@ -123,7 +123,7 @@ public class RhSalaireService {
 
                 // Absences
                 List<Presence> abscence = presenceRepository
-                    .findByIdEmployeAndDatePresenceBetweenAndEstPresentFalse(idEmploye, dateDebut, date);
+                    .findByEmploye_IdAndDatePresenceBetweenAndEstPresentFalse(idEmploye, dateDebut, date);
                 double abscences = abscence.size() * salaire / 22;
                 salaire -= abscences;
 

@@ -21,7 +21,7 @@ public class MatierePremiereService {
     }
 
     public Optional<MatierePremiere> findById(Integer id) {
-        return repository.findById(id);
+        return repository.findById(Long.valueOf(id));
     }
 
     public MatierePremiere save(MatierePremiere mp) {
@@ -30,12 +30,12 @@ public class MatierePremiereService {
     }
 
     public void deleteById(Integer id) {
-        repository.deleteById(id);
+        repository.deleteById(Long.valueOf(id));
     }
 
     // Retourne le prix unitaire courant de la matière première (à adapter selon votre modèle)
     public BigDecimal getPrixUnitaire(Integer idMatierePremiere) {
-        return repository.findById(idMatierePremiere)
+        return repository.findById(Long.valueOf(idMatierePremiere))
             .map(mp -> {
                 var historiques = mp.getHistoriquesEstimation();
                 if (historiques != null && !historiques.isEmpty()) {

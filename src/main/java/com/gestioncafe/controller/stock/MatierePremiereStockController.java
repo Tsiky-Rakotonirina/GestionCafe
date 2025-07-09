@@ -124,7 +124,7 @@ public class MatierePremiereStockController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Optional<MatierePremiere> matierePremiere = matierePremiereRepository.findById(Math.toIntExact(id));
+        Optional<MatierePremiere> matierePremiere = matierePremiereRepository.findById((long) Math.toIntExact(id));
         if (matierePremiere.isPresent()) {
             model.addAttribute("matierePremiere", matierePremiere.get());
             model.addAttribute("unites", uniteRepository.findAll());
@@ -150,7 +150,7 @@ public class MatierePremiereStockController {
 
     @GetMapping("/delete/{id}")
     public String deleteMatierePremiere(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        matierePremiereRepository.deleteById(Math.toIntExact(id));
+        matierePremiereRepository.deleteById((long) Math.toIntExact(id));
         redirectAttributes.addFlashAttribute("success", "Matière première supprimée avec succès");
         return "redirect:/administratif/stock/matiere-premiere";
     }

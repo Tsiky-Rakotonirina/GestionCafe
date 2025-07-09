@@ -100,7 +100,7 @@ public class CommandeService {
                 Long produitId = entry.getKey();
                 BigDecimal quantite = entry.getValue();
 
-                Produit produit = produitRepository.findById(Math.toIntExact(produitId))
+                Produit produit = produitRepository.findById((long) Math.toIntExact(produitId))
                     .orElseThrow(() -> new RuntimeException("Produit non trouvé: " + produitId));
 
                 // Récupérer le prix actuel du produit

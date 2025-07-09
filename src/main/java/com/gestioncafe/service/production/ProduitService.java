@@ -46,7 +46,7 @@ public class ProduitService {
     }
 
     public Optional<Produit> findById(Integer id) {
-        return produitRepository.findById(id);
+        return produitRepository.findById(Long.valueOf(id));
     }
 
     public Produit save(Produit produit) {
@@ -79,7 +79,7 @@ public class ProduitService {
     }
 
     public void deleteById(Integer id) {
-        produitRepository.deleteById(id);
+        produitRepository.deleteById(Long.valueOf(id));
     }
 
     // Calcul réel du coût de fabrication d'un produit à partir de la recette et de l'historique d'estimation

@@ -1,12 +1,19 @@
 // src/main/java/com/gestioncafe/repository/PresenceRepository.java
 package com.gestioncafe.repository;
 
-import com.gestioncafe.model.Presence;
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.gestioncafe.model.Presence;
+
 public interface PresenceRepository extends JpaRepository<Presence, Long> {
-    List<Presence> findByDatePresence(LocalDate date);
-    Presence findByEmployeIdAndDatePresence(Long employeId, LocalDate date);
+    List<Presence> findByDatePresence(Date datePresence);
+    Presence findByEmploye_IdAndDatePresence(Long employeId, Date datePresence);
+
+    // Compte le nombre de présences d'un employé selon le statut de présence
+    int countByEmploye_IdAndEstPresent(Long employeId, Boolean estPresent);
+
+    List<Presence> findByEmploye_IdAndDatePresenceBetweenAndEstPresentFalse(Long employeId, Date dateDebut, Date dateFin);
 }
