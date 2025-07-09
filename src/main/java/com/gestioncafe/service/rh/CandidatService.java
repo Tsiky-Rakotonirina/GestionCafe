@@ -15,11 +15,14 @@ import java.util.stream.Collectors;
 @Service
 public class CandidatService {
 
-    @Autowired
-    private CandidatRepository candidatRepository;
+    private final CandidatRepository candidatRepository;
 
-    @Autowired
-    private StatutEmployeRepository statutEmployeRepository;
+    private final StatutEmployeRepository statutEmployeRepository;
+
+    public CandidatService(CandidatRepository candidatRepository, StatutEmployeRepository statutEmployeRepository) {
+        this.candidatRepository = candidatRepository;
+        this.statutEmployeRepository = statutEmployeRepository;
+    }
 
     public List<Candidat> getAllCandidats() {
         // Étape 1 : récupérer tous les StatutEmploye avec statut.id = 1
