@@ -21,7 +21,6 @@ VALUES ('gobelet', 1, '1'),
        ('unite', 2, 1);
 
 
-
 -- Tiers (clients et employé)
 INSERT INTO tiers(nom, prenom, id_genre, contact, email, image)
 VALUES ('Client', 'Un', 1, '0123456789', 'client1@mail.com', NULL),
@@ -34,30 +33,28 @@ VALUES (1, 1, '2024-01-01', '2000-01-01'),
        (2, 2, '2024-01-02', '2001-02-02');
 
 -- Employé
-INSERT INTO employe (
-    nom,
-    id_genre,
-    contact,
-    id_tiers,
-    date_naissance,
-    date_recrutement,
-    date_demission,
-    reference_cv,
-    id_candidat,     -- requis
-    image            -- facultatif
+INSERT INTO employe (nom,
+                     id_genre,
+                     contact,
+                     id_tiers,
+                     date_naissance,
+                     date_recrutement,
+                     date_demission,
+                     reference_cv,
+                     id_candidat, -- requis
+                     image -- facultatif
 )
-VALUES (
-    'Rabe',
-    1,
-    '+261337386933',
-    1,
-    '1990-01-01',
-    '2023-01-01',
-    NULL,            -- date_demission (facultatif)
-    NULL,            -- reference_cv (facultatif)
-    1,               -- id_candidat (doit exister dans candidat.id)
-    NULL             -- image (facultatif)
-);
+VALUES ('Rabe',
+        1,
+        '+261337386933',
+        1,
+        '1990-01-01',
+        '2023-01-01',
+        NULL, -- date_demission (facultatif)
+        NULL, -- reference_cv (facultatif)
+        1, -- id_candidat (doit exister dans candidat.id)
+        NULL -- image (facultatif)
+       );
 
 
 -- Package (obligatoire pour produit)

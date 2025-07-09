@@ -12,21 +12,6 @@ CREATE TABLE genre
     nom VARCHAR(255)
 );
 
-CREATE TABLE tiers
-(
-    id       SERIAL PRIMARY KEY,
-    nom      VARCHAR(255) NOT NULL,
-    prenom   VARCHAR(255) NOT NULL,
-    id_genre INTEGER      NOT NULL,
-    contact  VARCHAR(255),
-    email    VARCHAR(255),
-    image    VARCHAR(255),
-
-    CONSTRAINT fk_client_genre
-        FOREIGN KEY (id_genre)
-            REFERENCES genre (id)
-);
-
 -- Table client
 CREATE TABLE client
 (
@@ -41,7 +26,6 @@ CREATE TABLE client
     CONSTRAINT fk_client_genre FOREIGN KEY (id_genre)
         REFERENCES genre (id)
 );
-
 
 -- Table grade
 CREATE TABLE grade
@@ -335,7 +319,7 @@ CREATE TABLE categorie_unite
 CREATE TABLE unite
 (
     id                 SERIAL PRIMARY KEY,
-    nom                VARCHAR(50),    --kg, g, l, cl, ...
+    nom                VARCHAR(50),   --kg, g, l, cl, ...
     categorie_unite_id INTEGER REFERENCES categorie_unite (id),
     valeur_pr_norme    DECIMAL(10, 5) -- valeur par rapport au norme (corrigé : 5 décimales)
 );
