@@ -1,16 +1,36 @@
 package com.gestioncafe.controller.rh;
 
-import com.gestioncafe.model.*;
-import com.gestioncafe.service.rh.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.gestioncafe.model.Candidat;
+import com.gestioncafe.model.DetailCandidat;
+import com.gestioncafe.model.Employe;
+import com.gestioncafe.model.Grade;
+import com.gestioncafe.model.Irsa;
+import com.gestioncafe.model.IrsaWrapper;
+import com.gestioncafe.model.JourFerie;
+import com.gestioncafe.model.StatutEmploye;
+import com.gestioncafe.service.rh.CandidatService;
+import com.gestioncafe.service.rh.DetailCandidatService;
+import com.gestioncafe.service.rh.EmployeService;
+import com.gestioncafe.service.rh.ExperienceService;
+import com.gestioncafe.service.rh.FormationService;
+import com.gestioncafe.service.rh.GenreService;
+import com.gestioncafe.service.rh.GradeService;
+import com.gestioncafe.service.rh.LangueService;
+import com.gestioncafe.service.rh.RhCongeService;
+import com.gestioncafe.service.rh.RhParametreService;
+import com.gestioncafe.service.rh.RhSalaireService;
+import com.gestioncafe.service.rh.RhService;
+import com.gestioncafe.service.rh.SerieBacService;
 
 @Controller
 @RequestMapping("/administratif/rh")
@@ -294,7 +314,7 @@ public class RhController {
     }
 
     @GetMapping("/fiche-employe/{id}")
-    public String ficheEmploye(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+    public String ficheEmploye(@PathVariable Long id, Model model) {
         try {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
