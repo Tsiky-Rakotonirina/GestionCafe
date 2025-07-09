@@ -1,35 +1,15 @@
 package com.gestioncafe.controller.rh;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.gestioncafe.model.*;
+import com.gestioncafe.service.rh.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.gestioncafe.model.Candidat;
-import com.gestioncafe.model.DetailCandidat;
-import com.gestioncafe.model.Employe;
-import com.gestioncafe.model.Grade;
-import com.gestioncafe.model.Irsa;
-import com.gestioncafe.model.IrsaWrapper;
-import com.gestioncafe.model.JourFerie;
-import com.gestioncafe.model.StatutEmploye;
-import com.gestioncafe.service.rh.CandidatService;
-import com.gestioncafe.service.rh.DetailCandidatService;
-import com.gestioncafe.service.rh.EmployeService;
-import com.gestioncafe.service.rh.ExperienceService;
-import com.gestioncafe.service.rh.FormationService;
-import com.gestioncafe.service.rh.GenreService;
-import com.gestioncafe.service.rh.GradeService;
-import com.gestioncafe.service.rh.LangueService;
-import com.gestioncafe.service.rh.RhCongeService;
-import com.gestioncafe.service.rh.RhParametreService;
-import com.gestioncafe.service.rh.RhSalaireService;
-import com.gestioncafe.service.rh.RhService;
-import com.gestioncafe.service.rh.SerieBacService;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/administratif/rh")
@@ -315,26 +295,26 @@ public class RhController {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
             model.addAttribute("employe", employe);
-            
+
             // Charger les informations détaillées (infos, commissions, avances, etc.)
             var employeInfos = employeService.getEmployeInfos().stream()
                 .filter(info -> info.getEmploye().getId().equals(id))
                 .findFirst()
                 .orElse(null);
             model.addAttribute("employeInfos", employeInfos);
-            
+
             // Charger les commissions récentes
             var commissions = rhSalaireService.getCommissionsByEmployeId(id);
             model.addAttribute("commissions", commissions.size() > 5 ? commissions.subList(0, 5) : commissions);
-            
+
             // Charger les avances récentes
             var avances = rhSalaireService.getAvancesByEmployeId(id);
             model.addAttribute("avances", avances.size() > 5 ? avances.subList(0, 5) : avances);
-            
+
             // Charger les fiches de paie récentes
             var ficheDePaies = rhSalaireService.getFicheDePaiesByEmployeId(id);
             model.addAttribute("ficheDePaies", ficheDePaies.size() > 3 ? ficheDePaies.subList(0, 3) : ficheDePaies);
-            
+
             return "administratif/rh/fiche-employe";
         } catch (RuntimeException e) {
             model.addAttribute("erreur", "Employé non trouvé avec l'ID: " + id);

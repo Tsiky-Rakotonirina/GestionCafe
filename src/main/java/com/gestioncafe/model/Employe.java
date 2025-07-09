@@ -1,16 +1,13 @@
 package com.gestioncafe.model;
 
 import jakarta.persistence.*;
-import java.sql.Date;
-import com.gestioncafe.model.Genre;
-import com.gestioncafe.model.Candidat;
 
+import java.sql.Date;
 
 
 @Entity
 @Table(name = "employe")
 public class Employe {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

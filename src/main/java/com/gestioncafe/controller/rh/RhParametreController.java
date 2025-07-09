@@ -1,19 +1,17 @@
 package com.gestioncafe.controller.rh;
 
-import com.gestioncafe.model.*;
-import com.gestioncafe.repository.*;
+import com.gestioncafe.model.Grade;
+import com.gestioncafe.model.Irsa;
+import com.gestioncafe.model.IrsaWrapper;
+import com.gestioncafe.model.JourFerie;
 import com.gestioncafe.service.rh.RhParametreService;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/administratif/rh/parametre")
@@ -50,7 +48,7 @@ public class RhParametreController {
 
     @PostMapping("/ajout-irsa")
     public String enregistrerIrsas(@ModelAttribute("irsaWrapper") IrsaWrapper irsaWrapper,
-            RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes) {
         try {
             List<Irsa> irsas = irsaWrapper.getIrsas();
             for (Irsa irsa : irsas) {

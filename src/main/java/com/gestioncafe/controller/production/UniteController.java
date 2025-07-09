@@ -51,7 +51,7 @@ public class UniteController {
 
     @PostMapping("/edit/{id}")
     public String update(@PathVariable Integer id, @ModelAttribute Unite unite) {
-        unite.setId(id);
+        unite.setId(Long.valueOf(id));
         uniteService.save(unite);
         return "redirect:/administratif/production/unite";
     }

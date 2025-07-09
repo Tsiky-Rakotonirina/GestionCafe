@@ -2,24 +2,31 @@ package com.gestioncafe.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "package")
 public class PackageProduit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String nom;
 
     @Column(name = "cout")
     private double cout;
 
+    private String description;
 
-    public void setId(Integer id) {
+    @OneToMany(mappedBy = "packageProduit")
+    private List<Produit> produits;
+
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -37,5 +44,21 @@ public class PackageProduit {
 
     public void setCout(double cout) {
         this.cout = cout;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Produit> getProduits() {
+        return produits;
+    }
+
+    public void setProduits(List<Produit> produits) {
+        this.produits = produits;
     }
 }

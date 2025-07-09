@@ -86,11 +86,11 @@ public class MachineController {
                 UtilisationMachine utilisation = new UtilisationMachine();
                 utilisation.setMachine(savedMachine);
                 Produit produit = new Produit();
-                produit.setId(idProduits.get(i));
+                produit.setId(Long.valueOf(idProduits.get(i)));
                 utilisation.setProduit(produit);
                 utilisation.setDuree(durees.get(i));
                 Unite unite = new Unite();
-                unite.setId(idUnites.get(i));
+                unite.setId(Long.valueOf(idUnites.get(i)));
                 utilisation.setUnite(unite);
                 utilisationMachineRepository.save(utilisation);
             }
@@ -107,27 +107,31 @@ public class MachineController {
             int idx = utilisationsExistantesIds.indexOf(updateUtilisationId);
             if (idx >= 0) {
                 UtilisationMachine utilisation = utilisationMachineRepository.findById(updateUtilisationId).orElse(null);
+
                 if (utilisation != null) {
                     // Trouver l'id du produit à partir du nom (car input text datalist)
                     Integer produitId = null;
                     String nomProduit = existantsNomProduits.get(idx);
+
                     // Recherche du produit par nom (à améliorer si plusieurs produits ont le même nom)
                     Produit produit = produitService.findAll().stream().filter(p -> p.getNom().equals(nomProduit)).findFirst().orElse(null);
                     if (produit != null) {
-                        produitId = produit.getId();
+                        produitId = Math.toIntExact(produit.getId());
                     }
+
                     if (produitId != null) {
                         Produit p = new Produit();
-                        p.setId(produitId);
+                        p.setId(Long.valueOf(produitId));
                         utilisation.setProduit(p);
                     }
                     utilisation.setDuree(existantsDurees.get(idx));
                     Unite unite = new Unite();
-                    unite.setId(existantsIdUnites.get(idx));
+                    unite.setId(Long.valueOf(existantsIdUnites.get(idx)));
                     utilisation.setUnite(unite);
                     utilisationMachineRepository.save(utilisation);
                 }
             }
+
             return "redirect:/machines/edit/" + machine.getId();
         }
 

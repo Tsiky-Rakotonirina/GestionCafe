@@ -1,30 +1,20 @@
 package com.gestioncafe.controller.production;
 
+import com.gestioncafe.dto.VentePeriodeStatDTO;
+import com.gestioncafe.dto.VenteProduitStatDTO;
+import com.gestioncafe.service.production.DetailsVenteService;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.gestioncafe.dto.VentePeriodeStatDTO;
-import com.gestioncafe.dto.VenteProduitStatDTO;
-import com.gestioncafe.service.production.DetailsVenteService;
+import java.util.*;
 
 @Controller
 @RequestMapping("/administratif/production")

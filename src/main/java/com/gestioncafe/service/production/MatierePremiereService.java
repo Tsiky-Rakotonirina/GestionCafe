@@ -1,13 +1,12 @@
 package com.gestioncafe.service.production;
 
+import com.gestioncafe.model.MatierePremiere;
+import com.gestioncafe.repository.MatierePremiereRepository;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.MatierePremiere;
-import com.gestioncafe.repository.MatierePremiereRepository;
 
 @Service
 public class MatierePremiereService {
@@ -56,7 +55,7 @@ public class MatierePremiereService {
                         })
                         .orElse(BigDecimal.ZERO);
                 }
-                
+
                 return BigDecimal.ZERO;
             })
             .orElse(BigDecimal.ZERO);

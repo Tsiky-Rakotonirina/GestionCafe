@@ -1,4 +1,4 @@
-CREATE TABLE administratif 
+CREATE TABLE administratif
 (
     id           SERIAL PRIMARY KEY,
     nom          VARCHAR(255),
@@ -31,12 +31,17 @@ CREATE TABLE tiers
 CREATE TABLE client
 (
     id             SERIAL PRIMARY KEY,
-    id_tiers       INTEGER NOT NULL,
-    date_adhesion  DATE    NOT NULL,
-    date_naissance DATE    NULL,
-
-    FOREIGN KEY (id_tiers) REFERENCES tiers (id)
+    nom            VARCHAR(255) NOT NULL,
+    prenom         VARCHAR(255) NOT NULL,
+    id_genre       INTEGER      NOT NULL,
+    contact        VARCHAR(255) NULL,
+    email          VARCHAR(255) NULL,
+    date_adhesion  DATE         NOT NULL,
+    date_naissance DATE         NULL,
+    CONSTRAINT fk_client_genre FOREIGN KEY (id_genre)
+        REFERENCES genre (id)
 );
+
 
 -- Table grade
 CREATE TABLE grade
@@ -131,19 +136,25 @@ CREATE TABLE detail_candidat
 );
 
 -- Table employe
-
 CREATE TABLE employe
 (
     id               SERIAL PRIMARY KEY,
-    id_tiers         INTEGER NOT NULL,
-    id_genre         INTEGER NOT NULL,
-    date_naissance   DATE    NOT NULL,
-    date_recrutement DATE    NOT NULL,
-    date_demission   DATE,
-    reference_cv     TEXT    NULL,
+    id_candidat      INTEGER      NOT NULL,
+    date_recrutement DATE         NOT NULL,
+    nom              VARCHAR(255) NULL,
+    id_genre         INTEGER      NULL,
+    date_naissance   DATE         NULL,
+    contact          VARCHAR(20)  NULL,
+    image            VARCHAR(255) NULL,
+    reference_cv     VARCHAR(255) NULL,
 
-    FOREIGN KEY (id_tiers) REFERENCES tiers (id),
-    FOREIGN KEY (id_genre) REFERENCES genre (id)
+    CONSTRAINT fk_employe_candidat
+        FOREIGN KEY (id_candidat)
+            REFERENCES candidat (id),
+
+    CONSTRAINT fk_employe_genre
+        FOREIGN KEY (id_genre)
+            REFERENCES genre (id)
 );
 
 CREATE TABLE statut
@@ -267,7 +278,6 @@ CREATE TABLE avance
     date_avance      DATE           NOT NULL,
     montant          DECIMAL(10, 2) NOT NULL,
 
-
     CONSTRAINT fk_avance_raison_avance
         FOREIGN KEY (id_raison_avance)
             REFERENCES raison_avance (id)
@@ -296,20 +306,21 @@ CREATE TABLE commission
 );
 
 -- Table payement employe
-CREATE TABLE payement (
-    id                 SERIAL        PRIMARY KEY,
-    id_employe         INTEGER       NOT NULL,
-    date_payement      DATE          NOT NULL,
-    montant            DECIMAL(10,2) NOT NULL,
-    reference_payement VARCHAR(255)  NULL,
-    mois_reference     DATE          NOT NULL,
-    irsa DECIMAL(10,2) ,
-    cotisation_sociale DECIMAL(10,2),
-    
+CREATE TABLE payement
+(
+    id                 SERIAL PRIMARY KEY,
+    id_employe         INTEGER        NOT NULL,
+    date_payement      DATE           NOT NULL,
+    montant            DECIMAL(10, 2) NOT NULL,
+    reference_payement VARCHAR(255)   NULL,
+    mois_reference     DATE           NOT NULL,
+    irsa               DECIMAL(10, 2),
+    cotisation_sociale DECIMAL(10, 2),
+
 
     CONSTRAINT fk_payement_employe_employe
         FOREIGN KEY (id_employe)
-        REFERENCES employe(id)
+            REFERENCES employe (id)
 );
 
 -- catégorie des unités
@@ -324,7 +335,7 @@ CREATE TABLE categorie_unite
 CREATE TABLE unite
 (
     id                 SERIAL PRIMARY KEY,
-    nom                VARCHAR(50),   --kg, g, l, cl, ...
+    nom                VARCHAR(50),    --kg, g, l, cl, ...
     categorie_unite_id INTEGER REFERENCES categorie_unite (id),
     valeur_pr_norme    DECIMAL(10, 10) -- valeur par rapport au norme
 );
@@ -332,12 +343,12 @@ CREATE TABLE unite
 -- Table matiere_premiere
 CREATE TABLE matiere_premiere
 (
-    id                   SERIAL PRIMARY KEY,
-    nom                  VARCHAR(255) NOT NULL,
-    id_unite             INTEGER      NOT NULL,
+    id                    SERIAL PRIMARY KEY,
+    nom                   VARCHAR(255) NOT NULL,
+    id_unite              INTEGER      NOT NULL,
     id_categorie_unite_id INTEGER      NOT NULL REFERENCES categorie_unite (id),
-    stock                DECIMAL(10, 2) DEFAULT 0, -- d
-    image                VARCHAR(255) NULL,
+    stock                 DECIMAL(10, 2) DEFAULT 0, -- d
+    image                 VARCHAR(255) NULL,
 
     CONSTRAINT fk_matiere_premiere_unite
         FOREIGN KEY (id_unite)
@@ -499,6 +510,18 @@ CREATE TABLE details_vente
     CONSTRAINT fk_details_vente_produit
         FOREIGN KEY (id_produit)
             REFERENCES produit (id)
+);
+
+-- Table commande
+CREATE TABLE commande
+(
+    id       SERIAL PRIMARY KEY,
+    id_vente INTEGER   NOT NULL,
+    date_fin TIMESTAMP NOT NULL,
+
+    CONSTRAINT fk_commande_vente
+        FOREIGN KEY (id_vente)
+            REFERENCES vente (id)
 );
 
 CREATE TABLE production

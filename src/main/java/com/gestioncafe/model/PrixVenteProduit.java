@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 public class PrixVenteProduit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_produit", nullable = false)
@@ -29,11 +29,11 @@ public class PrixVenteProduit {
     @Column(name = "date_application", nullable = false)
     private LocalDateTime dateApplication;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,26 +1,19 @@
 package com.gestioncafe.model;
 
-import java.math.BigDecimal;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "unite")
 public class Unite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String nom;
 
-    @Column(name = "valeur_pr_norme", precision = 20, scale = 10)
+    @Column(name = "valeur_pr_norme", precision = 10)
     private BigDecimal valeurParNorme;
 
     @ManyToOne
@@ -28,11 +21,11 @@ public class Unite {
     private CategorieUnite categorieUnite;
 
     // Getters et setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

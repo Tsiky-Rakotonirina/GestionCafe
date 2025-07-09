@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Date;
+
 @Controller
 @RequestMapping("/administratif/rh/conge")
 public class RhCongeController {
@@ -19,12 +21,15 @@ public class RhCongeController {
     }
 
     @PostMapping("/ajout-conge")
-    public String ajoutConge(@RequestParam("typeConge") String typeConge, @RequestParam("dateDebut") String dateDebut, @RequestParam("dateFin") String dateFin, @RequestParam("idEmploye") String idEmploye, Model model) {
+    public String ajoutConge(@RequestParam("typeConge") String typeConge,
+                             @RequestParam("dateDebut") String dateDebut,
+                             @RequestParam("dateFin") String dateFin,
+                             @RequestParam("idEmploye") String idEmploye, Model model) {
         String erreur = "";
         try {
             Long idTypeConge = Long.parseLong(typeConge);
-            java.sql.Date debut = java.sql.Date.valueOf(dateDebut);
-            java.sql.Date fin = java.sql.Date.valueOf(dateFin);
+            Date debut = Date.valueOf(dateDebut);
+            Date fin = Date.valueOf(dateFin);
             Long id = Long.parseLong(idEmploye);
             rhCongeService.ajoutConge(id, idTypeConge, debut, fin);
         } catch (NumberFormatException e) {
@@ -35,6 +40,7 @@ public class RhCongeController {
             erreur = "Erreur dans l ajout conge : " + e.getMessage();
         }
         model.addAttribute("erreurAjoutConge", erreur);
+
         return "redirect:/administratif/rh/gestion-conges";
     }
 

@@ -1,12 +1,11 @@
 package com.gestioncafe.service.production;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.gestioncafe.model.DetailRecette;
 import com.gestioncafe.repository.DetailRecetteRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DetailRecetteService {

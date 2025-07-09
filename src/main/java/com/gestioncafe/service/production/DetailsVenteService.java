@@ -1,19 +1,18 @@
 package com.gestioncafe.service.production;
 
+import com.gestioncafe.dto.BeneficePeriodeStatDTO;
+import com.gestioncafe.dto.VentePeriodeStatDTO;
+import com.gestioncafe.dto.VenteProduitStatDTO;
+import com.gestioncafe.model.DetailsVente;
+import com.gestioncafe.repository.DetailsVenteRepository;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.dto.BeneficePeriodeStatDTO;
-import com.gestioncafe.dto.VentePeriodeStatDTO;
-import com.gestioncafe.dto.VenteProduitStatDTO;
-import com.gestioncafe.model.DetailsVente;
-import com.gestioncafe.repository.DetailsVenteRepository;
 
 @Service
 public class DetailsVenteService {
@@ -68,18 +67,18 @@ public class DetailsVenteService {
         LocalDateTime dateDebut,
         LocalDateTime dateFin
     ) {
-            List<Object[]> rows = detailsVenteRepository.getVenteStatParProduitFiltreNative(
-                dateExacte, annee, mois, jourMois, jourSemaine, dateDebut, dateFin
-            );
-            List<VenteProduitStatDTO> result = new ArrayList<>();
-            for (Object[] row : rows) {
-                Integer produitId = ((Number) row[0]).intValue();
-                String nom = (String) row[1];
-                BigDecimal quantite = new BigDecimal(row[2].toString());
-                BigDecimal montant = new BigDecimal(row[3].toString());
-                result.add(new VenteProduitStatDTO(produitId, nom, quantite, montant));
-            }
-            return result;
+        List<Object[]> rows = detailsVenteRepository.getVenteStatParProduitFiltreNative(
+            dateExacte, annee, mois, jourMois, jourSemaine, dateDebut, dateFin
+        );
+        List<VenteProduitStatDTO> result = new ArrayList<>();
+        for (Object[] row : rows) {
+            Integer produitId = ((Number) row[0]).intValue();
+            String nom = (String) row[1];
+            BigDecimal quantite = new BigDecimal(row[2].toString());
+            BigDecimal montant = new BigDecimal(row[3].toString());
+            result.add(new VenteProduitStatDTO(produitId, nom, quantite, montant));
+        }
+        return result;
     }
 
     public List<VentePeriodeStatDTO> getTotalProduitVenduParPeriode(String periode) {
@@ -124,7 +123,7 @@ public class DetailsVenteService {
             // Si la période n'existe pas dans la map, on met zéro
             result.add(map.getOrDefault(p, BigDecimal.ZERO));
         }
-        
+
         return result;
     }
 }

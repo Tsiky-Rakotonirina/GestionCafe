@@ -25,16 +25,19 @@ public class ProduitService {
 
     private final RecetteService recetteService;
     private final DetailRecetteService detailRecetteService;
-    private final MatierePremiereService matierePremiereService;
     private final HistoriqueEstimationService historiqueEstimationService;
 
-    public ProduitService(ProduitRepository produitRepository, RecetteRepository recetteRepository, DetailsVenteRepository detailsVenteRepository, RecetteService recetteService, DetailRecetteService detailRecetteService, MatierePremiereService matierePremiereService, HistoriqueEstimationService historiqueEstimationService) {
+    public ProduitService(ProduitRepository produitRepository,
+                          RecetteRepository recetteRepository,
+                          DetailsVenteRepository detailsVenteRepository,
+                          RecetteService recetteService,
+                          DetailRecetteService detailRecetteService,
+                          HistoriqueEstimationService historiqueEstimationService) {
         this.produitRepository = produitRepository;
         this.recetteRepository = recetteRepository;
         this.detailsVenteRepository = detailsVenteRepository;
         this.recetteService = recetteService;
         this.detailRecetteService = detailRecetteService;
-        this.matierePremiereService = matierePremiereService;
         this.historiqueEstimationService = historiqueEstimationService;
     }
 

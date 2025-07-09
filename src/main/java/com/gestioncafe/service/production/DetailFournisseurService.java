@@ -1,12 +1,11 @@
 package com.gestioncafe.service.production;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.gestioncafe.model.DetailFournisseur;
 import com.gestioncafe.model.MatierePremiere;
 import com.gestioncafe.repository.DetailFournisseurRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DetailFournisseurService {
