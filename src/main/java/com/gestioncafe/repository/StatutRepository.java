@@ -1,12 +1,11 @@
 package com.gestioncafe.repository;
 
-import java.util.List;
-import java.sql.*;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import com.gestioncafe.model.*;
 
-@Repository
+import com.gestioncafe.model.Statut;
+
 public interface StatutRepository extends JpaRepository<Statut, Long> {
+    Optional<Statut> findByValeur(String valeur);
 }

@@ -27,3 +27,15 @@ VALUES (1, '2023-02-01', 'Andrianina', 1, '1995-03-10', '0321112233'),
 INSERT INTO fournisseur (nom, contact, frais, email)
 VALUES ('Fournisseur A', '0320000001', 1000, 'fournisseurA@email.com'),
        ('Fournisseur B', '0320000002', 1500, 'fournisseurB@email.com');
+
+-- Statuts
+INSERT INTO statut (valeur, description)
+VALUES ('Actif', 'Employé actuellement en poste'),
+       ('En congé', 'Employé en congé'),
+       ('Démissionnaire', 'Employé ayant quitté l entreprise');
+
+-- Statut employé (historique) pour tester la gestion RH
+-- À adapter selon les IDs déjà présents dans la base
+INSERT INTO statut_employe (id_employe, date_statut, id_statut)
+VALUES (1, '2023-01-01 08:00:00', 1),
+       (1, '2023-06-01 08:00:00', 2);

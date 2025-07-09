@@ -5,6 +5,7 @@ import com.gestioncafe.service.rh.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -57,6 +58,7 @@ public class RhController {
     @GetMapping("/gestion-employes")
     public String gestiontEmployes(Model model) {
         model.addAttribute("employesInfos", employeService.getEmployeInfos());
+
         return "administratif/rh/gestion-employes";
     }
 
@@ -66,6 +68,7 @@ public class RhController {
         // Récupérer les détails de l'employé (à adapter selon ta structure de service)
         var detail = employeService.getEmployeDetail(id);
         model.addAttribute("employeDetail", detail);
+
         return "administratif/rh/gestion-employes";
     }
 
@@ -81,13 +84,13 @@ public class RhController {
         List<Map<String, Object>> varAVC = rhService.variationAvance();
 
         System.out.println("== Variation Salaire Net ==");
-        varSN.forEach(map -> System.out.println(map));
+        varSN.forEach(System.out::println);
 
         System.out.println("== Variation Commission ==");
-        varCOMM.forEach(map -> System.out.println(map));
+        varCOMM.forEach(System.out::println);
 
         System.out.println("== Variation Avance ==");
-        varAVC.forEach(map -> System.out.println(map));
+        varAVC.forEach(System.out::println);
 
         model.addAttribute("variationSalaireNet", varSN);
         model.addAttribute("variationCommission", varCOMM);
@@ -177,7 +180,7 @@ public class RhController {
     }
 
     @GetMapping("/commission/{id}")
-    public String voirCommission(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+    public String voirCommission(@PathVariable Long id, Model model) {
         try {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
@@ -199,7 +202,7 @@ public class RhController {
     }
 
     @GetMapping("/fiche-de-paie/{id}")
-    public String voirFicheDePaie(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+    public String voirFicheDePaie(@PathVariable Long id, Model model) {
         try {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
@@ -221,7 +224,7 @@ public class RhController {
     }
 
     @GetMapping("/avance/{id}")
-    public String voirAvance(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+    public String voirAvance(@PathVariable Long id, Model model) {
         try {
             // Charger les informations de l'employé
             var employe = rhSalaireService.getEmployeById(id);
@@ -251,7 +254,7 @@ public class RhController {
     }
 
     @GetMapping("/conge/{id}")
-    public String voirConge(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+    public String voirConge(@PathVariable Long id, Model model) {
         try {
             // Charger l'employé sélectionné
             var selectedEmploye = rhSalaireService.getEmployeById(id);
@@ -273,7 +276,8 @@ public class RhController {
             var typeConges = rhService.getAllTypeConges();
             model.addAttribute("typeConges", typeConges);
 
-            // Charger les statistiques pour tous les employés (pour l'affichage dans la sidebar et le détail)
+            // Charger les statistiques pour tous les employés (pour l'affichage dans la
+            // sidebar et le détail)
             var nbjCongeUtilise = rhService.nbjCongeUtilise(tousLesEmployes);
             var nbjCongeReserve = rhService.nbjCongeReserve(tousLesEmployes);
             var nbjCongeNonUtilise = rhService.nbjCongeNonUtilise(tousLesEmployes);

@@ -126,6 +126,7 @@ public class EmployeService {
     public void recruterCandidat(Long candidatId) {
         var candidatOpt = candidatRepository.findById(candidatId);
         if (candidatOpt.isEmpty()) throw new RuntimeException("Candidat non trouvé");
+
         var candidat = candidatOpt.get();
         Employe employe = new Employe();
         employe.setNom(candidat.getNom());
@@ -134,7 +135,17 @@ public class EmployeService {
         employe.setDateRecrutement(new java.sql.Date(System.currentTimeMillis()));
         employe.setGenre(candidat.getGenre());
         employe.setCandidat(candidat);
+
         employeRepository.save(employe);
-        // Statut et grade peuvent être ajoutés ici si besoin
+
+        // Mettre à jour le statut de l'employé en 'Actif'
+        Statut statutActif = statutRepository.findByValeur("Actif").orElse(null);
+        if (statutActif != null) {
+            var statutEmploye = new com.gestioncafe.model.StatutEmploye();
+            statutEmploye.setEmploye(employe);
+            statutEmploye.setStatut(statutActif);
+            statutEmploye.setDateStatut(java.time.LocalDateTime.now());
+            statutEmployeRepository.save(statutEmploye);
+        }
     }
 }

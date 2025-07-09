@@ -165,6 +165,7 @@ public class RhRecrutementController {
     @PostMapping("/recruter")
     public String postRecruter(@RequestParam("candidatId") Long candidatId) {
         employeService.recruterCandidat(candidatId);
+
         return "redirect:/administratif/rh/gestion-recrutements";
     }
 
