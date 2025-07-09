@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/templates/styles.css}">
     <link rel="stylesheet" th:href="@{/css/rh/historique.css}">
+    <link rel="stylesheet" th:href="@{/css/rh/commission.css}">
     <script th:src="@{/js/rh/commission.js}"></script>
 </head>
 <body>
@@ -15,133 +16,155 @@
     <div class="main-content" id="mainContent">
         <div th:replace="~{administratif/rh/layout/header :: header('Gestion des commissions')}"></div>
         <main class="content">
-            <!-- Sidebar  -->
-            <div class="sidebar" id="sidebar">    
-                <nav class="sidebar-nav">
-                    <ul>
-                        <li class="nav-item active">
-                            <a th:href="@{/administratif/rh/gestion-employes}"  class="nav-link">
-                                <i class="fas fa-chart-line"></i>
-                                <span>Gestion des employes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/administratif/rh/gestion-salaires}"  class="nav-link">
-                                <i class="fas fa-boxes"></i>
-                                <span>Gestion des salaires</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/administratif/rh/gestion-recrutements}"  class="nav-link">
-                                <i class="fas fa-cogs"></i>
-                                <span>Gestion des recrutement</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/administratif/rh/gestion-conges}"  class="nav-link">
-                                <i class="fas fa-euro-sign"></i>
-                                <span>Gestion des conges et des jours feries</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a th:href="@{/administratif/rh/parametre}"  class="nav-link">
-                                <i class="fas fa-euro-sign"></i>
-                                <span>Parametrages</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="main-content" id="mainContent">
-
-                <div class="financial-details">
-                    <div class="finance-chart-card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h3><i class="fas fa-chart-area"></i>Gestion des commissions</h3>
-                                <a href="/administratif/rh/gestion-employes" class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left me-1"></i> Retour
-                                </a>
-                            </div>
+            <div class="commission-container">
+                                <!-- Employee Profile Card -->
+                <div class="employee-profile-card">
+                    <div class="employee-header">
+                        <div class="employee-avatar">
+                            <img th:src="${employe.image != null ? '/static/uploads/' + employe.image : ''}"
+                                 alt="Photo de profil" class="avatar-img" th:if="${employe.image != null}">
+                            <span th:if="${employe.image == null}" th:text="${#strings.substring(employe.nom, 0, 1)}">E</span>
                         </div>
-                        <div class="chart-placeholder">
-                            
-                            <div class="production-items-grid">
-                                <div class="production-item-card">
-                                    <div class="item-details">
-                                    <h4>Employe : <span th:text="${employe.nom != null ? employe.nom : '-'}">-</span></h4>
-                                    <div class="customer-avatar">
-                                        <img src="" alt="">
-                                    </div>
-                                    <div class="item-stats">
-                                        <span class="quantity">Date Recrutement : <span th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">-</span></span>
-                                        <br>
-                                        <span class="quantity">Genre : <span th:text="${employe.genre != null ? employe.genre.valeur : '-'}">-</span></span>
-                                        <br>
-                                        <span class="quantity">Contact : <span th:text="${employe.contact != null ? employe.contact : '-'}">-</span></span>
-                                    </div>
-                                    <br>
-                                    <a th:href="@{/administratif/rh/salaire/commission(idEmploye=${employe.id})}" class="btn secondary">Voir la fiche de l'employe</a><br>
+                        <div class="employee-info">
+                            <h4 class="employee-name">
+                                <i class="fas fa-user me-2"></i>
+                                <span th:text="${employe.nom != null ? employe.nom : 'Nom non défini'}">Nom de l'employé</span>
+                            </h4>
+                            <div class="employee-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar-alt text-primary"></i>
+                                    <span class="detail-label">Recrutement :</span>
+                                    <span class="detail-value" th:text="${employe.dateRecrutement != null ? #dates.format(employe.dateRecrutement, 'dd/MM/yyyy') : '-'}">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-venus-mars text-info"></i>
+                                    <span class="detail-label">Genre :</span>
+                                    <span class="detail-value" th:text="${employe.genre != null ? employe.genre.nom : '-'}">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone text-success"></i>
+                                    <span class="detail-label">Contact :</span>
+                                    <span class="detail-value" th:text="${employe.contact != null ? employe.contact : '-'}">-</span>
                                 </div>
                             </div>
-                            <br><br>
-                            <div class="form-showcase">
-                                <h5>Formulaire pour accorder une commission</h5>
-                                <form th:action="@{/administratif/rh/salaire/ajout-commission}" method="post" class="form-example">
-                                    <div class="form-group">
-                                        <label class="form-label">Montant (Ariary) :</label>
-                                        <input type="number" class="form-input" placeholder="Ex : 50000" name="montant" min="0" step="100" required>
-                                    </div>
-                                     <div class="form-group">
-                                        <label class="form-label">Raison :</label>
-                                        <select class="form-select" name="idRaison">
-                                            <option value="" >Choisir une raison </option>
-                                            <option th:each="raisonCommission : ${raisonCommissions}" th:value="${raisonCommission.id}">
-                                                <span th:text="${raisonCommission != null ? raisonCommission.valeur : '-'}">-</span>
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <input type="hidden" name="idEmploye" th:value="${employe.id}">
-                                    <button type="submit" class="btn primary">Donner la commission</button>
-                                    <br><br>
-                                </form>
-                            </div>
-                            <br><br>
                         </div>
-                    </div>
-                    
-                    <div class="expense-breakdown-card">
-                        <div class="card-header">
-                            <h3>Historique des commissions</h3>
-                        </div>
-                        <div class="table-container" th:if="${commissions != null and !#lists.isEmpty(commissions)}">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th><i class="fas fa-tag"></i> Date commission</th>
-                                        <th><i class="fas fa-euro-sign"></i> Montant</th>
-                                        <th><i class="fas fa-info-circle"></i> Raison</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="commission : ${commissions}">
-                                        <td><strong><span th:text="${commission.dateCommission != null ? commission.dateCommission : '-'}">-</span></strong></td>
-                                        <td><strong><span th:text="${commission.montant != null ? commission.montant : '-'}">-</span></strong></td>
-                                        <td><span th:text="${commission.raisonCommission != null ? commission.raisonCommission.valeur : '-'}">-</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div th:if="${commissions == null or #lists.isEmpty(commissions)}">
-                            <h4>Aucunes commissions decsernes a l'employe</h4>
+                        <div class="employee-actions">
+                            <a th:href="@{'/administratif/rh/fiche-employe/' + ${employe.id}}" class="btn btn-primary">
+                                <i class="fas fa-user-circle me-1"></i> Fiche Employé
+                            </a>
                         </div>
                     </div>
                 </div>
-                    <div th:if="${erreurAjoutCommission}">
-                        <p th:text="${erreurAjoutCommission}"></p>
+
+                <!-- Commission Section -->
+                <div class="commission-section">
+                    <!-- Commission Form -->
+                    <div class="commission-form-card">
+                        <div class="form-header">
+                            <h3><i class="fas fa-award"></i> Accorder une commission</h3>
+                        </div>
+
+                        <form th:action="@{/administratif/rh/salaire/ajout-commission}" method="post" class="commission-form">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-money-bill-wave me-1"></i> Montant de la commission
+                                </label>
+                                <input type="number" class="form-input" placeholder="Ex : 50 000" name="montant"
+                                       min="0" step="100" required>
+                                <small class="form-help">Saisissez le montant en Ariary</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-info-circle me-1"></i> Raison de la commission
+                                </label>
+                                <select class="form-select" name="idRaison" required>
+                                    <option value="">Choisir une raison...</option>
+                                    <option th:each="raisonCommission : ${raisonCommissions}"
+                                            th:value="${raisonCommission.id}"
+                                            th:text="${raisonCommission.valeur}">
+                                        Raison
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <input type="hidden" name="idEmploye" th:value="${employe.id}">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-check-circle"></i>
+                                Accorder la commission
+                            </button>
+                        </form>
                     </div>
+
+                    <!-- Commission Statistics -->
+                    <div class="commission-stats-card">
+                        <div class="stats-header">
+                            <h3><i class="fas fa-chart-pie"></i> Statistiques</h3>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <div class="stat-value" th:text="${#lists.size(commissions ?: {})}">0</div>
+                                <div class="stat-label">Commissions accordées</div>
+                            </div>
+                            
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <div class="stat-value" th:text="${commissions != null ? #aggregates.sum(commissions.![montant]) + ' Ar' : '0 Ar'}">0 Ar</div>
+                                <div class="stat-label">Total des commissions</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Commission History -->
+                <div class="commission-history-card">
+                    <div class="history-header">
+                        <h3><i class="fas fa-history"></i> Historique des commissions</h3>
+                    </div>
+                    
+                    <div th:if="${commissions != null and !#lists.isEmpty(commissions)}">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-calendar me-1"></i> Date</th>
+                                    <th><i class="fas fa-money-bill-wave me-1"></i> Montant</th>
+                                    <th><i class="fas fa-info-circle me-1"></i> Raison</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="commission : ${commissions}">
+                                    <td class="date-cell" th:text="${commission.dateCommission != null ? #dates.format(commission.dateCommission, 'dd/MM/yyyy') : '-'}">-</td>
+                                    <td class="amount-cell" th:text="${commission.montant != null ? #numbers.formatDecimal(commission.montant, 0, 'COMMA', 2, 'POINT') + ' Ar' : '-'}">-</td>
+                                    <td class="reason-cell">
+                                        <span class="reason-badge" th:text="${commission.raisonCommission != null ? commission.raisonCommission.valeur : 'Non spécifiée'}">-</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div th:if="${commissions == null or #lists.isEmpty(commissions)}" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h4>Aucune commission accordée</h4>
+                        <p>Aucune commission n'a encore été accordée à cet employé</p>
+                    </div>
+                </div>
+
+                <!-- Error Messages -->
+                <div th:if="${erreurAjoutCommission}" class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span th:text="${erreurAjoutCommission}">Erreur lors de l'ajout de la commission</span>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 </body>
 </html>
