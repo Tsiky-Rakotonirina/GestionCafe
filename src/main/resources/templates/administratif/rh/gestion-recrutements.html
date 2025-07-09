@@ -215,7 +215,7 @@
                             <div class="cv-info-grid">
                                 <div class="cv-info-item">
                                     <span class="cv-info-label"><i class="fas fa-venus-mars"></i> Genre:</span>
-                                    <span class="cv-info-value" th:text="${candidat.genre?.valeur ?: '-'}">-</span>
+                                    <span class="cv-info-value" th:text="${candidat.genre?.nom ?: '-'}">-</span>
                                 </div>
                                 
                                 <div class="cv-info-item">
@@ -295,8 +295,7 @@
 
                         <!-- Pied de carte avec action -->
                         <div class="cv-footer">
-                            <form th:action="@{/administratif/rh/recrutement/recruter}" method="post"
-                                onsubmit="return confirmRecruter(this);">
+                            <form th:action="@{/administratif/rh/recrutement/recruter}" method="post">
                                 <input type="hidden" name="candidatId" th:value="${candidat.id}" />
                                 <button type="submit" class="btn-recruter">
                                     <i class="fas fa-user-plus"></i>
@@ -319,11 +318,6 @@
     
     <script th:src="@{/templates/script.js}"></script>
     <script>
-        function confirmRecruter(form) {
-            const candidatNom = form.closest('.cv-card').querySelector('h3').innerText.trim();
-            return confirm(`Êtes-vous sûr de vouloir recruter ${candidatNom} ?\n\nCela signifie que le contrat sera signé.`);
-        }
-
         // Animation d'entrée pour les cartes
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.cv-card');

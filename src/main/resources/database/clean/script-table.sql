@@ -477,6 +477,8 @@ CREATE TABLE vente
             REFERENCES employe (id)
 );
 
+ALTER TABLE vente ALTER COLUMN id SET DATA TYPE bigint;
+
 -- Table details_vente
 CREATE TABLE details_vente
 (
@@ -495,6 +497,9 @@ CREATE TABLE details_vente
         FOREIGN KEY (id_produit)
             REFERENCES produit (id)
 );
+
+ALTER TABLE details_vente ALTER COLUMN montant TYPE numeric(38,2);
+ALTER TABLE details_vente ALTER COLUMN id_vente SET DATA TYPE bigint;
 
 -- Table commande
 CREATE TABLE commande
