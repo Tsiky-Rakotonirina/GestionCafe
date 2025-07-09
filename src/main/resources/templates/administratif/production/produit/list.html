@@ -68,7 +68,6 @@
                     <th><i class="fas fa-tag"></i> Nom</th>
                     <th><i class="fas fa-ruler"></i> Unité</th>
                     <th><i class="fas fa-boxes"></i> Stock</th>
-                    <th><i class="fas fa-euro-sign"></i> Prix de vente</th>
                     <th><i class="fas fa-cogs"></i> Actions</th>
                 </tr>
                 </thead>
@@ -96,10 +95,6 @@
                             <strong style="color: var(--success-color);" th:text="${produit.stock != null ? produit.stock : '0'}">0</strong>
                             <span style="font-size: 0.8rem; color: var(--gray-500);" th:text="${produit.unite != null ? produit.unite.nom : ''}">unité</span>
                         </div>
-                    </td>
-                    <td>
-                        <span style="color: var(--primary-color); font-weight: bold;"
-                              th:text="${prixVenteMap[produit.id]} + ' €'">0 Ar</span>
                     </td>
                     <td>
                         <div style="display: flex; gap: 0.5rem;">
