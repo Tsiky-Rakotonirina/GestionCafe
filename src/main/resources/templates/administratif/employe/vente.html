@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Commande</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
+    <script th:src="@{/js/employe/vente.js}" defer></script>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                <img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">
+                <span>Cafe</span>
+            </a>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item">
+                <a th:href="@{/administratif/employe/presence}" data-page="presence" class="nav-link">
+                    <i class="fas fa-user-check"></i>   
+                    <span>Présence</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/employe/commande}" data-page="commande" class="nav-link">
+                    <i class="fas fa-clipboard-list"></i> 
+                    <span>Commandes</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a th:href="@{/administratif/employe/vente}" data-page="vente" class="nav-link">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Ventes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/client}" data-page="client" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+        <div class="user-profile">
+            <div class="user-info">
+                <span class="user-name">Admin</span>
+                <span class="user-role">Employé</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="page-title" id="pageTitle">Nouvelle Commande</h1>
+        </div>
+        <div class="header-right">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content">
+        <div class="container mt-4">
+            <h1 th:text="${titre}">Nouvelle Commande</h1>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    Sélection des produits
+                </div> 
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="produit" class="form-label">Produit</label>
+                            <select id="produit" class="form-select">
+                                <option value="">Choisir un produit</option>
+                                <option th:each="produit : ${commandeService.getAllProduits()}" 
+                                        th:value="${produit.id}" 
+                                        th:text="${produit.nom + ' - ' + produit.prix + ' Ar'}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="quantite" class="form-label">Quantité</label>
+                            <input type="number" id="quantite" class="form-control" min="1" value="1">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button id="ajouterProduit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    Détails de la commande
+                </div>
+                <div class="card-body">
+                    <table id="produitsTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Quantité</th>
+                                <th>Prix unitaire</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rempli dynamiquement par JavaScript -->
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total général:</strong></td>
+                                <td id="totalGeneral">0 Ar</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    Validation de la commande
+                </div>
+                <div class="card-body">
+                    <form id="commandeForm" th:action="@{/administratif/employe/vente}" method="post">
+                        <input type="hidden" name="produitsJson" id="produitsJson">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="client" class="form-label">Client</label>
+                                <select id="client" name="clientId" class="form-select" required>
+                                    <option value="">Choisir un client</option>
+                                    <option th:each="client : ${clientRepository.findAll()}" 
+                                            th:value="${client.id}" 
+                                            th:text="${client.nom + ' ' + client.prenom}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="employe" class="form-label">Employé</label>
+                                <select id="employe" name="employeId" class="form-select" required>
+                                    <option value="">Choisir un employé</option>
+                                    <option th:each="employe : ${employeRepository.findAll()}" 
+                                            th:value="${employe.id}" 
+                                            th:text="${employe.nom}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Valider la commande</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/bootstrap5/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
