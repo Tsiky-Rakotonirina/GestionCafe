@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Client - Marketing</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+</head>
+<body>
+    <div th:replace="~{administratif/marketing/layout/sidebar :: sidebar}"></div>
+    <div class="main-content" id="mainContent">
+        <div th:replace="~{administratif/marketing/layout/header :: header('Gestion Client')}"></div>
+        <main class="content">
+            <!-- Modern Header -->
+            <div class="page-header modern-header">
+                <div class="header-content">
+                    <div class="header-title-section">
+                        <div class="header-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div>
+                            <h2>Formulaire Client</h2>
+                            <p class="header-subtitle">Ajout/Modification d'un client</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <a th:href="@{/marketing/clients}" class="btn outline">
+                            <i class="fas fa-arrow-left"></i>
+                            Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="chart-card hover-glow" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-edit"></i> Informations du client</h3>
+                </div>
+                <div style="padding: 2rem;">
+                    <form th:action="@{/tiers/save}" th:object="${tiers}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                            <!-- Informations personnelles -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Informations personnelles
+                                </label>
+                                <div style="display: grid; gap: 1rem;">
+                                    <div>
+                                        <label for="nom" class="form-label">Nom *</label>
+                                        <input type="text" id="nom" th:field="*{nom}" class="form-control" placeholder="Nom du client" required />
+                                    </div>
+                                    <div>
+                                        <label for="prenom" class="form-label">Prénom *</label>
+                                        <input type="text" id="prenom" th:field="*{prenom}" class="form-control" placeholder="Prénom du client" required />
+                                    </div>
+                                    <div>
+                                        <label for="genre" class="form-label">Genre *</label>
+                                        <select id="genre" th:field="*{genre.id}" class="form-select" required>
+                                            <option value="">Sélectionner un genre</option>
+                                            <option th:each="g : ${genres}" th:value="${g.id}" th:text="${g.nom}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact et dates -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-address-book"></i>
+                                    Contact et dates
+                                </label>
+                                <div style="display: grid; gap: 1rem;">
+                                    <div>
+                                        <label for="contact" class="form-label">Contact</label>
+                                        <input type="text" id="contact" th:field="*{contact}" class="form-control" placeholder="Numéro de téléphone" />
+                                    </div>
+                                    <div>
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="adresse@email.com" />
+                                    </div>
+                                    <div>
+                                        <label for="image" class="form-label">Image</label>
+                                        <input type="text" id="image" th:field="*{image}" class="form-control" placeholder="URL de l'image" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                            <div>
+                                <label for="dateNaissance" class="form-label">Date de naissance</label>
+                                <input type="date" id="dateNaissance" th:field="*{dateNaissance}" class="form-control" />
+                            </div>
+                            <div>
+                                <label for="dateAdhesion" class="form-label">Date d'adhésion</label>
+                                <input type="date" id="dateAdhesion" th:field="*{dateAdhesion}" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid rgba(139, 69, 19, 0.1);">
+                            <a th:href="@{/marketing/clients}" class="btn outline">
+                                <i class="fas fa-times"></i>
+                                Annuler
+                            </a>
+                            <button type="submit" class="btn primary">
+                                <i class="fas fa-save"></i>
+                                Valider
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script th:src="@{/templates/script.js}"></script>
+</body>
+</html>

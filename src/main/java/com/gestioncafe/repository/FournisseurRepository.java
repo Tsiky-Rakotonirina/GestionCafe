@@ -1,4 +1,4 @@
-package com.gestioncafe.repository.tiers;
+package com.gestioncafe.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -3,41 +3,44 @@ package com.gestioncafe.model;
 import jakarta.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Tiers {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String nom;
 
+    @Column(nullable = false)
     private String prenom;
 
-    @OneToOne
-    @JoinColumn(name = "id_genre")
+    @ManyToOne
+    @JoinColumn(name = "id_genre", nullable = false)
     private Genre genre;
 
-    private String contac;
-
+    private String contact;
     private String email;
-
     private String image;
 
+    // Getters and setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public Genre getGenre() {
-        return genre;
-    }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
 
+    public Genre getGenre() { return genre; }
+    public void setGenre(Genre genre) { this.genre = genre; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public String getContact() { return contact; }
+    public void setContact(String contact) { this.contact = contact; }
 
-    public Integer getId() {
-        return id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 }

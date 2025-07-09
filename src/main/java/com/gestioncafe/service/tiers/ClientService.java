@@ -1,18 +1,20 @@
 package com.gestioncafe.service.tiers;
 
+import com.gestioncafe.model.Client;
+import com.gestioncafe.repository.ClientRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.gestioncafe.model.Client;
-import com.gestioncafe.repository.tiers.ClientRepository;
 
 @Service
 public class ClientService {
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
+
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     public List<Client> findAll() {
         return clientRepository.findAll();

@@ -180,7 +180,7 @@ public class RhSalaireService {
             document.add(new Paragraph("Mois concerne : " + moisReference));
             document.add(new Paragraph("Id Employé: " + employe.getId()));
             document.add(new Paragraph("Nom : " + employe.getNom()));
-            document.add(new Paragraph("Genre : " + employe.getGenre().getValeur()));
+            document.add(new Paragraph("Genre : " + employe.getGenre().getNom()));
             document.add(new Paragraph("Recrutement : " + employe.getDateRecrutement()));
             document.add(new Paragraph("Contact : " + employe.getContact()));
             document.add(new Paragraph("------------------------------------------------------------------"));

@@ -1,27 +1,36 @@
 package com.gestioncafe.controller.marketing;
 
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.gestioncafe.dto.ClientSearchDto;
 import com.gestioncafe.dto.FicheClient;
 import com.gestioncafe.model.VClientLib;
-import com.gestioncafe.service.VClientLibService;
 import com.gestioncafe.service.FicheClientService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import com.gestioncafe.service.VClientLibService;
 
 @Controller
 @RequestMapping("/marketing/clients")
 public class ClientController {
-    
-    @Autowired
-    private VClientLibService vClientLibService;
-    
-    @Autowired
-    private FicheClientService ficheClientService;
-    
+
+    private final VClientLibService vClientLibService;
+
+    private final FicheClientService ficheClientService;
+
+    public ClientController(VClientLibService vClientLibService, FicheClientService ficheClientService) {
+        this.vClientLibService = vClientLibService;
+        this.ficheClientService = ficheClientService;
+    }
+
     /**
      * Affiche la page principale des clients
      */
@@ -30,9 +39,9 @@ public class ClientController {
         List<VClientLib> clients = vClientLibService.getAllClients();
         model.addAttribute("clients", clients);
         model.addAttribute("searchDto", new ClientSearchDto());
-        return "marketing/clients/list";
+        return "administratif/marketing/clients/list";
     }
-    
+
     /**
      * Recherche des clients selon les critères
      */
@@ -41,9 +50,9 @@ public class ClientController {
         List<VClientLib> clients = vClientLibService.searchClients(searchDto);
         model.addAttribute("clients", clients);
         model.addAttribute("searchDto", searchDto);
-        return "marketing/clients/list";
+        return "administratif/marketing/clients/list";
     }
-    
+
     /**
      * Affiche la fiche détaillée d'un client
      */
@@ -51,9 +60,10 @@ public class ClientController {
     public String ficheClient(@PathVariable("id") Long clientId, Model model) {
         FicheClient ficheClient = ficheClientService.getFicheClient(clientId);
         model.addAttribute("ficheClient", ficheClient);
-        return "marketing/clients/fiche";
+
+        return "administratif/marketing/clients/fiche";
     }
-    
+
     /**
      * API REST pour récupérer tous les clients (JSON)
      */
@@ -62,7 +72,7 @@ public class ClientController {
     public List<VClientLib> getAllClientsApi() {
         return vClientLibService.getAllClients();
     }
-    
+
     /**
      * API REST pour rechercher des clients (JSON)
      */
@@ -71,7 +81,7 @@ public class ClientController {
     public List<VClientLib> searchClientsApi(@RequestBody ClientSearchDto searchDto) {
         return vClientLibService.searchClients(searchDto);
     }
-    
+
     /**
      * API REST pour récupérer la fiche d'un client (JSON)
      */

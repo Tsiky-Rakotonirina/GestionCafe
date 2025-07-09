@@ -47,7 +47,7 @@
                             <div class="info-item">
                                 <i class="fas fa-venus-mars"></i>
                                 <span class="info-label">Genre :</span>
-                                <span class="info-value" th:text="${employe.genre?.valeur ?: '-'}">-</span>
+                                <span class="info-value" th:text="${employe.genre != null ? employe.genre.nom : '-'}">-</span>
                             </div>
                             
                             <div class="info-item">

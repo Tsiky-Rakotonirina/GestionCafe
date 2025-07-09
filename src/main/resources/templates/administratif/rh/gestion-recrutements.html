@@ -28,7 +28,7 @@
                         <label><i class="fas fa-venus-mars"></i> Genre</label>
                         <select name="genreId" class="select-input">
                             <option value="" th:selected="${param.genreId == null or param.genreId == ''}">Tous les genres</option>
-                            <option th:each="g : ${genres}" th:value="${g.id}" th:text="${g.valeur}"
+                            <option th:each="g : ${genres}" th:value="${g.id}" th:text="${g.nom}"
                                 th:selected="${param.genreId == g.id.toString()}"></option>
                         </select>
                     </div>

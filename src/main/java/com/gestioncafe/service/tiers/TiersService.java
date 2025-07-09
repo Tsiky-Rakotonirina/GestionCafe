@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gestioncafe.model.Tiers;
-import com.gestioncafe.repository.tiers.TiersRepository;
+import com.gestioncafe.repository.TiersRepository;
 
 @Service
 public class TiersService {

@@ -1,34 +1,33 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
-public class Client extends Tiers {
-    @Column(name = "date_adhesion", nullable = false)
+public class Client {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tiers", nullable = false)
+    private Tiers tiers;
+
+    @Column(nullable = false)
     private LocalDate dateAdhesion;
 
-    @Column(name = "date_naissance")
     private LocalDate dateNaissance;
 
+    // Getters and setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public LocalDate getDateAdhesion() {
-        return dateAdhesion;
-    }
+    public Tiers getTiers() { return tiers; }
+    public void setTiers(Tiers tiers) { this.tiers = tiers; }
 
-    public void setDateAdhesion(LocalDate dateAdhesion) {
-        this.dateAdhesion = dateAdhesion;
-    }
+    public LocalDate getDateAdhesion() { return dateAdhesion; }
+    public void setDateAdhesion(LocalDate dateAdhesion) { this.dateAdhesion = dateAdhesion; }
 
-    public LocalDate getDateNaissance() {
-        return dateNaissance;
-    }
-
-    public void setDateNaissance(LocalDate dateNaissance) {
-        this.dateNaissance = dateNaissance;
-    }
+    public LocalDate getDateNaissance() { return dateNaissance; }
+    public void setDateNaissance(LocalDate dateNaissance) { this.dateNaissance = dateNaissance; }
 }
