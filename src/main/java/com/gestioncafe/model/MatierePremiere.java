@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 public class MatierePremiere {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String nom;
@@ -51,11 +51,11 @@ public class MatierePremiere {
     private List<SeuilMatierePremiere> seuils;
 
     // Getters et setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

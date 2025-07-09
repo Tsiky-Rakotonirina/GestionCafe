@@ -19,11 +19,11 @@ public class PrixVenteProduitService {
     }
 
     public List<PrixVenteProduit> findByProduitId(Integer produitId) {
-        return prixVenteProduitRepository.findByProduitId(produitId);
+        return prixVenteProduitRepository.findByProduitId(Long.valueOf(produitId));
     }
 
     public PrixVenteProduit findLastByProduitId(Integer produitId) {
-        List<PrixVenteProduit> list = prixVenteProduitRepository.findByProduitIdOrderByDateApplicationDesc(produitId);
+        List<PrixVenteProduit> list = prixVenteProduitRepository.findByProduitIdOrderByDateApplicationDesc(Long.valueOf(produitId));
         return list.isEmpty() ? null : list.get(0);
     }
 }
