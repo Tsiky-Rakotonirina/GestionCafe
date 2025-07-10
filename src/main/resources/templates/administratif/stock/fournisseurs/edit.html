@@ -1,125 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier Fournisseur</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet">
-    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/templates/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
-
-</head>
+<head th:replace="fragments/header :: head('Modifier Fournisseur')"></head>
 <body>
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">
-            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+<div th:replace="fragments/stock-sidebar :: sidebar('fournisseurs')"></div>
 
-                <!-- Image de logo -->
-                <!--<img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">-->
-                <span>Cafe</span>
-            </a>
-        </div>
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-
-    <nav class="sidebar-nav">
-        <ul>
-            <li class="nav-item">
-                <a th:href="@{/administratif/logistique}" data-page="logistique" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Logistique</span>
-                </a>
-            </li>
-            <li class="nav-item active">
-                <a th:href="@{/administratif/stock/fournisseurs}" data-page="fournisseurs" class="nav-link">
-                    <i class="fas fa-truck"></i>
-                    <span>Fournisseurs</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/stock/approvisionnement}" data-page="approvisionnement" class="nav-link">
-                    <i class="fas fa-cart-plus"></i> <!-- Icône plus appropriée pour les approvisionnements -->
-                    <span>Approvisionnement</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/stock/matiere-premiere}" data-page="matiere-premiere" class="nav-link">
-                    <i class="fas fa-boxes"></i>
-                    <span>Matiere Premiere</span>
-                </a>
-            </li>
-
-
-        </ul>
-    </nav>
-
-    <div class="sidebar-footer">
-        <div class="user-profile">
-
-            <div class="user-info">
-                <span class="user-name">Admin</span>
-                <span class="user-role">Gérant</span>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- Main Content -->
 <div class="main-content">
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1 class="page-title" id="pageTitle">Modification Fournisseur</h1>
-        </div>
-        <div class="header-right">
-            <div class="notifications">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-            </div>
-        </div>
-    </header>
+    <header th:replace="fragments/header :: header('Modification Fournisseur')"></header>
 
 
     <!-- Content Area -->
     <main class="content">
         <div class="container-fluid">
-            <div class="card">
+            <div class="card modern-card">
                 <div class="card-header">
-                    <h2>Modifier Fournisseur</h2>
+                    <h2><i class="fas fa-edit me-2"></i>Modifier Fournisseur</h2>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/administratif/stock/fournisseurs/save}" th:object="${fournisseur}"
-                          method="post">
+                          method="post" id="editForm">
                         <input type="hidden" th:field="*{id}">
-                        <div class="mb-3">
-                            <label for="nom" class="form-label">Nom</label>
-                            <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="nom" class="form-label"><i class="fas fa-building me-1"></i>Nom</label>
+                                    <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="contact" class="form-label"><i class="fas fa-phone me-1"></i>Contact</label>
+                                    <input type="text" class="form-control" id="contact" th:field="*{contact}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="frais" class="form-label"><i class="fas fa-money-bill-wave me-1"></i>Frais</label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.01" class="form-control" id="frais" th:field="*{frais}" required>
+                                        <span class="input-group-text">Ar</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="contact" class="form-label">Contact</label>
-                            <input type="text" class="form-control" id="contact" th:field="*{contact}">
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a th:href="@{/administratif/stock/fournisseurs}" class="btn btn-secondary btn-modern">
+                                <i class="fas fa-times me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-success btn-modern">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" th:field="*{email}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="frais" class="form-label">Frais</label>
-                            <input type="number" step="0.01" class="form-control" id="frais" th:field="*{frais}"
-                                   required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                        <a th:href="@{/administratif/stock/fournisseurs}" class="btn btn-secondary">Annuler</a>
-                    
                     </form>
                 </div>
             </div>
@@ -128,6 +63,40 @@
 </div>
 
 <script th:src="@{/bootstrap5/js/bootstrap.bundle.js}"></script>
-<script th:src="@{/js/stock/script.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+        const nom = document.getElementById('nom');
+        const frais = document.getElementById('frais');
+        
+        if (!nom.value.trim()) {
+            e.preventDefault();
+            alert('Le nom est obligatoire.');
+            nom.focus();
+            return;
+        }
+        
+        if (!frais.value || parseFloat(frais.value) < 0) {
+            e.preventDefault();
+            alert('Les frais doivent être un nombre positif.');
+            frais.focus();
+            return;
+        }
+    });
+    
+    // Input feedback
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('input-focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('input-focused');
+        });
+    });
+});
+</script>
 </body>
 </html>

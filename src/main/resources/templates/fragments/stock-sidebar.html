@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Stock Sidebar Fragment -->
+    <div th:fragment="sidebar(activePage)" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
+                    <i class="fas fa-coffee"></i>
+                    <span>CafeManager</span>
+                </a>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item" th:classappend="${activePage == 'logistique'} ? 'active' : ''">
+                    <a th:href="@{/administratif/logistique}" data-page="logistique" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Logistique</span>
+                    </a>
+                </li>
+                <li class="nav-item" th:classappend="${activePage == 'fournisseurs'} ? 'active' : ''">
+                    <a th:href="@{/administratif/stock/fournisseurs}" data-page="fournisseurs" class="nav-link">
+                        <i class="fas fa-truck"></i>
+                        <span>Fournisseurs</span>
+                    </a>
+                </li>
+                <li class="nav-item" th:classappend="${activePage == 'approvisionnement'} ? 'active' : ''">
+                    <a th:href="@{/administratif/stock/approvisionnement}" data-page="approvisionnement" class="nav-link">
+                        <i class="fas fa-cart-plus"></i>
+                        <span>Approvisionnement</span>
+                    </a>
+                </li>
+                <li class="nav-item" th:classappend="${activePage == 'matiere-premiere'} ? 'active' : ''">
+                    <a th:href="@{/administratif/stock/matiere-premiere}" data-page="matiere-premiere" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Matières Premières</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Admin</span>
+                    <span class="user-role">Gestionnaire Stock</span>
+                </div>
+            </div>
+            <a th:href="@{/quotidien}" class="logout-link" title="Retour à l'accueil">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
