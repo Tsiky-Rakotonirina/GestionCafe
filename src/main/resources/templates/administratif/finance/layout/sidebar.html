@@ -1,0 +1,30 @@
+<div th:fragment="sidebar">
+    <div th:replace="~{fragments/sidebar-base :: sidebarBase(~{::header},~{::content})}">
+        <th:block th:fragment="header">
+            <a th:href="@{/administratif/}" class="logo" style="text-decoration:none; color:inherit; display:flex; align-items:center;">
+                <i class="fas fa-coffee"></i>
+                <span style="margin-left:8px;">Caf-E</span>
+            </a>
+        </th:block>
+        <th:block th:fragment="content">
+            <li class="nav-item">
+                <a th:href="@{/administratif/finance/bilan}" class="nav-link">
+                    <i class="fas fa-euro-sign"></i>
+                    <span>Bilan comptable</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/finance/resultat}" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Compte des resultats</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/finance/budget-previsionnel}" class="nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span>Budget previsionnel</span>
+                </a>
+            </li>
+        </th:block>
+    </div>
+</div>

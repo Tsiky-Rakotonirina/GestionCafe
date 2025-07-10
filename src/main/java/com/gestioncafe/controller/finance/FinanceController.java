@@ -30,17 +30,17 @@ public class FinanceController {
         return "redirect:/administratif/finance/bilan";
     }
 
-    @GetMapping
+    @GetMapping("/bilan")
     public String bilan() {
         return "administratif/finance/bilan";
     }
 
-    @GetMapping
+    @GetMapping("/budget-previsionnel")
     public String budget() {
         return "administratif/finance/budget-previsionnel";
     }
 
-    @GetMapping
+    @GetMapping("/resultat")
     public String resultat() {
         return "administratif/finance/resultat";
     }
