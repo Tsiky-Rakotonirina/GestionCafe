@@ -1,28 +1,28 @@
 <div th:fragment="sidebar">
     <div th:replace="~{fragments/sidebar-base :: sidebarBase(~{::header},~{::content})}">
         <th:block th:fragment="header">
-            <a th:href="@{/administratif/}" class="logo" style="text-decoration:none; color:inherit; display:flex; align-items:center;">
+            <a th:href="@{/administratif}" class="logo" style="text-decoration:none; color:inherit; display:flex; align-items:center;">
                 <i class="fas fa-coffee"></i>
                 <span style="margin-left:8px;">Caf-E</span>
             </a>
         </th:block>
         <th:block th:fragment="content">
             <li class="nav-item">
-                <a th:href="@{/administratif/Finance/bilan}" class="nav-link">
-                    <i class="fas fa-euro-sign"></i>
+                <a th:href="@{/administratif/finance/bilan}" class="nav-link">
+                    <i class="fas fa-balance-scale"></i>
                     <span>Bilan comptable</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/administratif/Finance/resultat}" class="nav-link">
+                <a th:href="@{/administratif/finance/resultat}" class="nav-link">
                     <i class="fas fa-chart-line"></i>
-                    <span>Compte des resultats</span>
+                    <span>Compte de résultats</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/administratif/Finance/budget-previsionnel}" class="nav-link">
-                    <i class="fas fa-cogs"></i>
-                    <span>Budget previsionnel</span>
+                <a th:href="@{/administratif/finance/budget-previsionnel}" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Budget prévisionnel</span>
                 </a>
             </li>
         </th:block>

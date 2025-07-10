@@ -1,141 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAF-E</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .form-container {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-        input {
-            padding: 8px;
-            margin-right: 10px;
-        }
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/templates/styles.css}">
 </head>
 <body>
 <div th:replace="~{administratif/finance/layout/sidebar :: sidebar}"></div>
-
-<h2>Juillet 2025</h2>
-<p>Solde de départ actuel : 5 250 000 Ar</p>
-
-<div id="previsionForm" class="form-container">
-    <h3>Prévisions pour Juillet 2025</h3>
-    <div>
-        <label>Approvisionnement:</label>
-        <input type="number" id="approvisionnement" placeholder="Montant en Ar">
-    </div>
-    <div>
-        <label>Vente:</label>
-        <input type="number" id="vente" placeholder="Montant en Ar">
-    </div>
-    <div>
-        <label>Paie de salaire:</label>
-        <input type="number" id="salaire" placeholder="Montant en Ar">
-    </div>
-    <button onclick="validerPrevisions()">Valider</button>
+<div class="main-content" id="mainContent">
+    <div th:replace="~{administratif/finance/layout/header :: header('Budget prévisionnel')}"></div>
+    <main class="content">
+        <div class="page-header modern-header">
+            <div class="header-content">
+                <div class="header-title-section">
+                    <div class="header-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div>
+                        <h2>Budget prévisionnel</h2>
+                        <p class="header-subtitle">CAF-E - Juillet 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-card hover-glow" style="max-width: 700px; margin: 0 auto;">
+            <div class="card-header">
+                <h3><i class="fas fa-calendar-alt"></i> Prévisions pour Juillet 2025</h3>
+            </div>
+            <div class="card-content">
+                <p style="font-weight: 500;">Solde de départ actuel : <span class="badge">5 250 000 Ar</span></p>
+                <form id="previsionForm" style="margin-top:1rem;">
+                    <div class="form-row" style="display:flex; gap:1rem; flex-wrap:wrap;">
+                        <div class="form-group" style="flex:1; min-width:180px;">
+                            <label><i class="fas fa-truck"></i> Approvisionnement</label>
+                            <input type="number" id="approvisionnement" class="input" placeholder="Montant en Ar">
+                        </div>
+                        <div class="form-group" style="flex:1; min-width:180px;">
+                            <label><i class="fas fa-arrow-up"></i> Vente</label>
+                            <input type="number" id="vente" class="input" placeholder="Montant en Ar">
+                        </div>
+                        <div class="form-group" style="flex:1; min-width:180px;">
+                            <label><i class="fas fa-users"></i> Paie de salaire</label>
+                            <input type="number" id="salaire" class="input" placeholder="Montant en Ar">
+                        </div>
+                    </div>
+                    <div style="margin-top:1.5rem; text-align:right;">
+                        <button type="button" class="btn primary" onclick="validerPrevisions()"><i class="fas fa-check"></i> Valider</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="stats-grid" style="margin:2.5rem auto 0 auto; max-width:900px;">
+            <div class="stat-card info hover-lift">
+                <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="stat-info">
+                    <h3>Juin 2025</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Prévision</th>
+                                <th>Réalité</th>
+                                <th>Écart</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Solde de départ</td>
+                                <td>4 800 000 Ar</td>
+                                <td>4 800 000 Ar</td>
+                                <td>0 Ar</td>
+                            </tr>
+                            <tr>
+                                <td>Approvisionnement</td>
+                                <td>2 500 000 Ar</td>
+                                <td>2 350 000 Ar</td>
+                                <td>-150 000 Ar</td>
+                            </tr>
+                            <tr>
+                                <td>Vente</td>
+                                <td>3 200 000 Ar</td>
+                                <td>3 450 000 Ar</td>
+                                <td>+250 000 Ar</td>
+                            </tr>
+                            <tr>
+                                <td>Paie de salaire</td>
+                                <td>1 800 000 Ar</td>
+                                <td>1 750 000 Ar</td>
+                                <td>-50 000 Ar</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Solde fin</strong></td>
+                                <td colspan="3"><strong>5 250 000 Ar</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="stat-card success hover-lift" id="juilletTable" style="display:none;">
+                <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="stat-info">
+                    <h3>Juillet 2025</h3>
+                    <table class="data-table" id="juilletData">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Prévision</th>
+                                <th>Réalité</th>
+                                <th>Écart</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Solde de départ</td>
+                                <td>5 250 000 Ar</td>
+                                <td>5 250 000 Ar</td>
+                                <td>0 Ar</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
-
-<h2>Juin 2025</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Type</th>
-            <th>Prévision</th>
-            <th>Réalité</th>
-            <th>Écart</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Solde de départ</td>
-            <td>4 800 000 Ar</td>
-            <td>4 800 000 Ar</td>
-            <td>0 Ar</td>
-        </tr>
-        <tr>
-            <td>Approvisionnement</td>
-            <td>2 500 000 Ar</td>
-            <td>2 350 000 Ar</td>
-            <td>-150 000 Ar</td>
-        </tr>
-        <tr>
-            <td>Vente</td>
-            <td>3 200 000 Ar</td>
-            <td>3 450 000 Ar</td>
-            <td>+250 000 Ar</td>
-        </tr>
-        <tr>
-            <td>Paie de salaire</td>
-            <td>1 800 000 Ar</td>
-            <td>1 750 000 Ar</td>
-            <td>-50 000 Ar</td>
-        </tr>
-        <tr>
-            <td><strong>Solde fin</strong></td>
-            <td colspan="3"><strong>5 250 000 Ar</strong></td>
-        </tr>
-    </tbody>
-</table>
-
-<div id="juilletTable" style="display: none;">
-    <h2>Juillet 2025</h2>
-    <table id="juilletData">
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Prévision</th>
-                <th>Réalité</th>
-                <th>Écart</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Solde de départ</td>
-                <td>5 250 000 Ar</td>
-                <td>5 250 000 Ar</td>
-                <td>0 Ar</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
 <script>
     function validerPrevisions() {
         // Récupérer les valeurs saisies
         const approvisionnement = document.getElementById('approvisionnement').value;
         const vente = document.getElementById('vente').value;
         const salaire = document.getElementById('salaire').value;
-        
         // Ajouter les nouvelles lignes au tableau de juillet
         const tableBody = document.querySelector('#juilletData tbody');
-        
         // Ajouter approvisionnement
         const row1 = document.createElement('tr');
         row1.innerHTML = `
@@ -145,7 +144,6 @@
             <td>-</td>
         `;
         tableBody.appendChild(row1);
-        
         // Ajouter vente
         const row2 = document.createElement('tr');
         row2.innerHTML = `
@@ -155,7 +153,6 @@
             <td>-</td>
         `;
         tableBody.appendChild(row2);
-        
         // Ajouter paie de salaire
         const row3 = document.createElement('tr');
         row3.innerHTML = `
@@ -165,25 +162,21 @@
             <td>-</td>
         `;
         tableBody.appendChild(row3);
-        
         // Ajouter solde fin (calcul simplifié)
         const soldeDepart = 5250000;
         const total = soldeDepart + parseInt(vente || 0) - parseInt(approvisionnement || 0) - parseInt(salaire || 0);
-        
         const row4 = document.createElement('tr');
         row4.innerHTML = `
             <td><strong>Solde fin</strong></td>
             <td colspan="3"><strong>${total.toLocaleString()} Ar</strong></td>
         `;
         tableBody.appendChild(row4);
-        
         // Masquer le formulaire
         document.getElementById('previsionForm').style.display = 'none';
-        
         // Afficher le tableau de juillet
         document.getElementById('juilletTable').style.display = 'block';
     }
 </script>
-
+<script th:src="@{/templates/script.js}"></script>
 </body>
 </html>
