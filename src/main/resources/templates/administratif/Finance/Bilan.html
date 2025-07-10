@@ -104,193 +104,67 @@
         <div class="header">
             <h1>BILAN COMPTABLE</h1>
             <p>CAF-E</p>
-            <p>Exercice : 2024</p>
+            <p>Exercice : 20</p>
         </div>
 
-        <!-- Grille principale du bilan -->
-        <div class="bilan-grid">
-            <!-- ACTIFS -->
-            <div class="actifs">
-                <!-- Actif Immobilisé -->
-                <div class="bilan-card" id="actif-immobilise">
-                    <div class="card-header">
-                        ACTIF IMMOBILISÉ
-                    </div>
-                    <div class="card-content">
-                        <!-- Immobilisations incorporelles -->
-                        <div class="account-item">
-                            <span class="account-name">Immobilisations incorporelles</span>
-                            <span class="account-number">20</span>
-                            <span class="account-value">150 000 Ar</span>
-                        </div>
-                        
-                        <!-- Immobilisations corporelles -->
-                        <div class="account-item">
-                            <span class="account-name">Immobilisations corporelles</span>
-                            <span class="account-number">21</span>
-                            <span class="account-value">4 250 000 Ar</span>
-                        </div>
-                        
-                        <!-- Immobilisations financières -->
-                        <div class="account-item">
-                            <span class="account-name">Immobilisations financières</span>
-                            <span class="account-number">27</span>
-                            <span class="account-value">1 100 000 Ar</span>
-                        </div>
-                        
-                        <div class="subtotal">
-                            <span>Total Actif Immobilisé</span>
-                            <span>5 500 000 Ar</span>
-                        </div>
-                    </div>
+            <div class="bilan-grid">
+    <!-- ACTIFS -->
+    <div>
+        <div class="bilan-card">
+            <div class="card-header">ACTIFS</div>
+            <div class="card-content">
+                <div class="account-item">
+                    <span class="account-name">Banque</span>
+                    <span class="account-number">12</span>
+                    <span>5 250 000 Ar</span>
                 </div>
-
-                <!-- Actif Circulant -->
-                <div class="bilan-card" id="actif-circulant">
-                    <div class="card-header">
-                        ACTIF CIRCULANT
-                    </div>
-                    <div class="card-content">
-                        <!-- Stocks -->
-                        <div class="account-item">
-                            <span class="account-name">Stocks (marchandises)</span>
-                            <span class="account-number">31</span>
-                            <span class="account-value">3 200 000 Ar</span>
-                        </div>
-                        
-                        <!-- Créances clients -->
-                        <div class="account-item">
-                            <span class="account-name">Clients (créances)</span>
-                            <span class="account-number">40</span>
-                            <span class="account-value">2 750 000 Ar</span>
-                        </div>
-                        
-                        <!-- Autres créances -->
-                        <div class="account-item">
-                            <span class="account-name">Autres créances</span>
-                            <span class="account-number">42</span>
-                            <span class="account-value">1 300 000 Ar</span>
-                        </div>
-                        
-                        <!-- TVA à récupérer -->
-                        <div class="account-item">
-                            <span class="account-name">TVA à récupérer</span>
-                            <span class="account-number">43</span>
-                            <span class="account-value">450 000 Ar</span>
-                        </div>
-                        
-                        <!-- Personnel (créances) -->
-                        <div class="account-item">
-                            <span class="account-name">Personnel (avances)</span>
-                            <span class="account-number">44</span>
-                            <span class="account-value">320 000 Ar</span>
-                        </div>
-                        
-                        <!-- Caisse et banque -->
-                        <div class="account-item">
-                            <span class="account-name">Caisse et banque</span>
-                            <span class="account-number">12</span>
-                            <span class="account-value">5 250 000 Ar</span>
-                        </div>
-                        
-                        <div class="subtotal">
-                            <span>Total Actif Circulant</span>
-                            <span>13 270 000 Ar</span>
-                        </div>
-                    </div>
+                <div class="account-item">
+                    <span class="account-name">Stocks</span>
+                    <span class="account-number">31</span>
+                    <span>3 200 000 Ar</span>
                 </div>
-            </div>
-
-            <!-- PASSIFS -->
-            <div class="passifs">
-                <!-- Capitaux Propres -->
-                <div class="bilan-card" id="capitaux-propres">
-                    <div class="card-header">
-                        CAPITAUX PROPRES
-                    </div>
-                    <div class="card-content">
-                        <!-- Capital social -->
-                        <div class="account-item">
-                            <span class="account-name">Capital social</span>
-                            <span class="account-number">10</span>
-                            <span class="account-value">8 000 000 Ar</span>
-                        </div>
-                        
-                        <!-- Réserves -->
-                        <div class="account-item">
-                            <span class="account-name">Réserves</span>
-                            <span class="account-number">11</span>
-                            <span class="account-value">2 500 000 Ar</span>
-                        </div>
-                        
-                        <!-- Résultat de l'exercice -->
-                        <div class="account-item">
-                            <span class="account-name">Résultat net</span>
-                            <span class="account-number">12</span>
-                            <span class="account-value">3 770 000 Ar</span>
-                        </div>
-                        
-                        <div class="subtotal">
-                            <span>Total Capitaux Propres</span>
-                            <span>14 270 000 Ar</span>
-                        </div>
-                    </div>
+                <div class="account-item">
+                    <span class="account-name">Clients</span>
+                    <span class="account-number">40</span>
+                    <span>-</span>
                 </div>
-
-                <!-- Dettes -->
-                <div class="bilan-card" id="dettes">
-                    <div class="card-header">
-                        DETTES
-                    </div>
-                    <div class="card-content">
-                        <!-- Fournisseurs -->
-                        <div class="account-item">
-                            <span class="account-name">Fournisseurs</span>
-                            <span class="account-number">33</span>
-                            <span class="account-value">2 800 000 Ar</span>
-                        </div>
-                        
-                        <!-- Dettes fiscales -->
-                        <div class="account-item">
-                            <span class="account-name">Dettes fiscales</span>
-                            <span class="account-number">43</span>
-                            <span class="account-value">1 100 000 Ar</span>
-                        </div>
-                        
-                        <!-- Dettes sociales -->
-                        <div class="account-item">
-                            <span class="account-name">Dettes sociales</span>
-                            <span class="account-number">44</span>
-                            <span class="account-value">600 000 Ar</span>
-                        </div>
-                        
-                        <!-- Autres dettes -->
-                        <div class="account-item">
-                            <span class="account-name">Autres dettes</span>
-                            <span class="account-number">45</span>
-                            <span class="account-value">1 000 000 Ar</span>
-                        </div>
-                        
-                        <div class="subtotal">
-                            <span>Total Dettes</span>
-                            <span>4 500 000 Ar</span>
-                        </div>
-                    </div>
+                <div class="account-item">
+                    <span class="account-name">Personnel et comptes rattachés</span>
+                    <span class="account-number">42</span>
+                    <span>-</span>
                 </div>
             </div>
         </div>
-
-        <!-- Totaux -->
-        <div class="totaux">
-            <div class="total-item total-actif" id="total-actif">
-                <div>TOTAL ACTIF</div>
-                <div>18 770 000 Ar</div>
-            </div>
-            <div class="total-item total-passif" id="total-passif">
-                <div>TOTAL PASSIF</div>
-                <div>18 770 000 Ar</div>
+    </div>
+    <!-- PASSIFS -->
+    <div>
+        <div class="bilan-card">
+            <div class="card-header">PASSIFS</div>
+            <div class="card-content">
+                <div class="account-item">
+                    <span class="account-name">Fournisseurs</span>
+                    <span class="account-number">33</span>
+                    <span>2 350 000 Ar</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">Dépréciations</span>
+                    <span class="account-number">59</span>
+                    <span>-</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">Sécurité sociale et autres organismes sociaux</span>
+                    <span class="account-number">43</span>
+                    <span>-</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">État et autres collectivités publiques</span>
+                    <span class="account-number">44</span>
+                    <span>-</span>
+                </div>
             </div>
         </div>
+    </div>
+</div>
     </div>
 </body>
 </html>
