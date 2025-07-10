@@ -1,19 +1,25 @@
 package com.gestioncafe.controller.employe;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.gestioncafe.model.Produit;
 import com.gestioncafe.repository.ClientRepository;
 import com.gestioncafe.repository.EmployeRepository;
 import com.gestioncafe.service.CommandeService;
 import com.gestioncafe.service.PresenceService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/administratif/employe")
@@ -34,19 +40,11 @@ public class EmployeController {
         this.employeRepository = employeRepository;
     }
 
-    @GetMapping("/presence")
-    public String presence(Model model) {
-        // Formatage de la date
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale.FRENCH);
-        String dateFormatted = LocalDate.now().format(formatter);
-
-        model.addAttribute("titre", "Présence");
-        model.addAttribute("dateAujourdhui", dateFormatted);
-        model.addAttribute("employes", presenceService.getAllEmployes());
-        model.addAttribute("presences", presenceService.getPresencesForToday());
-
-        return "administratif/employe/presence";
-    }
+    // @GetMapping("/presence")
+    // public String presence(Model model) {
+    //     // Ancienne gestion de la présence, à désactiver car doublon avec PresenceController
+    //     return "administratif/employe/presence";
+    // }
 
     @PostMapping("/presence/valider")
     public String validerPresence(@RequestParam Long employeId, @RequestParam String password) {

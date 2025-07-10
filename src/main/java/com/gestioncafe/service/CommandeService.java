@@ -47,8 +47,10 @@ public class CommandeService {
     }
 
     public List<Commande> getCommandesDuJour() {
-        LocalDate aujourdhui = LocalDate.now();
-        return commandeRepository.findByDateFinBetween(aujourdhui.minusDays(1), aujourdhui);
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay().minusNanos(1);
+        return commandeRepository.findByDateFinBetween(start, end);
     }
 
     public BigDecimal getRecetteDuJour() {
@@ -62,8 +64,18 @@ public class CommandeService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    @Transactional
     public void marquerCommandeTerminee(Long commandeId) {
+        // Marquer la commande comme terminée
         commandeRepository.marquerCommeTerminee(commandeId);
+        // Mettre à jour le status de la vente associée
+        Commande commande = commandeRepository.findById(commandeId)
+            .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
+        Vente vente = commande.getVente();
+        if (vente != null) {
+            vente.setStatus("TERMINEE");
+            venteRepository.save(vente);
+        }
     }
 
     public List<Produit> getAllProduits() {
@@ -122,7 +134,7 @@ public class CommandeService {
             // Créer la commande associée
             Commande commande = new Commande();
             commande.setVente(savedVente);
-            commande.setDateFin(LocalDate.now().plusDays(1));
+            commande.setDateFin(LocalDateTime.now());
             commande.setEstTerminee(false);
             commandeRepository.save(commande);
 

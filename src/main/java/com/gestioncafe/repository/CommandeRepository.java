@@ -1,16 +1,18 @@
 // src/main/java/com/gestioncafe/repository/CommandeRepository.java
 package com.gestioncafe.repository;
 
-import com.gestioncafe.model.Commande;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
-import java.util.List;
+
+import com.gestioncafe.model.Commande;
 
 public interface CommandeRepository extends JpaRepository<Commande, Long> {
-    List<Commande> findByDateFinBetween(LocalDate start, LocalDate end);
+    List<Commande> findByDateFinBetween(LocalDateTime start, LocalDateTime end);
     
     @Transactional
     @Modifying

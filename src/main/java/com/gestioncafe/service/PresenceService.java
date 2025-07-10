@@ -31,6 +31,12 @@ public class PresenceService {
         return presenceRepository.findByDatePresence(Date.valueOf(LocalDate.now()));
     }
 
+    public List<Presence> getPresencesDuJour() {
+        LocalDate today = LocalDate.now();
+        // Conversion explicite en java.sql.Date pour le repository
+        return presenceRepository.findByDatePresence(java.sql.Date.valueOf(today));
+    }
+
     public void validerPresence(Long employeId, String password) {
         // Ici, vous devriez vérifier le mot de passe (logique simplifiée)
         Presence presence = presenceRepository.findByEmploye_IdAndDatePresence(employeId, Date.valueOf(LocalDate.now()));

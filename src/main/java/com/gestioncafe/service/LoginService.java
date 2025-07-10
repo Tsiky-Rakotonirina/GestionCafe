@@ -27,6 +27,7 @@ public class LoginService {
         if (quotidienUtilisateur == null) {
             return false; 
         }
+
         return true;
     }
 }

@@ -1,9 +1,17 @@
 package com.gestioncafe.model;
 
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "produit")
@@ -98,6 +106,14 @@ public class Produit {
 
     public void setDelaiPeremption(BigDecimal delaiPeremption) {
         this.delaiPeremption = delaiPeremption;
+    }
+    // Retourne le prix courant (dernier prix de la liste, ou null si vide)
+    public java.math.BigDecimal getPrixCourant() {
+        if (prixVenteProduits != null && !prixVenteProduits.isEmpty()) {
+            // On suppose que la liste est triée par date croissante
+            return prixVenteProduits.get(prixVenteProduits.size() - 1).getPrixVente();
+        }
+        return null;
     }
 }
    

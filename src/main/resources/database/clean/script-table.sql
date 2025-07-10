@@ -478,6 +478,7 @@ CREATE TABLE vente
 );
 
 ALTER TABLE vente ALTER COLUMN id SET DATA TYPE bigint;
+ALTER TABLE vente ADD COLUMN status VARCHAR(20);
 
 -- Table details_vente
 CREATE TABLE details_vente
@@ -512,6 +513,8 @@ CREATE TABLE commande
         FOREIGN KEY (id_vente)
             REFERENCES vente (id)
 );
+
+ALTER TABLE commande ADD COLUMN est_terminee BOOLEAN DEFAULT FALSE;
 
 CREATE TABLE production
 (

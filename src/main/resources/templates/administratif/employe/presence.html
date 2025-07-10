@@ -16,7 +16,7 @@
     <div class="sidebar-header">
         <div class="logo">
             <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                <img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">
+                <!--<img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">-->
                 <span>Cafe</span>
             </a>
         </div>
@@ -103,12 +103,12 @@
                     <td th:text="${employe.nom}"></td>
                     <td th:text="${employe.contact}"></td>
                     <td>
-                        <span th:if="${#lists.contains(presences.![employe.id], employe.id)}">
-                            <span th:text="${#temporals.format(presences.?[employe.id == ${employe.id}][0].dateArrivee, 'HH:mm')}"></span>
+                        <span th:if="${presences[employe.id] != null}">
+                            <span th:text="${#temporals.format(presences[employe.id].dateArrivee, 'HH:mm')}"></span>
                         </span>
                     </td>
                     <td>
-                        <form th:if="${!#lists.contains(presences.![employe.id], employe.id) or !presences.?[employe.id == ${employe.id}][0].estPresent}" 
+                        <form th:if="${presences[employe.id] == null or !presences[employe.id].estPresent}"
                               th:action="@{/administratif/employe/presence/valider}" method="post">
                             <input type="hidden" name="employeId" th:value="${employe.id}">
                             <div class="input-group">
@@ -116,7 +116,7 @@
                                 <button type="submit" class="btn btn-primary">Valider</button>
                             </div>
                         </form>
-                        <span th:if="${#lists.contains(presences.![employe.id], employe.id) and presences.?[employe.id == ${employe.id}][0].estPresent}" 
+                        <span th:if="${presences[employe.id] != null and presences[employe.id].estPresent}"
                               class="badge bg-success">Présent</span>
                     </td>
                 </tr>

@@ -39,7 +39,13 @@
         </div>
     </header>
     <main class="content">
-        <h1>HELLO WORLD !</h1>
+        <h1>Bienvenue sur CafeManager Pro</h1>
+        <div class="dashboard-menu" style="margin-top:2rem; display:flex; flex-wrap:wrap; gap:1rem;">
+            <a th:href="@{/administratif/employe/commande}" class="btn btn-primary">Commandes</a>
+            <a th:href="@{/administratif/employe/vente}" class="btn btn-primary">Ventes</a>
+            <a th:href="@{/administratif/client}" class="btn btn-primary">Clients</a>
+            <a th:href="@{/administratif/employe/presence}" class="btn btn-primary">Présence</a>
+        </div>
     </main>
     <!-- Utilisation de Thymeleaf pour le script JS -->
     <!-- <script th:src="@{/templates/script.js}"></script> -->
