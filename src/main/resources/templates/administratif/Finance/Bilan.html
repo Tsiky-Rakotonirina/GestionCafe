@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAF-E</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+        .header h1 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .bilan-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .bilan-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+        }
+        .card-content {
+            padding: 15px;
+        }
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #eee;
+        }
+        .account-name {
+            flex: 2;
+        }
+        .account-number {
+            flex: 1;
+            color: #666;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .account-value {
+            flex: 1;
+            text-align: right;
+            font-weight: bold;
+        }
+        .subtotal {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            font-weight: bold;
+        }
+        .totaux {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .total-item {
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .total-actif {
+            background-color: #e8f4fd;
+            border: 1px solid #b8d9f5;
+        }
+        .total-passif {
+            background-color: #e8f8f0;
+            border: 1px solid #b8e5d2;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{administratif/finance/layout/sidebar :: sidebar}"></div>
+
+    <div class="container">
+        <!-- En-tête -->
+        <div class="header">
+            <h1>BILAN COMPTABLE</h1>
+            <p>CAF-E</p>
+            <p>Exercice : 2025</p>
+        </div>
+
+           <div class="bilan-grid">
+    <!-- ACTIFS -->
+    <div>
+        <div class="bilan-card">
+            <div class="card-header">ACTIFS</div>
+            <div class="card-content">
+                <div class="account-item">
+                    <span class="account-name">Banque</span>
+                    <span class="account-number">12</span>
+                    <span>5 250 000 Ar</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">Stocks</span>
+                    <span class="account-number">31</span>
+                    <span>3 200 000 Ar</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">Clients</span>
+                    <span class="account-number">40</span>
+                    <span>1 000 000 Ar</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">Personnel et comptes rattachés</span>
+                    <span class="account-number">42</span>
+                    <span>200 000 Ar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PASSIFS -->
+    <div>
+        <div class="bilan-card">
+            <div class="card-header">PASSIFS</div>
+            <div class="card-content">
+                <div class="account-item">
+                    <span class="account-name">Fournisseurs</span>
+                    <span class="account-number">33</span>
+                    <span>2 350 000 Ar</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">Dépréciations</span>
+                    <span class="account-number">59</span>
+                    <span>100 000 Ar</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">Sécurité sociale et autres organismes sociaux</span>
+                    <span class="account-number">43</span>
+                    <span>150 000 Ar</span>
+                </div>
+                <div class="account-item">
+                    <span class="account-name">État et autres collectivités publiques</span>
+                    <span class="account-number">44</span>
+                    <span>200 000 Ar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</body>
+</html>
