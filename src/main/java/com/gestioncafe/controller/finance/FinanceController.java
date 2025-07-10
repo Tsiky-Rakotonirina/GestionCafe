@@ -32,7 +32,7 @@ public class FinanceController {
 
     @GetMapping("/bilan")
     public String bilan() {
-        return "administratif/finance/bilan";
+        return "administratif/finance/Bilan";
     }
 
     @GetMapping("/budget-previsionnel")
