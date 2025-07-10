@@ -7,6 +7,7 @@ import com.gestioncafe.model.Commande;
 import com.gestioncafe.model.DetailsVente;
 import com.gestioncafe.model.Produit;
 import com.gestioncafe.model.Vente;
+import com.gestioncafe.model.MouvementStockProduit;
 import com.gestioncafe.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ public class CommandeService {
     private final EmployeRepository employeRepository;
     private final DetailsVenteRepository detailsVenteRepository;
     private final PrixVenteProduitRepository prixVenteProduitRepository;
+    private final MouvementStockProduitRepository mouvementStockProduitRepository;
 
 
     public CommandeService(CommandeRepository commandeRepository,
@@ -36,7 +38,8 @@ public class CommandeService {
                            ClientRepository clientRepository,
                            EmployeRepository employeRepository,
                            DetailsVenteRepository detailsVenteRepository,
-                           PrixVenteProduitRepository prixVenteProduitRepository) {
+                           PrixVenteProduitRepository prixVenteProduitRepository,
+                           MouvementStockProduitRepository mouvementStockProduitRepository) {
         this.commandeRepository = commandeRepository;
         this.venteRepository = venteRepository;
         this.produitRepository = produitRepository;
@@ -44,6 +47,7 @@ public class CommandeService {
         this.employeRepository = employeRepository;
         this.detailsVenteRepository = detailsVenteRepository;
         this.prixVenteProduitRepository = prixVenteProduitRepository;
+        this.mouvementStockProduitRepository = mouvementStockProduitRepository;
     }
 
     public List<Commande> getCommandesDuJour() {
@@ -75,6 +79,24 @@ public class CommandeService {
         if (vente != null) {
             vente.setStatus("TERMINEE");
             venteRepository.save(vente);
+            // Mouvement de stock pour chaque produit vendu
+            if (vente.getDetailsVentes() != null) {
+                for (DetailsVente dv : vente.getDetailsVentes()) {
+                    Produit produit = dv.getProduit();
+                    if (produit.getStock() == null || produit.getStock().compareTo(dv.getQuantite()) < 0) {
+                        throw new RuntimeException("Stock insuffisant pour le produit : " + produit.getNom());
+                    }
+                    MouvementStockProduit mvt = new MouvementStockProduit();
+                    mvt.setProduit(produit);
+                    mvt.setVente(vente);
+                    mvt.setDateMouvement(LocalDateTime.now());
+                    mvt.setQuantite(dv.getQuantite().negate()); // négatif = sortie du stock
+                    mouvementStockProduitRepository.save(mvt);
+                    // Mettre à jour le stock du produit
+                    produit.setStock(produit.getStock().subtract(dv.getQuantite()));
+                    produitRepository.save(produit);
+                }
+            }
         }
     }
 

@@ -543,6 +543,8 @@ CREATE TABLE mouvement_stock_produit
     FOREIGN KEY (id_vente) REFERENCES vente (id)
 );
 
+ALTER TABLE mouvement_stock_produit ALTER COLUMN date_peremption DROP NOT NULL;
+
 -- Table approvisionnement
 CREATE TABLE approvisionnement
 (

@@ -51,6 +51,12 @@
                     <span>Clients</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a th:href="@{/administratif/employe/production}" data-page="production" class="nav-link">
+                    <i class="fas fa-industry"></i>
+                    <span>Production</span>
+                </a>
+            </li>
         </ul>
     </nav>
     
@@ -92,6 +98,9 @@
                     <h5>Recette du jour: <span th:text="${#numbers.formatDecimal(recetteDuJour, 1, 2, 'COMMA')} + ' Ar'" class="text-success">0,00 Ar</span></h5>
                 </div>
                 <div class="card-body">
+                    <div th:if="${erreurStock}" class="alert alert-danger" role="alert">
+                        <span th:text="${erreurStock}"></span>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead class="table-dark">
