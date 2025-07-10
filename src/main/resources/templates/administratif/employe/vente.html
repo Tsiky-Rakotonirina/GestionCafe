@@ -1,119 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Nouvelle Commande</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/templates/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
-    <script th:src="@{/js/employe/vente.js}" defer></script>
-</head>
+<head th:replace="~{fragments/header :: head('Nouvelle Commande')}"></head>
 <body>
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">
-            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                <!--<img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">-->
-                <span>Cafe</span>
-            </a>
-        </div>
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-    
-    <nav class="sidebar-nav">
-        <ul>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/presence}" data-page="presence" class="nav-link">
-                    <i class="fas fa-user-check"></i>   
-                    <span>Présence</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/commande}" data-page="commande" class="nav-link">
-                    <i class="fas fa-clipboard-list"></i> 
-                    <span>Commandes</span>
-                </a>
-            </li>
-            <li class="nav-item active">
-                <a th:href="@{/administratif/employe/vente}" data-page="vente" class="nav-link">
-                    <i class="fas fa-cash-register"></i>
-                    <span>Ventes</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/client}" data-page="client" class="nav-link">
-                    <i class="fas fa-users"></i>
-                    <span>Clients</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/production}" data-page="production" class="nav-link">
-                    <i class="fas fa-industry"></i>
-                    <span>Production</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    
-    <div class="sidebar-footer">
-        <div class="user-profile">
-            <div class="user-info">
-                <span class="user-name">Admin</span>
-                <span class="user-role">Employé</span>
-            </div>
-        </div>
-    </div>
-</div>
+<div th:replace="~{fragments/sidebar :: sidebar('vente')}"></div>
 
-<!-- Main Content -->
 <div class="main-content">
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1 class="page-title" id="pageTitle">Nouvelle Commande</h1>
-        </div>
-        <div class="header-right">
-            <div class="notifications">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-            </div>
-        </div>
-    </header>
+    <header th:replace="~{fragments/header :: header('Nouvelle Commande')}"></header>
 
-    <!-- Content Area -->
     <main class="content">
         <div class="container mt-4">
-            <h1 th:text="${titre}">Nouvelle Commande</h1>
-            
             <div class="card mb-4">
                 <div class="card-header">
+                    <i class="fas fa-shopping-cart me-2"></i>
                     Sélection des produits
                 </div> 
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="produit" class="form-label">Produit</label>
-                            <select id="produit" class="form-select">
-                                <option value="">Choisir un produit</option>
-                                <option th:each="produit : ${commandeService.getAllProduits()}" 
-                                        th:value="${produit.id}" 
-                                        th:text="${produit.nom + ' - ' + produit.prixCourant + ' Ar'}"></option>
-                            </select>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-box"></i>
+                                </span>
+                                <select id="produit" class="form-select">
+                                    <option value="">Choisir un produit</option>
+                                    <option th:each="produit : ${commandeService.getAllProduits()}" 
+                                            th:value="${produit.id}" 
+                                            th:text="${produit.nom + ' - ' + produit.prixCourant + ' Ar'}"></option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <label for="quantite" class="form-label">Quantité</label>
-                            <input type="number" id="quantite" class="form-control" min="1" value="1">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-sort-numeric-up"></i>
+                                </span>
+                                <input type="number" id="quantite" class="form-control" min="1" value="1">
+                            </div>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button id="ajouterProduit" class="btn btn-primary">Ajouter</button>
+                            <button id="ajouterProduit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Ajouter
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -121,35 +51,39 @@
             
             <div class="card mb-4">
                 <div class="card-header">
+                    <i class="fas fa-list-ul me-2"></i>
                     Détails de la commande
                 </div>
                 <div class="card-body">
-                    <table id="produitsTable" class="table">
-                        <thead>
-                            <tr>
-                                <th>Produit</th>
-                                <th>Quantité</th>
-                                <th>Prix unitaire</th>
-                                <th>Total</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Rempli dynamiquement par JavaScript -->
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="text-end"><strong>Total général:</strong></td>
-                                <td id="totalGeneral">0 Ar</td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="produitsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-box"></i> Produit</th>
+                                    <th><i class="fas fa-sort-numeric-up"></i> Quantité</th>
+                                    <th><i class="fas fa-money-bill-wave"></i> Prix unitaire</th>
+                                    <th><i class="fas fa-calculator"></i> Total</th>
+                                    <th><i class="fas fa-cogs"></i> Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rempli dynamiquement par JavaScript -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-info">
+                                    <td colspan="3" class="text-end fw-bold">Total général:</td>
+                                    <td id="totalGeneral" class="fw-bold text-success">0 Ar</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
             
             <div class="card">
                 <div class="card-header">
+                    <i class="fas fa-check-circle me-2"></i>
                     Validation de la commande
                 </div>
                 <div class="card-body">
@@ -158,24 +92,43 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="client" class="form-label">Client</label>
-                                <select id="client" name="clientId" class="form-select" required>
-                                    <option value="">Choisir un client</option>
-                                    <option th:each="client : ${clientRepository.findAll()}" 
-                                            th:value="${client.id}" 
-                                            th:text="${client.nom + ' ' + client.prenom}"></option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <select id="client" name="clientId" class="form-select" required>
+                                        <option value="">Choisir un client</option>
+                                        <option th:each="client : ${clientRepository.findAll()}" 
+                                                th:value="${client.id}" 
+                                                th:text="${client.nom + ' ' + client.prenom}"></option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="employe" class="form-label">Employé</label>
-                                <select id="employe" name="employeId" class="form-select" required>
-                                    <option value="">Choisir un employé</option>
-                                    <option th:each="employe : ${employeRepository.findAll()}" 
-                                            th:value="${employe.id}" 
-                                            th:text="${employe.nom}"></option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user-tie"></i>
+                                    </span>
+                                    <select id="employe" name="employeId" class="form-select" required>
+                                        <option value="">Choisir un employé</option>
+                                        <option th:each="employe : ${employeRepository.findAll()}" 
+                                                th:value="${employe.id}" 
+                                                th:text="${employe.nom}"></option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success">Valider la commande</button>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check"></i>
+                                Valider la commande
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                                <i class="fas fa-arrow-left"></i>
+                                Retour
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -184,5 +137,6 @@
 </div>
 
 <script th:src="@{/bootstrap5/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/employe/vente.js}" defer></script>
 </body>
 </html>

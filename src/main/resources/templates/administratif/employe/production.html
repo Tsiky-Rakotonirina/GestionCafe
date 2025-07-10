@@ -1,145 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Production</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/templates/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
-</head>
+<head th:replace="~{fragments/header :: head('Production')}"></head>
 <body>
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">
-            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                <span>Cafe</span>
-            </a>
-        </div>
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-    <nav class="sidebar-nav">
-        <ul>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/presence}" data-page="presence" class="nav-link">
-                    <i class="fas fa-user-check"></i>
-                    <span>Présence</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/commande}" data-page="commande" class="nav-link">
-                    <i class="fas fa-clipboard-list"></i>
-                    <span>Commandes</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/vente}" data-page="vente" class="nav-link">
-                    <i class="fas fa-cash-register"></i>
-                    <span>Ventes</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/client}" data-page="client" class="nav-link">
-                    <i class="fas fa-users"></i>
-                    <span>Clients</span>
-                </a>
-            </li>
-            <li class="nav-item active">
-                <a th:href="@{/administratif/employe/production}" data-page="production" class="nav-link">
-                    <i class="fas fa-industry"></i>
-                    <span>Production</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <div class="sidebar-footer">
-        <div class="user-profile">
-            <div class="user-info">
-                <span class="user-name">Admin</span>
-                <span class="user-role">Employé</span>
-            </div>
-        </div>
-    </div>
-</div>
+<div th:replace="~{fragments/sidebar :: sidebar('production')}"></div>
+
 <div class="main-content">
-    <header class="header">
-        <div class="header-left">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1 class="page-title">Production de produits finis</h1>
-        </div>
-        <div class="header-right">
-            <div class="notifications">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-            </div>
-        </div>
-    </header>
+    <header th:replace="~{fragments/header :: header('Production de produits finis')}"></header>
+    
     <main class="content">
         <div class="container mt-4">
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
             <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            
             <div class="card mb-4">
                 <div class="card-header">
+                    <i class="fas fa-plus-circle"></i>
                     Nouvelle production
                 </div>
                 <div class="card-body">
                     <form th:action="@{/administratif/employe/production}" method="post" class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="produit" class="form-label">Produit à produire</label>
                             <select class="form-select" id="produit" name="produitId" required>
+                                <option value="">Choisir un produit</option>
                                 <option th:each="produit : ${produits}" th:value="${produit.id}" th:text="${produit.nom}"></option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="employe" class="form-label">Employé</label>
                             <select class="form-select" id="employe" name="employeId" required>
+                                <option value="">Choisir un employé</option>
                                 <option th:each="employe : ${employes}" th:value="${employe.id}" th:text="${employe.nom}"></option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="quantite" class="form-label">Quantité à produire</label>
                             <input type="number" class="form-control" id="quantite" name="quantiteProduite" min="1" step="any" required>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Produire</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-cogs"></i>
+                                Lancer la production
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
+            
             <div class="card">
                 <div class="card-header">
+                    <i class="fas fa-history"></i>
                     Historique des productions
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Produit</th>
-                                <th>Quantité</th>
-                                <th>Employé</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="prod : ${productions}">
-                                <td th:text="${#temporals.format(prod.dateProduction, 'dd/MM/yyyy HH:mm')}"></td>
-                                <td th:text="${prod.produit.nom}"></td>
-                                <td th:text="${prod.quantite}"></td>
-                                <td th:text="${prod.employe.nom}"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
+                                    <th><i class="fas fa-box"></i> Produit</th>
+                                    <th><i class="fas fa-sort-numeric-up"></i> Quantité</th>
+                                    <th><i class="fas fa-user"></i> Employé</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="prod : ${productions}">
+                                    <td th:text="${#temporals.format(prod.dateProduction, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td th:text="${prod.produit.nom}"></td>
+                                    <td>
+                                        <span class="badge bg-success" th:text="${prod.quantite}"></span>
+                                    </td>
+                                    <td th:text="${prod.employe.nom}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 </div>
+
 <script th:src="@{/bootstrap5/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

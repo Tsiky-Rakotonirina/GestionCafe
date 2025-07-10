@@ -1,137 +1,81 @@
-<!-- src/main/resources/templates/employe/presence.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Présence des employés</title> 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/stock/styles.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/templates/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/stock/styles.css}">
-</head>
+<head th:replace="~{fragments/header :: head('Présence des employés')}"></head>
 <body>
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">
-            <a th:href="@{/administratif}" data-page="dashboard" class="nav-link">
-                <!--<img th:src="@{/images/logo/logo.jpg}" alt="Café" class="img-logo">-->
-                <span>Cafe</span>
-            </a>
-        </div>
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-    
-    <nav class="sidebar-nav">
-        <ul>
-            <li class="nav-item active">
-                <a th:href="@{/administratif/employe/presence}" data-page="presence" class="nav-link">
-                    <i class="fas fa-user-check"></i>   
-                    <span>Présence</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/commande}" data-page="commande" class="nav-link">
-                    <i class="fas fa-clipboard-list"></i> 
-                    <span>Commandes</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/vente}" data-page="vente" class="nav-link">
-                    <i class="fas fa-cash-register"></i>
-                    <span>Ventes</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/client}" data-page="client" class="nav-link">
-                    <i class="fas fa-users"></i>
-                    <span>Clients</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/administratif/employe/production}" data-page="production" class="nav-link">
-                    <i class="fas fa-industry"></i>
-                    <span>Production</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    
-    <div class="sidebar-footer">
-        <div class="user-profile">
-            <div class="user-info">
-                <span class="user-name">Admin</span>
-                <span class="user-role">Employé</span>
-            </div>
-        </div>
-    </div>
-</div>
+<div th:replace="~{fragments/sidebar :: sidebar('presence')}"></div>
 
-
-<!-- Main Content -->
 <div class="main-content">
-    <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1 class="page-title" id="pageTitle">Présence des Employés</h1>
-        </div>
-        <div class="header-right">
-            <div class="notifications">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
+    <header th:replace="~{fragments/header :: header('Présence des Employés')}"></header>
+
+    <main class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-user-check me-2"></i>
+                            <span th:text="${titre}">Présence</span>
+                        </div>
+                        <div>
+                            <h6 class="mb-0" th:text="${dateAujourdhui}">Date</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-user"></i> Nom</th>
+                                    <th><i class="fas fa-phone"></i> Contact</th>
+                                    <th><i class="fas fa-clock"></i> Heure de pointage</th>
+                                    <th><i class="fas fa-check-circle"></i> Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="employe : ${employes}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-user-circle me-2 text-muted"></i>
+                                            <span th:text="${employe.nom}"></span>
+                                        </div>
+                                    </td>
+                                    <td th:text="${employe.contact}"></td>
+                                    <td>
+                                        <span th:if="${presences[employe.id] != null}" class="badge bg-info">
+                                            <i class="fas fa-clock"></i>
+                                            <span th:text="${#temporals.format(presences[employe.id].dateArrivee, 'HH:mm')}"></span>
+                                        </span>
+                                        <span th:if="${presences[employe.id] == null}" class="text-muted">
+                                            <i class="fas fa-minus"></i> Non pointé
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form th:if="${presences[employe.id] == null or !presences[employe.id].estPresent}"
+                                              th:action="@{/administratif/employe/presence/valider}" method="post">
+                                            <input type="hidden" name="employeId" th:value="${employe.id}">
+                                            <div class="input-group input-group-sm" style="max-width: 250px;">
+                                                <input type="password" name="password" class="form-control" placeholder="Mot de passe" required>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <span th:if="${presences[employe.id] != null and presences[employe.id].estPresent}"
+                                              class="badge bg-success">
+                                            <i class="fas fa-check"></i> Présent
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </header>
-
-    <!-- Content Area -->
-    <main class="content">
-    <div class="container-fluid">
-        <h1 th:text="${titre}">Présence</h1>
-        <h3 th:text="${dateAujourdhui}">Date</h3>
-        
-        <table class="table table-striped mt-4">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Contact</th>
-                    <th>Heure de pointage</th>
-                    <th>Statut</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="employe : ${employes}">
-                    <td th:text="${employe.nom}"></td>
-                    <td th:text="${employe.contact}"></td>
-                    <td>
-                        <span th:if="${presences[employe.id] != null}">
-                            <span th:text="${#temporals.format(presences[employe.id].dateArrivee, 'HH:mm')}"></span>
-                        </span>
-                    </td>
-                    <td>
-                        <form th:if="${presences[employe.id] == null or !presences[employe.id].estPresent}"
-                              th:action="@{/administratif/employe/presence/valider}" method="post">
-                            <input type="hidden" name="employeId" th:value="${employe.id}">
-                            <div class="input-group">
-                                <input type="password" name="password" class="form-control" placeholder="Mot de passe" required>
-                                <button type="submit" class="btn btn-primary">Valider</button>
-                            </div>
-                        </form>
-                        <span th:if="${presences[employe.id] != null and presences[employe.id].estPresent}"
-                              class="badge bg-success">Présent</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-        </main>
+    </main>
 </div>
     
-    <script th:src="@{/bootstrap5/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/bootstrap5/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

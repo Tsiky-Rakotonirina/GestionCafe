@@ -6,48 +6,55 @@
     <title>CafeManager Pro - Gestion de Café</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Utilisation de Thymeleaf pour les ressources CSS -->
-    <link rel="stylesheet" th:href="@{/templates/styles.css}">
+    <link th:href="@{/bootstrap5/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/employe/common.css}" rel="stylesheet">
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="header-left">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="product-info">
-                <!-- Lien vers la page "quotidien" -->
-                <a th:href="@{/quotidien}" data-page="dashboard" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    <!-- Utilisation de Thymeleaf pour les images -->
-                    <img th:src="@{/images/logo/logo.jpg}" alt="Café">
-                </a>
-            </div>
+    <header class="header-simple">
+        <div class="logo">
+            <a th:href="@{/quotidien}" class="nav-link">
+                <i class="fas fa-coffee"></i>
+                <img th:src="@{/images/logo/logo.jpg}" alt="Café">
+                <span>CafeManager Pro</span>
+            </a>
         </div>
-        <div class="header-right">
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="product-info">
-                <!-- Lien pour la déconnexion -->
-                <a th:href="@{/deconnexion-quotidien}" data-page="dashboard" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    <span class="nav-text">Déconnexion</span>
-                </a>
-            </div>
+        <div class="header-actions">
+            <a th:href="@{/deconnexion-quotidien}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </a>
         </div>
     </header>
-    <main class="content">
-        <h1>Bienvenue sur CafeManager Pro</h1>
-        <div class="dashboard-menu" style="margin-top:2rem; display:flex; flex-wrap:wrap; gap:1rem;">
-            <a th:href="@{/administratif/employe/commande}" class="btn btn-primary">Commandes</a>
-            <a th:href="@{/administratif/employe/vente}" class="btn btn-primary">Ventes</a>
-            <a th:href="@{/administratif/client}" class="btn btn-primary">Clients</a>
-            <a th:href="@{/administratif/employe/presence}" class="btn btn-primary">Présence</a>
+    
+    <main class="content-simple">
+        <div class="welcome-header">
+            <h1>Bienvenue sur CafeManager Pro</h1>
+            <p>Système de gestion de café moderne et intuitif</p>
+        </div>
+        
+        <div class="dashboard-menu">
+            <a th:href="@{/administratif/employe/commande}" class="btn btn-primary">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Commandes</span>
+            </a>
+            <a th:href="@{/administratif/employe/vente}" class="btn btn-primary">
+                <i class="fas fa-cash-register"></i>
+                <span>Ventes</span>
+            </a>
+            <a th:href="@{/administratif/client}" class="btn btn-primary">
+                <i class="fas fa-users"></i>
+                <span>Clients</span>
+            </a>
+            <a th:href="@{/administratif/employe/presence}" class="btn btn-primary">
+                <i class="fas fa-user-check"></i>
+                <span>Présence</span>
+            </a>
+            <a th:href="@{/administratif/employe/production}" class="btn btn-primary">
+                <i class="fas fa-industry"></i>
+                <span>Production</span>
+            </a>
         </div>
     </main>
-    <!-- Utilisation de Thymeleaf pour le script JS -->
-    <!-- <script th:src="@{/templates/script.js}"></script> -->
 </body>
 </html>
