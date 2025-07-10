@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAF-E</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .bilan-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #f5f5f5;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .account-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #eee;
+        }
+        .total {
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .grand-total {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{administratif/finance/layout/sidebar :: sidebar}"></div>
+
+    <h1 style="text-align: center;">BILAN AU 31 DECEMBRE 2024</h1>
+    <p style="text-align: center;">Entreprise: CAF-E</p>
+
+<!-- Résumé financier -->
+
+
+        <div class="bilan-container">
+    <!-- Produits -->
+    <div class="card">
+        <div class="card-header">PRODUITS</div>
+        <div class="card-body">
+            <div class="account-line">
+                <span>Ventes de produits finis</span>
+                <span>701</span>
+                <span>3 450 000 Ar</span>
+            </div>
+            <div class="account-line">
+                <span>Production stockée</span>
+                <span>713</span>
+                <span>0 Ar</span>
+            </div>
+        </div>
+    </div>
+    <!-- Charges -->
+    <div class="card">
+        <div class="card-header">CHARGES</div>
+        <div class="card-body">
+            <div class="account-line">
+                <span>Achats de marchandises</span>
+                <span>601</span>
+                <span>2 000 000 Ar</span>
+            </div>
+            <div class="account-line">
+                <span>Variations de stocks</span>
+                <span>603</span>
+                <span>+200 000 Ar</span>
+            </div>
+            <div class="account-line">
+                <span>Transport</span>
+                <span>624</span>
+                <span>350 000 Ar</span>
+            </div>
+            <div class="account-line">
+                <span>Impôts, taxes et versements assimilés</span>
+                <span>631</span>
+                <span>50 000 Ar</span>
+            </div>
+            <div class="account-line">
+                <span>Rémunérations du personnel</span>
+                <span>641</span>
+                <span>1 400 000 Ar</span>
+            </div>
+            <div class="account-line">
+                <span>Charges de sécurité sociale</span>
+                <span>645</span>
+                <span>350 000 Ar</span>
+            </div>
+        </div>
+    </div>
+    <div class="grand-total" style="margin-top: 40px;">
+    <div>
+        <div><strong>Solde du compte (Caisse) :</strong></div>
+        <div>5 250 000 Ar</div>
+    </div>
+</div>
+</div>
+</div>
+</body>
+</html>
